@@ -205,3 +205,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Dados reais da Klabin (NUNCA fazer upload!)
+dados/reais/
+*.xlsx
+*_confidencial*
+
+# Credenciais
+.env
+config_producao.py
+
+# Logs
+*.log
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db

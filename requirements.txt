@@ -1,0 +1,20 @@
+# Core dependencies
+streamlit==1.31.0
+pandas==2.2.0
+numpy==1.26.3
+
+# Data visualization
+plotly==5.18.0
+matplotlib==3.8.2
+
+# SAP Data Sphere connection
+requests==2.31.0
+
+# Automation
+schedule==1.2.0
+
+# PDF generation
+reportlab==4.0.9
+
+# Development tools
+jupyter==1.0.0
