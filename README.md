@@ -1,10 +1,10 @@
-﻿# Projeto Klabin - Automação SAP Data Sphere
+# Projeto Klabin - Automação SAP Datasphere
 
-Sistema automatizado de visualização de dados integrando tabelas padrão e customizadas do SAP Data Sphere para relatórios de sustentabilidade da Klabin.
+Sistema automatizado de visualização de dados integrando tabelas padrão e customizadas do SAP Datasphere para relatórios de sustentabilidade da Klabin.
 
 ## 📋 Visão Geral do Projeto
 
-**Objetivo:** Construir um sistema automatizado que conecta ao SAP Data Sphere da Klabin, extrai dados de tabelas padrão e customizadas, processa KPIs e gera dashboards interativos e relatórios automatizados.
+**Objetivo:** Construir um sistema automatizado que conecta ao SAP Datasphere da Klabin, extrai dados de tabelas padrão e customizadas, processa KPIs e gera dashboards interativos e relatórios automatizados.
 
 **Cronograma:** Fevereiro 2026 - Junho 2026 (18 semanas)
 
@@ -19,7 +19,7 @@ Sistema automatizado de visualização de dados integrando tabelas padrão e cus
 ## 🎯 O Que Estamos Construindo
 
 Um sistema automatizado que:
-1. **Conecta** ao SAP Data Sphere (API/ODBC)
+1. **Conecta** ao SAP Datasphere (API/ODBC)
 2. **Extrai** dados de tabelas padrão SAP + tabelas customizadas Klabin
 3. **Processa** e calcula KPIs de sustentabilidade automaticamente
 4. **Visualiza** em dashboards interativos
@@ -37,7 +37,7 @@ Um sistema automatizado que:
 **Backend:**
 - Python 3.10+
 - pandas (manipulação de dados)
-- requests/pyodbc (conexão SAP Data Sphere)
+- requests/pyodbc (conexão SAP Datasphere)
 
 **Frontend/Visualização:**
 - Streamlit (framework de dashboard)
@@ -52,12 +52,11 @@ Um sistema automatizado que:
 - GitHub
 
 ## 📁 Estrutura do Projeto
-
-\\\
+```text
 klabin-automacao-sap/
 ├── docs/              # Documentação e notas de reuniões
 ├── src/               # Código fonte
-│   ├── conexao/       # Módulos de conexão com Data Sphere
+│   ├── conexao/       # Módulos de conexão com Datasphere
 │   ├── processamento/ # Processamento e transformação de dados
 │   ├── visualizacao/  # Dashboards e gráficos
 │   └── automacao/     # Scripts de automação
@@ -66,43 +65,56 @@ klabin-automacao-sap/
 ├── apresentacoes/     # Slides para apresentações
 ├── assets/            # Imagens, logos, recursos visuais
 └── requirements.txt   # Dependências Python
-\\\
+```
 
 ## 🚀 Como Começar
 
 ### Pré-requisitos
 - Python 3.10 ou superior
-- pip (gerenciador de pacotes Python)
 - Git
 
 ### Instalação
 
 1. Clone o repositório:
-\\\ash
+```bash
 git clone https://github.com/SEU_USERNAME/klabin-automacao-sap.git
 cd klabin-automacao-sap
-\\\
+```
 
-2. Instale as dependências:
-\\\ash
-pip install -r requirements.txt --break-system-packages
-\\\
+2. Crie e ative um ambiente virtual:
+```bash
+# Criar ambiente virtual
+python -m venv venv
 
-3. Execute o dashboard protótipo:
-\\\ash
+# Ativar no Windows:
+venv\Scripts\activate
+# Ativar no Linux/Mac:
+source venv/bin/activate
+```
+
+3. Instale as dependências:
+```bash
+pip install -r requirements.txt
+```
+
+4. Configure as variáveis de ambiente:
+> Copie o arquivo `.env.example` para `.env` e preencha com suas credenciais do SAP (não comite o arquivo `.env`!).
+
+5. Execute o dashboard protótipo:
+```bash
 streamlit run src/visualizacao/dashboard_prototipo.py
-\\\
+```
 
 ## 📊 Status Atual
 
 **Fase:** Pré-Planejamento (Semanas 1-2)
 
-- [x] Pesquisa inicial sobre SAP Data Sphere
+- [x] Pesquisa inicial sobre SAP Datasphere
 - [x] Leitura do Relatório de Sustentabilidade Klabin 2024
 - [x] Construção do dashboard protótipo
 - [ ] Aguardando brief completo do Canvas
 - [ ] Primeira reunião com representante da Klabin
-- [ ] Credenciais de acesso ao SAP Data Sphere
+- [ ] Credenciais de acesso ao SAP Datasphere
 
 ## 📝 Fases de Desenvolvimento
 
@@ -112,7 +124,7 @@ streamlit run src/visualizacao/dashboard_prototipo.py
 - Protótipo inicial
 
 ### Fase 1: Descoberta & Setup (Semanas 3-4)
-- Acesso ao SAP Data Sphere
+- Acesso ao SAP Datasphere
 - Exploração de dados
 - Arquitetura técnica
 
@@ -134,10 +146,10 @@ streamlit run src/visualizacao/dashboard_prototipo.py
 ## 🤝 Como Contribuir
 
 ### Fluxo de Trabalho
-1. Crie uma branch para sua funcionalidade: \git checkout -b feature/nome-da-funcionalidade\
+1. Crie uma branch para sua funcionalidade: `git checkout -b feature/nome-da-funcionalidade`
 2. Faça suas alterações
-3. Commit com mensagens claras: \git commit -m "Adiciona funcionalidade: descrição"\
-4. Push para sua branch: \git push origin feature/nome-da-funcionalidade\
+3. Commit com mensagens claras: `git commit -m "Adiciona funcionalidade: descrição"`
+4. Push para sua branch: `git push origin feature/nome-da-funcionalidade`
 5. Crie um Pull Request para revisão
 
 ### Estilo de Código
@@ -157,7 +169,7 @@ streamlit run src/visualizacao/dashboard_prototipo.py
 
 ## 📚 Recursos
 
-- [Documentação SAP Data Sphere](https://learning.sap.com)
+- [Documentação SAP Datasphere](https://learning.sap.com)
 - [Documentação Streamlit](https://docs.streamlit.io)
 - [Relatório de Sustentabilidade Klabin 2024](https://klabin.com.br/en/sustentabilidade/relatorios-e-performance)
 - [Planejamento do Projeto (Notion)](link-para-notion)
