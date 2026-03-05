@@ -13,5 +13,4 @@ requests==2.31.0
 pyodbc==5.0.1
 
 # Desenvolvimento
-jupyter==1.0.0
 python-dotenv==1.0.0
