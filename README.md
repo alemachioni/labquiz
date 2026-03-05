@@ -135,7 +135,7 @@ klabin-agente-sap/
 
 ```powershell
 # 1. Clonar o repositório
-git clone https://github.com/SEU_USERNAME/klabin-agente-sap.git
+git clone https://github.com/alemachioni/klabin-agente-sap.git
 cd klabin-agente-sap
 
 # 2. Criar e ativar ambiente virtual (Windows/PowerShell)
