@@ -111,7 +111,6 @@ klabin-agente-sap/
 ├── dados/
 │   └── exemplos/                  # Perguntas e scripts de exemplo (sem dados reais)
 │
-├── notebooks/                     # Prototipagem e exploração
 ├── docs/                          # Documentação técnica e notas de reuniões
 ├── apresentacoes/                 # Slides para Klabin e banca
 │
