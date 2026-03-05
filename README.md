@@ -236,11 +236,11 @@ git push origin feature/nome-da-funcionalidade
 | Nome | Função |
 |------|--------|
 | Alexandre Machioni | Coordenador do Projeto |
-| Otávio [Sobrenome] | [Função] |
-| João Pedro [Sobrenome] | [Função] |
-| Marco [Sobrenome] | [Função] |
-| Bruno Fernando dos Santos | [Função] |
-| Gustavo Itiro Nakaoka | [Função] |
+| Otávio [Sobrenome] | Agente IA — RAG e mapeamento de tabelas |
+| João Pedro [Sobrenome] | Integração SAP (cliente_sap, executor_query) |
+| Marco [Sobrenome] | Interface Streamlit (app.py, chat, preview) |
+| Bruno Fernando dos Santos | Dicionário de dados SAP (tabelas_sap.json, glossário) |
+| Gustavo Itiro Nakaoka | Testes + Documentação + Apresentação |
 
 **Contato:** Alexandre Machioni — alemachioni@gmail.com
 
