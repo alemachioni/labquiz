@@ -56,7 +56,7 @@ Usuário digita:
 - Python 3.10+
 - LLM via API (Claude / OpenAI) — interpretação de linguagem natural
 - RAG com dicionário de dados SAP — mapeamento de tabelas
-- `langchain` ou implementação própria — orquestração do agente
+- Implementação própria — orquestração do agente
 
 **Interface do Usuário:**
 - `streamlit` — chat interface para o usuário digitar perguntas
