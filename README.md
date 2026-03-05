@@ -1,183 +1,268 @@
-# Projeto Klabin - Automação SAP Datasphere
+# Klabin - Geração Automatizada de Scripts SAP com IA
 
-Sistema automatizado de visualização de dados integrando tabelas padrão e customizadas do SAP Datasphere para relatórios de sustentabilidade da Klabin.
+Agente de IA que interpreta perguntas de negócio em linguagem natural, mapeia as tabelas SAP relevantes e gera automaticamente scripts de extração (SQL / ABAP CDS View) prontos para uso no Power BI.
 
-## 📋 Visão Geral do Projeto
+> **Área:** TI | **Sponsor:** Abdul Latif | **Fluxo:** Record to Report
 
-**Objetivo:** Construir um sistema automatizado que conecta ao SAP Datasphere da Klabin, extrai dados de tabelas padrão e customizadas, processa KPIs e gera dashboards interativos e relatórios automatizados.
+---
 
-**Cronograma:** Fevereiro 2026 - Junho 2026 (18 semanas)
+## 🎯 O Problema que Resolvemos
 
-**Equipe:**
-- Alexandre Machioni (Coordenador do Projeto)
-- Otávio [Sobrenome] ([Função])
-- João Pedro [Sobrenome] ([Função])
-- Marco [Sobrenome] ([Função])
-- Bruno [Sobrenome] ([Função])
-- Gustavo [Sobrenome] ([Função])
+Gestores e analistas sabem *o que* querem ver, mas não sabem *como* extrair os dados do SAP. Isso cria um gargalo técnico: toda visualização nova depende de um especialista para escrever o script de extração.
 
-## 🎯 O Que Estamos Construindo
+**Impacto atual (sem o sistema):**
+- Atrasos na criação de dashboards por falta de scripts prontos
+- Baixa autonomia dos usuários de negócio na exploração de dados
+- Sobrecarga da equipe técnica com demandas repetitivas de extração
 
-Um sistema automatizado que:
-1. **Conecta** ao SAP Datasphere (API/ODBC)
-2. **Extrai** dados de tabelas padrão SAP + tabelas customizadas Klabin
-3. **Processa** e calcula KPIs de sustentabilidade automaticamente
-4. **Visualiza** em dashboards interativos
-5. **Automatiza** geração de relatórios (PDFs, notificações por email)
+---
 
-### Principais Métricas Rastreadas
-- Intensidade de consumo de água (m³/ton)
-- Taxa de reciclagem de resíduos (%)
-- Emissões de CO₂ evitadas
-- Uso de energia renovável
-- Indicadores de biodiversidade
+## 💡 Como Funciona
+
+```
+Usuário digita:
+"Quero ver o volume de produção por planta nos últimos 3 meses"
+        │
+        ▼
+┌─────────────────────────┐
+│  1. INTERPRETAÇÃO       │  LLM entende a intenção de negócio
+│     DA INTENÇÃO         │  e extrai: métrica, dimensão, período
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│  2. MAPEAMENTO          │  Consulta o dicionário de dados SAP
+│     DE TABELAS SAP      │  Identifica tabelas relevantes:
+│                         │  MSEG, VBRK, AFKO, EKPO...
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│  3. GERAÇÃO DO SCRIPT   │  Gera SQL ou ABAP CDS View
+│     DE EXTRAÇÃO         │  pronto para Power BI via
+│                         │  SAP BW, HANA ou Data Lake
+└────────────┬────────────┘
+             │
+             ▼
+      Power BI recebe
+      os dados direto
+```
+
+---
 
 ## 🛠️ Stack Tecnológica
 
-**Backend:**
+**Agente de IA (núcleo):**
 - Python 3.10+
-- pandas (manipulação de dados)
-- requests/pyodbc (conexão SAP Datasphere)
+- LLM via API (Claude / OpenAI) — interpretação de linguagem natural
+- RAG com dicionário de dados SAP — mapeamento de tabelas
+- `langchain` ou implementação própria — orquestração do agente
 
-**Frontend/Visualização:**
-- Streamlit (framework de dashboard)
-- Plotly (gráficos interativos)
+**Interface do Usuário:**
+- `streamlit` — chat interface para o usuário digitar perguntas
 
-**Automação:**
-- schedule (agendamento de tarefas)
-- reportlab (geração de PDFs)
-- smtplib (notificações por email)
+**Integração SAP:**
+- `pyodbc` / `requests` — conexão com SAP Datasphere
+- SAP BW / HANA / Data Lake — caminho de saída para Power BI
 
-**Controle de Versão:**
-- GitHub
+**Dados & Processamento:**
+- `pandas` — validação e preview dos dados extraídos
+- Dicionário de dados SAP (JSON/CSV) — base de conhecimento do agente
+
+**Controle de Versão:** GitHub
+
+---
 
 ## 📁 Estrutura do Projeto
-```text
-klabin-automacao-sap/
-├── docs/              # Documentação e notas de reuniões
-├── src/               # Código fonte
-│   ├── conexao/       # Módulos de conexão com Datasphere
-│   ├── processamento/ # Processamento e transformação de dados
-│   ├── visualizacao/  # Dashboards e gráficos
-│   └── automacao/     # Scripts de automação
-├── dados/             # Dados de exemplo (não dados reais da Klabin)
-├── notebooks/         # Jupyter notebooks para exploração
-├── apresentacoes/     # Slides para apresentações
-├── assets/            # Imagens, logos, recursos visuais
-└── requirements.txt   # Dependências Python
+
 ```
+klabin-agente-sap/
+│
+├── src/
+│   ├── agente/                    # Núcleo do agente de IA
+│   │   ├── interpretador.py       # Interpreta intenção do usuário (LLM)
+│   │   ├── mapeador_tabelas.py    # Mapeia tabelas SAP relevantes (RAG)
+│   │   └── gerador_scripts.py     # Gera SQL / ABAP CDS View
+│   │
+│   ├── sap/                       # Integração com SAP Datasphere
+│   │   ├── cliente_sap.py         # Conexão e autenticação
+│   │   ├── executor_query.py      # Executa scripts gerados
+│   │   └── validador_schema.py    # Valida estrutura das tabelas
+│   │
+│   ├── dicionario/                # Base de conhecimento SAP
+│   │   ├── tabelas_sap.json       # Metadados das tabelas (MSEG, VBRK, etc.)
+│   │   ├── glossario_negocio.json # Termos de negócio → campos SAP
+│   │   └── construtor_dicionario.py
+│   │
+│   ├── interface/                 # Chat UI (Streamlit)
+│   │   ├── app.py                 # Ponto de entrada principal
+│   │   ├── chat.py                # Componente de chat
+│   │   └── preview_dados.py       # Preview dos dados extraídos
+│   │
+│   └── utils/                     # Utilitários gerais
+│       ├── logger.py
+│       └── config.py
+│
+├── testes/                        # Testes automatizados
+│   ├── test_interpretador.py
+│   ├── test_mapeador.py
+│   └── test_gerador_scripts.py
+│
+├── dados/
+│   └── exemplos/                  # Perguntas e scripts de exemplo (sem dados reais)
+│
+├── notebooks/                     # Prototipagem e exploração
+├── docs/                          # Documentação técnica e notas de reuniões
+├── apresentacoes/                 # Slides para Klabin e banca
+│
+├── .env.example                   # Template de variáveis de ambiente
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
+
+> ⚠️ **Nunca commitar o `.env`, credenciais SAP ou dados reais da Klabin.**
+
+---
 
 ## 🚀 Como Começar
 
 ### Pré-requisitos
-- Python 3.10 ou superior
+- Python 3.10+
 - Git
+- Chave de API (Claude ou OpenAI) — ver `.env.example`
 
 ### Instalação
 
-1. Clone o repositório:
-```bash
-git clone https://github.com/SEU_USERNAME/klabin-automacao-sap.git
-cd klabin-automacao-sap
-```
+```powershell
+# 1. Clonar o repositório
+git clone https://github.com/SEU_USERNAME/klabin-agente-sap.git
+cd klabin-agente-sap
 
-2. Crie e ative um ambiente virtual:
-```bash
-# Criar ambiente virtual
+# 2. Criar e ativar ambiente virtual (Windows/PowerShell)
 python -m venv venv
-
-# Ativar no Windows:
 venv\Scripts\activate
-# Ativar no Linux/Mac:
-source venv/bin/activate
-```
 
-3. Instale as dependências:
-```bash
+# 3. Instalar dependências
 pip install -r requirements.txt
+
+# 4. Configurar variáveis de ambiente
+copy .env.example .env
+# Edite o .env com sua chave de API e credenciais SAP
+
+# 5. Rodar a interface
+streamlit run src/interface/app.py
 ```
 
-4. Configure as variáveis de ambiente:
-> Copie o arquivo `.env.example` para `.env` e preencha com suas credenciais do SAP (não comite o arquivo `.env`!).
+### Exemplo de uso
 
-5. Execute o dashboard protótipo:
-```bash
-streamlit run src/visualizacao/dashboard_prototipo.py
 ```
+Usuário: "Quero ver o faturamento por cliente nos últimos 6 meses"
+
+Agente:  Tabelas identificadas: VBRK (cabeçalho fatura), VBRP (itens fatura)
+         Campos: VBRK.FKDAT, VBRK.KUNAG, VBRP.NETWR
+
+         Script gerado:
+         SELECT k.KUNAG, SUM(p.NETWR) AS faturamento_total
+         FROM VBRK k
+         JOIN VBRP p ON k.VBELN = p.VBELN
+         WHERE k.FKDAT >= ADD_MONTHS(CURRENT_DATE, -6)
+         GROUP BY k.KUNAG
+         ORDER BY faturamento_total DESC
+```
+
+---
 
 ## 📊 Status Atual
 
 **Fase:** Pré-Planejamento (Semanas 1-2)
 
+- [x] Leitura e análise do brief da Klabin
 - [x] Pesquisa inicial sobre SAP Datasphere
-- [x] Leitura do Relatório de Sustentabilidade Klabin 2024
-- [x] Construção do dashboard protótipo
-- [ ] Aguardando brief completo do Canvas
-- [ ] Primeira reunião com representante da Klabin
+- [ ] Aguardando acesso ao dicionário de dados SAP da Klabin
+- [ ] Primeira reunião com representante da Klabin (Abdul Latif / Marlon Silva)
 - [ ] Credenciais de acesso ao SAP Datasphere
-
-## 📝 Fases de Desenvolvimento
-
-### Fase 0: Pré-Planejamento (Semanas 1-2) - ATUAL
-- Pesquisa e organização da equipe
-- Setup do ambiente
-- Protótipo inicial
-
-### Fase 1: Descoberta & Setup (Semanas 3-4)
-- Acesso ao SAP Datasphere
-- Exploração de dados
-- Arquitetura técnica
-
-### Fase 2: Desenvolvimento Core (Semanas 5-8)
-- Módulo de extração de dados
-- Módulo de transformação de dados
-- Módulo de visualização
-
-### Fase 3: Polimento & Automação (Semanas 9-11)
-- Funcionalidades de automação
-- Testes de qualidade
-- Documentação
-
-### Fase 4: Entrega Final (Semanas 12-14)
-- Polimento final
-- Preparação de apresentação
-- Demo final
-
-## 🤝 Como Contribuir
-
-### Fluxo de Trabalho
-1. Crie uma branch para sua funcionalidade: `git checkout -b feature/nome-da-funcionalidade`
-2. Faça suas alterações
-3. Commit com mensagens claras: `git commit -m "Adiciona funcionalidade: descrição"`
-4. Push para sua branch: `git push origin feature/nome-da-funcionalidade`
-5. Crie um Pull Request para revisão
-
-### Estilo de Código
-- Siga PEP 8 para código Python
-- Adicione docstrings em todas as funções
-- Comente lógica complexa
-- Mantenha funções pequenas e focadas
-
-## 📞 Contato
-
-**Coordenador do Projeto:** Alexandre Machioni (alemachioni@gmail.com)
-
-**Comunicação da Equipe:**
-- WhatsApp: [PI 3 semestre]
-- Reuniões Semanais: Quintas-feiras (durante aula de PI)
-- GitHub: Issues e Pull Requests
-
-## 📚 Recursos
-
-- [Documentação SAP Datasphere](https://learning.sap.com)
-- [Documentação Streamlit](https://docs.streamlit.io)
-- [Relatório de Sustentabilidade Klabin 2024](https://klabin.com.br/en/sustentabilidade/relatorios-e-performance)
-- [Planejamento do Projeto (Notion)](link-para-notion)
-
-## 📄 Licença
-
-[A ser determinado pela equipe]
+- [ ] Definição de funções da equipe
 
 ---
 
-**Última Atualização:** 3 de Março de 2026
+## 📅 Fases de Desenvolvimento
+
+| Fase | Período | Foco |
+|------|---------|------|
+| 0 - Pré-Planejamento | Sem. 1-2 | Brief, pesquisa, setup, protótipo de chat |
+| 1 - Descoberta & Setup | Sem. 3-4 | Acesso SAP, construção do dicionário de tabelas, arquitetura |
+| 2 - Agente MVP | Sem. 5-8 | Interpretador LLM + mapeamento de tabelas + geração de script básico |
+| 3 - Integração & Validação | Sem. 9-11 | Conexão real SAP, testes com queries reais, controle de permissões |
+| 4 - Entrega Final | Sem. 12-14 | UI polida, documentação, apresentação |
+
+---
+
+## 🚨 Riscos e Mitigações
+
+| Risco | Mitigação |
+|-------|-----------|
+| Scripts gerados com lógica incorreta | Suite de testes com queries conhecidas; validação humana antes de executar |
+| Acesso indevido a dados sensíveis | Modo somente-leitura; controle de permissões por perfil de usuário |
+| Sem acesso real ao SAP Datasphere | Desenvolver com schema mockado; validar lógica do agente independentemente |
+| LLM gera tabelas SAP inexistentes | RAG forçado — agente só usa tabelas presentes no dicionário validado |
+| Escopo maior que o estimado | MVP focado em 5-10 perguntas de negócio bem definidas |
+
+---
+
+## 🤝 Fluxo de Contribuição
+
+```powershell
+# Criar branch para sua funcionalidade
+git checkout -b feature/nome-da-funcionalidade
+
+# Após suas alterações
+git add .
+git commit -m "feat: descrição clara da mudança"
+git push origin feature/nome-da-funcionalidade
+
+# Abrir Pull Request — obrigatório revisão antes de mergear na main
+```
+
+**Convenções:**
+- PEP 8 para estilo de código
+- Docstrings em todas as funções
+- Variáveis e comentários em português
+- Funções pequenas e com responsabilidade única
+
+---
+
+## 👥 Equipe
+
+| Nome | Função |
+|------|--------|
+| Alexandre Machioni | Coordenador do Projeto |
+| Otávio [Sobrenome] | [Função] |
+| João Pedro [Sobrenome] | [Função] |
+| Marco [Sobrenome] | [Função] |
+| Bruno [Sobrenome] | [Função] |
+| Gustavo [Sobrenome] | [Função] |
+
+**Contato:** Alexandre Machioni — alemachioni@gmail.com
+
+| Canal | Uso |
+|-------|-----|
+| WhatsApp (PI 3 semestre) | Comunicação rápida |
+| Reuniões semanais (quintas, aula PI) | Alinhamento de progresso |
+| GitHub Issues / Pull Requests | Tarefas técnicas e revisão |
+| Notion | Planejamento e documentação |
+
+---
+
+## 📚 Recursos
+
+- [Documentação SAP Datasphere](https://help.sap.com/docs/SAP_DATASPHERE)
+- [SAP Table Reference (MSEG, VBRK, AFKO...)](https://www.se80.co.uk/saptables/)
+- [Documentação Streamlit](https://docs.streamlit.io)
+- [LangChain Docs](https://python.langchain.com)
+- [Relatório de Sustentabilidade Klabin 2024](https://ri.klabin.com.br)
+- [Planejamento do Projeto (Notion)](https://notion.so)
+
+---
+
+*Última atualização: Março 2026*
