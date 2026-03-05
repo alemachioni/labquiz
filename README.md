@@ -239,8 +239,8 @@ git push origin feature/nome-da-funcionalidade
 | Otávio [Sobrenome] | [Função] |
 | João Pedro [Sobrenome] | [Função] |
 | Marco [Sobrenome] | [Função] |
-| Bruno [Sobrenome] | [Função] |
-| Gustavo [Sobrenome] | [Função] |
+| Bruno Fernando dos Santos | [Função] |
+| Gustavo Itiro Nakaoka | [Função] |
 
 **Contato:** Alexandre Machioni — alemachioni@gmail.com
 
