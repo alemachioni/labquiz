@@ -223,3 +223,6 @@ config_producao.py
 
 # Windows
 Thumbs.db
+
+#Personal Learning
+hello_claude.py
