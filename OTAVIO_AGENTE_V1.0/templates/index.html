@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Klabin - Agente de Inteligencia de Negocios</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f4f6f4;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ---- HEADER ---- */
+    header {
+      background-color: #2d6a2d;
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    header .logo-circle {
+      width: 44px;
+      height: 44px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      color: #2d6a2d;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+
+    header .header-text h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header .header-text p {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    /* ---- MAIN CONTAINER ---- */
+    main {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* ---- SEARCH SECTION ---- */
+    .search-card {
+      background: white;
+      border-radius: 10px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 28px;
+    }
+
+    .search-card h2 {
+      font-size: 16px;
+      color: #2d6a2d;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .search-bar-wrapper {
+      display: flex;
+      gap: 10px;
+    }
+
+    #input-pergunta {
+      flex: 1;
+      padding: 13px 16px;
+      font-size: 15px;
+      border: 2px solid #c8dbc8;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    #input-pergunta:focus {
+      border-color: #2d6a2d;
+    }
+
+    #btn-consultar {
+      padding: 13px 26px;
+      background-color: #2d6a2d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    #btn-consultar:hover {
+      background-color: #245424;
+    }
+
+    #btn-consultar:disabled {
+      background-color: #8cb58c;
+      cursor: not-allowed;
+    }
+
+    /* Sugestoes de perguntas */
+    .sugestoes {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .sugestoes span {
+      font-size: 12px;
+      color: #666;
+      margin-right: 4px;
+      line-height: 28px;
+    }
+
+    .sugestao-btn {
+      background: #eaf3ea;
+      border: 1px solid #b8d4b8;
+      color: #2d6a2d;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+
+    .sugestao-btn:hover {
+      background: #d4e8d4;
+    }
+
+    /* ---- LOADING ---- */
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 30px;
+      color: #2d6a2d;
+      font-size: 15px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #c8dbc8;
+      border-top: 3px solid #2d6a2d;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ---- RESULTADO ---- */
+    #resultado {
+      display: none;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .resultado-header {
+      background-color: #2d6a2d;
+      color: white;
+      padding: 14px 24px;
+      font-size: 13px;
+      opacity: 0.95;
+    }
+
+    .resultado-header strong {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .resultado-body {
+      padding: 24px;
+    }
+
+    /* Texto de analise */
+    .texto-analise {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #2a2a2a;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eaf3ea;
+    }
+
+    /* Label da tabela */
+    .tabela-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #2d6a2d;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    /* Estilo da tabela HTML gerada pelo Claude */
+    #resultado table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #resultado table thead tr {
+      background-color: #2d6a2d;
+      color: white;
+    }
+
+    #resultado table th {
+      padding: 11px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    #resultado table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e8f0e8;
+      color: #333;
+    }
+
+    #resultado table tbody tr:nth-child(even) {
+      background-color: #f7fbf7;
+    }
+
+    #resultado table tbody tr:hover {
+      background-color: #eaf3ea;
+      transition: background 0.15s;
+    }
+
+    /* ---- ERRO ---- */
+    #erro {
+      display: none;
+      background: #fff5f5;
+      border: 1px solid #fcc;
+      border-radius: 10px;
+      padding: 20px 24px;
+      color: #c0392b;
+      font-size: 14px;
+    }
+
+    #erro strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      text-align: center;
+      padding: 28px;
+      color: #999;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-circle">K</div>
+    <div class="header-text">
+      <h1>Klabin - Agente de Inteligencia de Negocios</h1>
+      <p>Consultas inteligentes sobre dados operacionais e financeiros</p>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- CAIXA DE BUSCA -->
+    <div class="search-card">
+      <h2>O que voce gostaria de saber?</h2>
+
+      <div class="search-bar-wrapper">
+        <input
+          type="text"
+          id="input-pergunta"
+          placeholder="Ex: Faturamento por cliente nos ultimos 6 meses..."
+          autocomplete="off"
+        />
+        <button id="btn-consultar" onclick="realizarConsulta()">
+          Consultar
+        </button>
+      </div>
+
+      <!-- Sugestoes rapidas -->
+      <div class="sugestoes">
+        <span>Sugestoes:</span>
+        <button class="sugestao-btn" onclick="preencherSugestao(this)">
+          Faturamento por cliente em 2025
+        </button>
+        <button class="sugestao-btn" onclick="preencherSugestao(this)">
+          Qual unidade produziu mais em 2025?
+        </button>
+        <button class="sugestao-btn" onclick="preencherSugestao(this)">
+          EBITDA e Receita Liquida do segundo semestre
+        </button>
+        <button class="sugestao-btn" onclick="preencherSugestao(this)">
+          Estoque de insumos no ano
+        </button>
+        <button class="sugestao-btn" onclick="preencherSugestao(this)">
+          Desempenho logistico por modal
+        </button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading">
+      <div class="spinner"></div>
+      Analisando os dados da Klabin...
+    </div>
+
+    <!-- ERRO -->
+    <div id="erro">
+      <strong>Ocorreu um erro</strong>
+      <span id="erro-mensagem"></span>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="resultado">
+      <div class="resultado-header">
+        <strong>Resposta do Agente</strong>
+        <span id="pergunta-exibida"></span>
+      </div>
+      <div class="resultado-body">
+        <div class="texto-analise" id="texto-analise"></div>
+        <div class="tabela-label">Dados em Tabela</div>
+        <div id="tabela-container"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    Klabin S.A. &mdash; Dados ficticios para fins de demonstracao &mdash; 2025
+  </footer>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // Preencher input com sugestao rapida
+    // -------------------------------------------------------------------------
+    function preencherSugestao(botao) {
+      document.getElementById("input-pergunta").value = botao.textContent.trim();
+      document.getElementById("input-pergunta").focus();
+    }
+
+    // -------------------------------------------------------------------------
+    // Permitir envio com tecla Enter
+    // -------------------------------------------------------------------------
+    document.getElementById("input-pergunta").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") realizarConsulta();
+    });
+
+    // -------------------------------------------------------------------------
+    // Funcao principal: enviar consulta ao backend
+    // -------------------------------------------------------------------------
+    async function realizarConsulta() {
+      const inputEl    = document.getElementById("input-pergunta");
+      const pergunta   = inputEl.value.trim();
+
+      const loadingEl  = document.getElementById("loading");
+      const resultadoEl = document.getElementById("resultado");
+      const erroEl     = document.getElementById("erro");
+      const btnEl      = document.getElementById("btn-consultar");
+
+      // Validacao basica
+      if (!pergunta) {
+        inputEl.focus();
+        return;
+      }
+
+      // Resetar UI
+      resultadoEl.style.display = "none";
+      erroEl.style.display      = "none";
+      loadingEl.style.display   = "block";
+      btnEl.disabled            = true;
+
+      try {
+        const resposta = await fetch("/consultar", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ pergunta: pergunta })
+        });
+
+        const dados = await resposta.json();
+
+        loadingEl.style.display = "none";
+        btnEl.disabled          = false;
+
+        if (dados.sucesso) {
+          // Exibir pergunta feita
+          document.getElementById("pergunta-exibida").textContent =
+            "\"" + dados.pergunta + "\"";
+
+          // Exibir texto de analise
+          document.getElementById("texto-analise").textContent = dados.texto;
+
+          // Exibir tabela HTML (gerada pelo Claude)
+          const tabelaContainer = document.getElementById("tabela-container");
+          if (dados.tabela) {
+            tabelaContainer.innerHTML = dados.tabela;
+          } else {
+            tabelaContainer.innerHTML =
+              "<p style='color:#888;font-size:14px;'>Nenhuma tabela disponivel para esta consulta.</p>";
+          }
+
+          resultadoEl.style.display = "block";
+
+          // Scroll suave ate o resultado
+          resultadoEl.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        } else {
+          // Exibir erro retornado pelo backend
+          document.getElementById("erro-mensagem").textContent = dados.erro;
+          erroEl.style.display = "block";
+        }
+
+      } catch (err) {
+        loadingEl.style.display = "none";
+        btnEl.disabled          = false;
+        document.getElementById("erro-mensagem").textContent =
+          "Nao foi possivel conectar ao servidor. Verifique se o app.py esta rodando.";
+        erroEl.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>
