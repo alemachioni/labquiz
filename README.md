@@ -396,12 +396,12 @@ Uma funcionalidade está **pronta** quando:
 
 | Nome | Papel |
 |------|-------|
-| A definir | PM / Arquitetura |
-| A definir | Frontend — Game Engine |
-| A definir | Frontend — UI/UX |
-| A definir | Backend — API |
-| A definir | Banco de Dados + Conteúdo |
-| A definir | QA / DevOps |
+| Alexandre | PM / Arquitetura |
+| João | Frontend — Game Engine |
+| Marco | Frontend — UI/UX |
+| Otavio | Backend — API |
+| Gustavo | Banco de Dados + Conteúdo |
+| Bruno | QA / DevOps |
 
 ---
 
