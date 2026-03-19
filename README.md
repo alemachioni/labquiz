@@ -1,266 +1,407 @@
-# Klabin - Geração Automatizada de Scripts SAP com IA
+# LabQuiz — Game Educacional de Vidrarias e Equipamentos de Laboratório
 
-Agente de IA que interpreta perguntas de negócio em linguagem natural, mapeia as tabelas SAP relevantes e gera automaticamente scripts de extração (SQL / ABAP CDS View) prontos para uso no Power BI.
+Game educacional web para alunos do 1º ano do técnico em Química, desenvolvido em parceria com a ETEC Júlio de Mesquita. Permite praticar a identificação de materiais de laboratório, associar equipamentos às suas funções e reconhecer sistemas experimentais completos.
 
-> **Área:** TI | **Sponsor:** Abdul Latif | **Fluxo:** Record to Report
+**Orientadora:** Profa. Maria do Socorro Sousa da Silva  
+**Instituição parceira:** ETEC Júlio de Mesquita
 
 ---
 
 ## 🎯 O Problema que Resolvemos
 
-Gestores e analistas sabem *o que* querem ver, mas não sabem *como* extrair os dados do SAP. Isso cria um gargalo técnico: toda visualização nova depende de um especialista para escrever o script de extração.
+Alunos ingressantes no técnico em Química chegam sem familiaridade com os materiais de laboratório — não sabem nomear vidrarias, diferenciar utensílios ou reconhecer em qual procedimento cada equipamento é utilizado. Isso cria uma barreira de entrada que compromete o aproveitamento das primeiras aulas práticas.
 
 **Impacto atual (sem o sistema):**
-- Atrasos na criação de dashboards por falta de scripts prontos
-- Baixa autonomia dos usuários de negócio na exploração de dados
-- Sobrecarga da equipe técnica com demandas repetitivas de extração
+
+- Alunos chegam às aulas práticas sem saber nomear ou usar os equipamentos básicos
+- Professor precisa dedicar tempo de aula presencial a conteúdo que poderia ser praticado previamente
+- Não há forma de o professor acompanhar o progresso individual de cada aluno antes da prática
 
 ---
 
 ## 💡 Como Funciona
 
 ```
-Usuário digita:
-"Quero ver o volume de produção por planta nos últimos 3 meses"
+Aluno acessa o game
         │
         ▼
 ┌─────────────────────────┐
-│  1. INTERPRETAÇÃO       │  LLM entende a intenção de negócio
-│     DA INTENÇÃO         │  e extrai: métrica, dimensão, período
+│  1. SELEÇÃO DE MÓDULO   │  Vidrarias / Metálicos / Plásticos /
+│                         │  Porcelanas / Sistemas Experimentais
 └────────────┬────────────┘
              │
              ▼
 ┌─────────────────────────┐
-│  2. MAPEAMENTO          │  Consulta o dicionário de dados SAP
-│     DE TABELAS SAP      │  Identifica tabelas relevantes:
-│                         │  MSEG, VBRK, AFKO, EKPO...
+│  2. RODADA DE QUESTÕES  │  Múltipla escolha com imagens
+│                         │  Associação material ↔ função
+│                         │  Associação material ↔ sistema experimental
 └────────────┬────────────┘
              │
              ▼
 ┌─────────────────────────┐
-│  3. GERAÇÃO DO SCRIPT   │  Gera SQL ou ABAP CDS View
-│     DE EXTRAÇÃO         │  pronto para Power BI via
-│                         │  SAP BW, HANA ou Data Lake
+│  3. FEEDBACK IMEDIATO   │  Resposta certa/errada com explicação
+│                         │  Sistema de ajudas (dica / eliminar opção)
+│                         │  Pontuação acumulada em tempo real
 └────────────┬────────────┘
              │
              ▼
-      Power BI recebe
-      os dados direto
+┌─────────────────────────┐
+│  4. RESULTADO FINAL     │  Score da partida, acertos por categoria
+│                         │  Dados salvos para relatório do professor
+└─────────────────────────┘
 ```
 
 ---
 
 ## 🛠️ Stack Tecnológica
 
-**Agente de IA (núcleo):**
-- Python 3.10+
-- LLM via API (Claude / OpenAI) — interpretação de linguagem natural
-- RAG com dicionário de dados SAP — mapeamento de tabelas
-- Implementação própria — orquestração do agente
+### Por que essa stack?
 
-**Interface do Usuário:**
-- `streamlit` — chat interface para o usuário digitar perguntas
+Escolhida para equilibrar **qualidade de entrega**, **curva de aprendizado do time** e **zero custo de infraestrutura**.
 
-**Integração SAP:**
-- `pyodbc` / `requests` — conexão com SAP Datasphere
-- SAP BW / HANA / Data Lake — caminho de saída para Power BI
+| Camada | Tecnologia | Justificativa |
+|--------|-----------|---------------|
+| Frontend | React + TypeScript | Componentes reutilizáveis para engine de questões; TS evita bugs silenciosos |
+| Estilização | Tailwind CSS + shadcn/ui | Tailwind para layout mobile-first; shadcn/ui entrega componentes acessíveis (modais, dropdowns, cards) com visual profissional sem esforço |
+| Animações | Framer Motion | Transições de questões, contagem de score, feedback visual — transforma um quiz em game (Fase 3) |
+| Backend | Node.js + Express + TypeScript | Mesma linguagem no full stack — reduz fricção no time |
+| Documentação da API | Swagger / OpenAPI (`swagger-jsdoc`) | API auto-documentada; impressiona avaliadores e facilita integração entre frontend e backend |
+| Banco de dados | PostgreSQL + Prisma ORM | Relacional para questões/usuários/scores; Prisma elimina SQL manual |
+| Autenticação | JWT (dois perfis: aluno / professor) | Simples, stateless, sem dependência externa |
+| Upload de imagens | Cloudinary (free tier) | Professor faz upload de fotos de equipamentos; sem infra para gerenciar |
+| Deploy frontend | Vercel | Deploy automático no push; **Preview URL gerada automaticamente a cada PR** |
+| Deploy backend + DB | Railway | PostgreSQL + Node.js no mesmo lugar; free tier suficiente para o projeto |
+| PWA | Vite PWA Plugin | Permite instalar o game na tela inicial do celular; cache de questões para uso offline (Fase 3) |
+| Testes | Vitest (unit) + Playwright (e2e) | Cobertura suficiente para garantir qualidade sem overhead de configuração |
+| Acessibilidade | Axe DevTools | Auditoria automatizada de acessibilidade; relatório de score para apresentação à banca |
+| Controle de versão | GitHub + GitHub Actions | CI automático: lint + testes a cada PR; bloqueia merge se CI falhar |
 
-**Dados & Processamento:**
-- `pandas` — validação e preview dos dados extraídos
-- Dicionário de dados SAP (JSON/CSV) — base de conhecimento do agente
+> 💡 **Framer Motion e PWA são enhancements de Fase 3**, não de Fase 1. Estão na stack para não serem esquecidos, mas não devem ser implementados antes do core loop estar sólido.
 
-**Controle de Versão:** GitHub
+---
+
+## 👥 Papéis da Equipe
+
+> Os papéis abaixo são sugestões baseadas nas áreas do projeto. A distribuição final deve ser feita pelo time considerando as habilidades e preferências de cada pessoa.
+
+| Papel | Responsabilidades principais |
+|-------|------------------------------|
+| **PM / Arquitetura** | Gestão do projeto, decisões de escopo, revisão de PRs, ADRs, alinhamento com orientadora, UX do painel do professor |
+| **Frontend — Game Engine** | Engine de questões, fluxo de jogo, feedback visual, pontuação, Framer Motion (Fase 3) |
+| **Frontend — UI/UX** | shadcn/ui, sistema de design, acessibilidade (WCAG + Axe), responsividade, PWA (Fase 3) |
+| **Backend — API** | Rotas REST, lógica de negócio, autenticação JWT, integração Cloudinary, Swagger/OpenAPI |
+| **Banco de Dados + Conteúdo** | Schema Prisma, migrations, **seed.ts com questões e imagens reais**, banco de questões, organização do Cloudinary |
+| **QA / DevOps** | Vitest, Playwright, GitHub Actions CI, relatório de auditoria Axe, documentação técnica, slides de apresentação |
+
+> ⚠️ **O papel de Banco de Dados + Conteúdo é crítico e frequentemente subestimado.** Quem ocupa essa função é responsável pelo conteúdo pedagógico real do produto — sem questões e imagens de qualidade, não existe game. Deve ser alguém com interesse no tema ou disposição para fotografar/organizar os materiais de laboratório.
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
-klabin-agente-sap/
+labquiz/
 │
-├── src/
-│   ├── agente/                    # Núcleo do agente de IA
-│   │   ├── interpretador.py       # Interpreta intenção do usuário (LLM)
-│   │   ├── mapeador_tabelas.py    # Mapeia tabelas SAP relevantes (RAG)
-│   │   └── gerador_scripts.py     # Gera SQL / ABAP CDS View
-│   │
-│   ├── sap/                       # Integração com SAP Datasphere
-│   │   ├── cliente_sap.py         # Conexão e autenticação
-│   │   ├── executor_query.py      # Executa scripts gerados
-│   │   └── validador_schema.py    # Valida estrutura das tabelas
-│   │
-│   ├── dicionario/                # Base de conhecimento SAP
-│   │   ├── tabelas_sap.json       # Metadados das tabelas (MSEG, VBRK, etc.)
-│   │   ├── glossario_negocio.json # Termos de negócio → campos SAP
-│   │   └── construtor_dicionario.py
-│   │
-│   ├── interface/                 # Chat UI (Streamlit)
-│   │   ├── app.py                 # Ponto de entrada principal
-│   │   ├── chat.py                # Componente de chat
-│   │   └── preview_dados.py       # Preview dos dados extraídos
-│   │
-│   └── utils/                     # Utilitários gerais
-│       ├── logger.py
-│       └── config.py
+├── frontend/                          # React + TypeScript (Vite)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── game/                  # Engine do jogo
+│   │   │   │   ├── QuestionCard.tsx   # Renderiza questão (imagem + alternativas)
+│   │   │   │   ├── AnswerOption.tsx   # Alternativa individual com animação (Framer Motion)
+│   │   │   │   ├── ScoreBoard.tsx     # Placar em tempo real com contador animado
+│   │   │   │   ├── HelpPanel.tsx      # Sistema de ajudas
+│   │   │   │   └── ResultScreen.tsx   # Tela de resultado final
+│   │   │   ├── teacher/               # Painel do professor
+│   │   │   │   ├── QuestionForm.tsx   # Cadastro / edição de questão
+│   │   │   │   ├── QuestionList.tsx   # Listagem com filtros
+│   │   │   │   └── StudentReport.tsx  # Relatório de desempenho
+│   │   │   └── shared/                # Componentes reutilizáveis (shadcn/ui + custom)
+│   │   │       ├── Button.tsx
+│   │   │       ├── ImageWithAlt.tsx   # Imagem com alt text (acessibilidade)
+│   │   │       └── LoadingSpinner.tsx
+│   │   ├── pages/
+│   │   │   ├── LoginPage.tsx
+│   │   │   ├── GamePage.tsx
+│   │   │   ├── ModuleSelectPage.tsx
+│   │   │   └── TeacherDashboard.tsx
+│   │   ├── hooks/                     # Custom hooks (useGame, useAuth, useSound, etc.)
+│   │   ├── services/                  # Chamadas à API (axios)
+│   │   ├── types/                     # Interfaces TypeScript compartilhadas
+│   │   └── utils/
+│   ├── tests/
+│   │   ├── unit/                      # Vitest
+│   │   └── e2e/                       # Playwright
+│   ├── public/
+│   │   └── sounds/                    # Áudio: acerto.mp3, erro.mp3 (Fase 3)
+│   ├── vite.config.ts                 # Inclui vite-plugin-pwa (Fase 3)
+│   └── manifest.webmanifest           # Config PWA (Fase 3)
 │
-├── testes/                        # Testes automatizados
-│   ├── test_interpretador.py
-│   ├── test_mapeador.py
-│   └── test_gerador_scripts.py
+├── backend/                           # Node.js + Express + TypeScript
+│   ├── src/
+│   │   ├── routes/
+│   │   │   ├── auth.routes.ts         # POST /login, POST /register
+│   │   │   ├── question.routes.ts     # CRUD de questões (professor)
+│   │   │   ├── game.routes.ts         # GET /session, POST /answer
+│   │   │   └── report.routes.ts       # GET /reports/:studentId
+│   │   ├── controllers/               # Lógica de cada rota
+│   │   ├── middlewares/
+│   │   │   ├── auth.middleware.ts     # Valida JWT
+│   │   │   └── role.middleware.ts     # Verifica perfil (aluno/professor)
+│   │   ├── services/                  # Regras de negócio
+│   │   │   ├── game.service.ts        # Seleção de questões, cálculo de score
+│   │   │   └── cloudinary.service.ts  # Upload de imagens
+│   │   ├── swagger/
+│   │   │   └── swagger.config.ts      # Setup Swagger / OpenAPI — docs em /api-docs
+│   │   └── app.ts                     # Setup do Express
+│   ├── prisma/
+│   │   ├── schema.prisma              # Modelo de dados
+│   │   ├── migrations/
+│   │   └── seed.ts                    # Questões + imagens reais (owner: BD + Conteúdo)
+│   └── tests/
 │
-├── dados/
-│   └── exemplos/                  # Perguntas e scripts de exemplo (sem dados reais)
+├── docs/                              # Documentação do projeto
+│   ├── ADR/                           # Architecture Decision Records
+│   │   └── 001-stack-selection.md
+│   ├── api/                           # Exportação do Swagger (gerada automaticamente)
+│   ├── accessibility/                 # Relatório de auditoria Axe DevTools
+│   └── reunioes/                      # Atas de reunião
 │
-├── docs/                          # Documentação técnica e notas de reuniões
-├── apresentacoes/                 # Slides para Klabin e banca
+├── apresentacoes/                     # Slides para banca e orientadora
 │
-├── .env.example                   # Template de variáveis de ambiente
+├── .github/
+│   └── workflows/
+│       └── ci.yml                     # Lint + testes automáticos; bloqueia merge se falhar
+│
+├── .env.example
 ├── .gitignore
-├── requirements.txt
 └── README.md
 ```
 
-> ⚠️ **Nunca commitar o `.env`, credenciais SAP ou dados reais da Klabin.**
+---
+
+## 🗃️ Modelo de Dados (Prisma — visão resumida)
+
+```prisma
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   // hash bcrypt
+  role      Role     // STUDENT | TEACHER
+  sessions  GameSession[]
+}
+
+model Question {
+  id           String         @id @default(uuid())
+  type         QuestionType   // MULTIPLE_CHOICE | ASSOCIATION
+  difficulty   Int            // 1 | 2 | 3
+  category     Category       // VIDRARIA | METALICO | PLASTICO | PORCELANA | SISTEMA
+  prompt       String         // Enunciado
+  imageUrl     String?        // URL Cloudinary
+  options      Option[]
+  createdBy    User           @relation(fields: [createdById], references: [id])
+  createdById  String
+}
+
+model Option {
+  id         String    @id @default(uuid())
+  text       String?
+  imageUrl   String?
+  isCorrect  Boolean
+  question   Question  @relation(fields: [questionId], references: [id])
+  questionId String
+}
+
+model GameSession {
+  id          String    @id @default(uuid())
+  student     User      @relation(fields: [studentId], references: [id])
+  studentId   String
+  score       Int
+  totalQ      Int
+  correctQ    Int
+  category    Category?
+  difficulty  Int?
+  playedAt    DateTime  @default(now())
+}
+```
 
 ---
 
 ## 🚀 Como Começar
 
 ### Pré-requisitos
-- Python 3.10+
+
+- Node.js 20+
 - Git
-- Chave de API (Claude ou OpenAI) — ver `.env.example`
+- Conta gratuita no [Cloudinary](https://cloudinary.com) — para upload de imagens
+- Conta gratuita no [Railway](https://railway.app) — para banco de dados local de dev (ou PostgreSQL instalado localmente)
 
 ### Instalação
 
-```powershell
+```bash
 # 1. Clonar o repositório
-git clone https://github.com/alemachioni/klabin-agente-sap.git
-cd klabin-agente-sap
+git clone https://github.com/SEU_ORG/labquiz.git
+cd labquiz
 
-# 2. Criar e ativar ambiente virtual (Windows/PowerShell)
-python -m venv venv
-venv\Scripts\activate
+# 2. Instalar dependências do backend
+cd backend
+npm install
+cp ../.env.example .env
+# Preencha as variáveis no .env
 
-# 3. Instalar dependências
-pip install -r requirements.txt
+# 3. Subir o banco e rodar migrations
+npx prisma migrate dev
+npx prisma db seed  # carrega questões de exemplo
 
-# 4. Configurar variáveis de ambiente
-copy .env.example .env
-# Edite o .env com sua chave de API e credenciais SAP
+# 4. Iniciar o backend
+npm run dev
 
-# 5. Rodar a interface
-streamlit run src/interface/app.py
+# 5. Em outro terminal — instalar e iniciar o frontend
+cd ../frontend
+npm install
+npm run dev
 ```
 
-### Exemplo de uso
+### Variáveis de Ambiente (.env.example)
 
+```env
+# Backend
+DATABASE_URL=postgresql://user:password@localhost:5432/labquiz
+JWT_SECRET=sua_chave_secreta_aqui
+JWT_EXPIRES_IN=7d
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+# Frontend (Vite)
+VITE_API_URL=http://localhost:3000
 ```
-Usuário: "Quero ver o faturamento por cliente nos últimos 6 meses"
 
-Agente:  Tabelas identificadas: VBRK (cabeçalho fatura), VBRP (itens fatura)
-         Campos: VBRK.FKDAT, VBRK.KUNAG, VBRP.NETWR
-
-         Script gerado:
-         SELECT k.KUNAG, SUM(p.NETWR) AS faturamento_total
-         FROM VBRK k
-         JOIN VBRP p ON k.VBELN = p.VBELN
-         WHERE k.FKDAT >= ADD_MONTHS(CURRENT_DATE, -6)
-         GROUP BY k.KUNAG
-         ORDER BY faturamento_total DESC
-```
+> ⚠️ **Nunca commitar o `.env` com credenciais reais.** O `.gitignore` já o exclui por padrão.
 
 ---
 
 ## 📊 Status Atual
 
-**Fase:** Pré-Planejamento (Semanas 1-2)
+**Fase: 0 — Fundações (Semanas 1-2)**
 
-- [x] Leitura e análise do brief da Klabin
-- [x] Pesquisa inicial sobre SAP Datasphere
-- [ ] Aguardando acesso ao dicionário de dados SAP da Klabin
-- [ ] Primeira reunião com representante da Klabin (Abdul Latif / Marlon Silva)
-- [ ] Credenciais de acesso ao SAP Datasphere
-- [ ] Definição de funções da equipe
+- [x] Definição do tema e escopo
+- [x] Escolha da stack tecnológica
+- [ ] Distribuição de papéis no time
+- [ ] Setup dos repositórios e ambientes locais
+- [ ] Definition of Done alinhada com a orientadora
+- [ ] Primeiras questões de conteúdo definidas (mínimo 10 para Fase 1)
 
 ---
 
 ## 📅 Fases de Desenvolvimento
 
-| Fase | Período | Foco |
-|------|---------|------|
-| 0 - Pré-Planejamento | Sem. 1-2 | Brief, pesquisa, setup, protótipo de chat |
-| 1 - Descoberta & Setup | Sem. 3-4 | Acesso SAP, construção do dicionário de tabelas, arquitetura |
-| 2 - Agente MVP | Sem. 5-8 | Interpretador LLM + mapeamento de tabelas + geração de script básico |
-| 3 - Integração & Validação | Sem. 9-11 | Conexão real SAP, testes com queries reais, controle de permissões |
-| 4 - Entrega Final | Sem. 12-14 | UI polida, documentação, apresentação |
+| Fase | Período | Foco | Entregável |
+|------|---------|------|-----------|
+| **0 — Fundações** | Sem. 1-2 | Stack, papéis, setup, Definition of Done | Repositório configurado, ambientes rodando |
+| **1 — Core Loop** | Sem. 3-6 | Auth básico + múltipla escolha + score | Jogo jogável com 10 questões reais |
+| **2 — Feature Complete** | Sem. 7-10 | Associações, dificuldade, ajudas, painel professor | Todos os requisitos funcionais implementados |
+| **3 — Polish & QA** | Sem. 11-13 | Mobile, acessibilidade, LGPD, edge cases, testes | Produto pronto para avaliação |
+| **4 — Entrega** | Sem. 14 | Deploy final, documentação, apresentação | Produto em produção + slides |
+
+> **Fase 1 intencionalmente pequena.** O objetivo é ter algo funcionando com conteúdo real antes de expandir. Builds com dados fictícios revelam problemas de layout e modelo de dados tarde demais.
 
 ---
 
 ## 🚨 Riscos e Mitigações
 
-| Risco | Mitigação |
-|-------|-----------|
-| Scripts gerados com lógica incorreta | Suite de testes com queries conhecidas; validação humana antes de executar |
-| Acesso indevido a dados sensíveis | Modo somente-leitura; controle de permissões por perfil de usuário |
-| Sem acesso real ao SAP Datasphere | Desenvolver com schema mockado; validar lógica do agente independentemente |
-| LLM gera tabelas SAP inexistentes | RAG forçado — agente só usa tabelas presentes no dicionário validado |
-| Escopo maior que o estimado | MVP focado em 5-10 perguntas de negócio bem definidas |
+| Risco | Probabilidade | Mitigação |
+|-------|--------------|-----------|
+| Imagens dos equipamentos não disponíveis a tempo | **Alta** | Designar responsável pelo conteúdo na Semana 1; mapear equipamentos disponíveis na ETEC; ter bancos de imagens livres como fallback |
+| Interface do professor subestimada em complexidade | Média | Tratar o painel do professor como produto separado com seus próprios casos de uso e validações; PM assume UX desse módulo |
+| Mobile quebrado descoberto tarde | Média | Testar em dispositivo real a partir da Fase 1, não só no fim |
+| Escopo cresce fora do controle | **Alta** | Qualquer nova feature passa pelo PM antes de entrar no backlog; Framer Motion e PWA só entram na Fase 3 |
+| LGPD não considerada no schema | Baixa | Não armazenar dados desnecessários; revisar schema na Fase 0; alunos menores — coletar apenas nome, e-mail e scores |
+| seed.ts nunca populado com conteúdo real | Média | Definir mínimo de 10 questões reais como critério de saída da Fase 1 |
 
 ---
 
 ## 🤝 Fluxo de Contribuição
 
-```powershell
+```bash
 # Criar branch para sua funcionalidade
-git checkout -b feature/nome-da-funcionalidade
+git checkout -b feat/nome-da-funcionalidade
 
 # Após suas alterações
 git add .
 git commit -m "feat: descrição clara da mudança"
-git push origin feature/nome-da-funcionalidade
+git push origin feat/nome-da-funcionalidade
 
-# Abrir Pull Request — obrigatório revisão antes de mergear na main
+# Abrir Pull Request — obrigatório revisão de ao menos 1 pessoa antes de mergear na main
 ```
 
-**Convenções:**
-- PEP 8 para estilo de código
-- Docstrings em todas as funções
-- Variáveis e comentários em português
-- Funções pequenas e com responsabilidade única
+### Convenções de Commit
+
+```
+feat:     nova funcionalidade
+fix:      correção de bug
+style:    ajuste visual sem mudança de lógica
+refactor: refatoração sem mudança de comportamento
+test:     adição ou correção de testes
+docs:     documentação
+chore:    configuração, dependências, CI
+```
+
+### Regras de PR
+
+- Nenhum PR vai direto para `main` sem revisão
+- CI deve passar (lint + testes) antes do merge
+- Descrição do PR deve explicar **o que** foi feito e **por quê**
+- Screenshots obrigatórios em PRs que alteram UI
 
 ---
 
-## 👥 Equipe
+## ✅ Definition of Done
 
-| Nome | Função |
-|------|--------|
-| Alexandre Machioni | Coordenador do Projeto |
-| Otávio [Sobrenome] | Agente IA — RAG e mapeamento de tabelas |
-| João Pedro [Sobrenome] | Integração SAP (cliente_sap, executor_query) |
-| Marco [Sobrenome] | Interface Streamlit (app.py, chat, preview) |
-| Bruno Fernando dos Santos | Dicionário de dados SAP (tabelas_sap.json, glossário) |
-| Gustavo Itiro Nakaoka | Testes + Documentação + Apresentação |
+Uma funcionalidade está **pronta** quando:
 
-**Contato:** Alexandre Machioni — alemachioni@gmail.com
-
-| Canal | Uso |
-|-------|-----|
-| WhatsApp (PI 3 semestre) | Comunicação rápida |
-| Reuniões semanais (quintas, aula PI) | Alinhamento de progresso |
-| GitHub Issues / Pull Requests | Tarefas técnicas e revisão |
-| Notion | Planejamento e documentação |
+- [ ] Funciona no Chrome, Firefox e Safari (desktop)
+- [ ] Funciona em tela de celular (375px de largura mínima)
+- [ ] Tem alt text em todas as imagens
+- [ ] Passou no lint sem erros
+- [ ] Tem ao menos um teste unitário para a lógica principal
+- [ ] Foi revisada por outro membro do time via PR
+- [ ] Não quebra nenhum teste existente
+- [ ] Rotas novas no backend estão documentadas no Swagger
+- [ ] PRs com alteração de UI incluem screenshot ou Preview URL no corpo do PR
 
 ---
 
 ## 📚 Recursos
 
-- [Documentação SAP Datasphere](https://help.sap.com/docs/SAP_DATASPHERE)
-- [SAP Table Reference (MSEG, VBRK, AFKO...)](https://www.se80.co.uk/saptables/)
-- [Documentação Streamlit](https://docs.streamlit.io)
-- [LangChain Docs](https://python.langchain.com)
-- [Relatório de Sustentabilidade Klabin 2024](https://ri.klabin.com.br)
-- [Planejamento do Projeto (Notion)](https://notion.so)
+- [Documentação React](https://react.dev)
+- [shadcn/ui — Componentes acessíveis](https://ui.shadcn.com)
+- [Framer Motion — Animações](https://www.framer.com/motion/)
+- [Documentação Prisma](https://www.prisma.io/docs)
+- [Documentação Tailwind CSS](https://tailwindcss.com/docs)
+- [swagger-jsdoc — Documentação de API](https://github.com/Surnet/swagger-jsdoc)
+- [Vite PWA Plugin](https://vite-pwa-org.netlify.app/)
+- [Axe DevTools — Acessibilidade](https://www.deque.com/axe/devtools/)
+- [Cloudinary — Upload de imagens](https://cloudinary.com/documentation)
+- [Railway — Deploy](https://docs.railway.app)
+- [Vercel — Deploy frontend + Preview URLs](https://vercel.com/docs)
+- [LGPD — Lei nº 13.709/2018](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm)
+- [WCAG 2.1 — Acessibilidade](https://www.w3.org/TR/WCAG21/)
+
+---
+
+## 👥 Equipe
+
+| Nome | Papel |
+|------|-------|
+| A definir | PM / Arquitetura |
+| A definir | Frontend — Game Engine |
+| A definir | Frontend — UI/UX |
+| A definir | Backend — API |
+| A definir | Banco de Dados + Conteúdo |
+| A definir | QA / DevOps |
 
 ---
 
