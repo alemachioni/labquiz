@@ -1,4 +1,4 @@
-# LabQuiz — Game Educacional de Vidrarias e Equipamentos de Laboratório
+# LabQuiz — Game Educacional de Equipamentos de Laboratório
 
 Game educacional web para alunos do 1º ano do técnico em Química, desenvolvido em parceria com a ETEC Júlio de Mesquita. Permite praticar a identificação de materiais de laboratório, associar equipamentos às suas funções e reconhecer sistemas experimentais completos.
 
