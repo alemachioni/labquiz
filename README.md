@@ -7,7 +7,7 @@ Game educacional web para alunos do 1º ano do técnico em Química, desenvolvid
 
 **Autores:**
 - [@Gustavo Itiro Nakaoka](https://github.com/gunkaokks)
-- [@Bruno Fernando dos Santos](https://github.com/bruno-santosimt)
+- [@Bruno Fernando dos Santos](https://github.com/brunofernn)
 - [@Otavio Sousa Dias Lopes](https://github.com/)
 - [@Marco Freire Carlucci](https://github.com/henriquebarralocci)
 (COLOQUEM O NOME E O GIT HUB DE VOCÊS NESSE MODELO IGUAL O DE CIMA) 
