@@ -4,6 +4,7 @@ Game educacional web para alunos do 1º ano do técnico em Química, desenvolvid
 
 **Orientadora:** Profa. Maria do Socorro Sousa da Silva  
 **Instituição parceira:** ETEC Júlio de Mesquita
+
 **Autores:**
 - [@Gustavo Itiro Nakaoka](https://github.com/gunkaokks)
 - [@Bruno Fernando dos Santos](https://github.com/bruno-santosimt)
