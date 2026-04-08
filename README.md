@@ -10,6 +10,7 @@ Game educacional web para alunos do 1º ano do técnico em Química, desenvolvid
 - [@Bruno Fernando dos Santos](https://github.com/brunofernn)
 - [@Otavio Sousa Dias Lopes](https://github.com/)
 - [@Marco Freire Carlucci](https://github.com/henriquebarralocci)
+- [@João Pedro Cirilo Parronchi](https://github.com/iFloren)
 (COLOQUEM O NOME E O GIT HUB DE VOCÊS NESSE MODELO IGUAL O DE CIMA) 
 
 ---
