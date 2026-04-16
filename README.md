@@ -6,6 +6,7 @@ Game educacional web para alunos do 1º ano do técnico em Química, desenvolvid
 **Instituição parceira:** ETEC Júlio de Mesquita
 
 **Autores:**
+- [@Alexandre Andrade Machioni Pereira Dos Santos](https://github.com/alemachioni)
 - [@Gustavo Itiro Nakaoka](https://github.com/gunkaokks)
 - [@Bruno Fernando dos Santos](https://github.com/brunofernn)
 - [@Otavio Sousa Dias Lopes](https://github.com/)
