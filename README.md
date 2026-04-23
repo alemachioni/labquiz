@@ -1,8 +1,8 @@
 # LabQuiz — Game Educacional de Equipamentos de Laboratório
 
-Game educacional web para alunos do 1º ano do técnico em Química, desenvolvido em parceria com a ETEC Júlio de Mesquita. Permite praticar a identificação de materiais de laboratório, associar equipamentos às suas funções e reconhecer sistemas experimentais completos.
+Game educacional web feito para alunos do 1º ano do técnico em Química, desenvolvido em parceria com a ETEC Júlio de Mesquita. A ideia é simples: ajudar na identificação de materiais de laboratório, na associação de equipamentos com suas funções e no reconhecimento de sistemas experimentais completos.
 
-**Orientadora:** Profa. Maria do Socorro Sousa da Silva  
+**Orientadora:** Profa. Maria do Socorro Sousa da Silva
 **Instituição parceira:** ETEC Júlio de Mesquita
 
 **Autores:**
@@ -12,23 +12,23 @@ Game educacional web para alunos do 1º ano do técnico em Química, desenvolvid
 - [@Otavio Sousa Dias Lopes](https://github.com/)
 - [@Marco Freire Carlucci](https://github.com/henriquebarralocci)
 - [@João Pedro Cirilo Parronchi](https://github.com/iFloren)
-(COLOQUEM O NOME E O GIT HUB DE VOCÊS NESSE MODELO IGUAL O DE CIMA) 
+(COLOQUEM O NOME E O GIT HUB DE VOCÊS NESSE MODELO IGUAL O DE CIMA)
 
 ---
 
-## 🎯 O Problema que Resolvemos
+## O Problema
 
-Alunos ingressantes no técnico em Química chegam sem familiaridade com os materiais de laboratório — não sabem nomear vidrarias, diferenciar utensílios ou reconhecer em qual procedimento cada equipamento é utilizado. Isso cria uma barreira de entrada que compromete o aproveitamento das primeiras aulas práticas.
+Quem entra no técnico em Química geralmente não conhece os materiais de laboratório — não sabe o nome das vidrarias, não diferencia os utensílios, não sabe em qual procedimento cada coisa é usada. Isso cria uma barreira logo de cara, nas primeiras aulas práticas.
 
-**Impacto atual (sem o sistema):**
+**O que acontece sem o sistema:**
 
-- Alunos chegam às aulas práticas sem saber nomear ou usar os equipamentos básicos
-- Professor precisa dedicar tempo de aula presencial a conteúdo que poderia ser praticado previamente
-- Não há forma de o professor acompanhar o progresso individual de cada aluno antes da prática
+- Alunos chegam na aula prática sem saber nem nomear os equipamentos básicos
+- O professor tem que usar tempo de aula para cobrir o que poderia ter sido praticado antes
+- Não tem como acompanhar quem evoluiu e quem ainda está travado antes de ir para o laboratório
 
 ---
 
-## 💡 Como Funciona
+## Como funciona
 
 ```
 Aluno acessa o game
@@ -62,51 +62,49 @@ Aluno acessa o game
 
 ---
 
-## 🛠️ Stack Tecnológica
+## Stack
 
-### Por que essa stack?
+A escolha foi feita pensando em equilibrar qualidade de entrega com a curva de aprendizado do time, sem custo de infraestrutura.
 
-Escolhida para equilibrar **qualidade de entrega**, **curva de aprendizado do time** e **zero custo de infraestrutura**.
-
-| Camada | Tecnologia | Justificativa |
-|--------|-----------|---------------|
-| Frontend | React + TypeScript | Componentes reutilizáveis para engine de questões; TS evita bugs silenciosos |
-| Estilização | Tailwind CSS + shadcn/ui | Tailwind para layout mobile-first; shadcn/ui entrega componentes acessíveis (modais, dropdowns, cards) com visual profissional sem esforço |
-| Animações | Framer Motion | Transições de questões, contagem de score, feedback visual — transforma um quiz em game (Fase 3) |
-| Backend | Node.js + Express + TypeScript | Mesma linguagem no full stack — reduz fricção no time |
-| Documentação da API | Swagger / OpenAPI (`swagger-jsdoc`) | API auto-documentada; impressiona avaliadores e facilita integração entre frontend e backend |
+| Camada | Tecnologia | Por quê |
+|--------|-----------|---------|
+| Frontend | React + TypeScript | Componentes reutilizáveis para a engine de questões; o TypeScript evita bugs silenciosos que só aparecem em produção |
+| Estilização | Tailwind CSS + shadcn/ui | Tailwind para layout mobile-first; shadcn/ui entrega modais, dropdowns e cards acessíveis com visual profissional |
+| Animações | Framer Motion | Transições de questões, contagem de score — faz o quiz parecer um game de verdade (Fase 3) |
+| Backend | Node.js + Express + TypeScript | Mesma linguagem no full stack, menos fricção no time |
+| Documentação da API | Swagger / OpenAPI | API auto-documentada; facilita a integração entre front e back |
 | Banco de dados | PostgreSQL + Prisma ORM | Relacional para questões/usuários/scores; Prisma elimina SQL manual |
-| Autenticação | JWT (dois perfis: aluno / professor) | Simples, stateless, sem dependência externa |
-| Upload de imagens | Cloudinary (free tier) | Professor faz upload de fotos de equipamentos; sem infra para gerenciar |
-| Deploy frontend | Vercel | Deploy automático no push; **Preview URL gerada automaticamente a cada PR** |
-| Deploy backend + DB | Railway | PostgreSQL + Node.js no mesmo lugar; free tier suficiente para o projeto |
-| PWA | Vite PWA Plugin | Permite instalar o game na tela inicial do celular; cache de questões para uso offline (Fase 3) |
-| Testes | Vitest (unit) + Playwright (e2e) | Cobertura suficiente para garantir qualidade sem overhead de configuração |
-| Acessibilidade | Axe DevTools | Auditoria automatizada de acessibilidade; relatório de score para apresentação à banca |
-| Controle de versão | GitHub + GitHub Actions | CI automático: lint + testes a cada PR; bloqueia merge se CI falhar |
+| Autenticação | JWT (aluno / professor) | Simples, stateless, sem dependência externa |
+| Upload de imagens | Cloudinary (free tier) | O professor faz upload das fotos dos equipamentos sem precisar de infraestrutura |
+| Deploy frontend | Vercel | Deploy automático no push; gera Preview URL a cada PR automaticamente |
+| Deploy backend + DB | Railway | PostgreSQL + Node.js no mesmo lugar; free tier suficiente |
+| PWA | Vite PWA Plugin | Instalar o game na tela inicial do celular; cache de questões para uso offline (Fase 3) |
+| Testes | Vitest (unit) + Playwright (e2e) | Cobertura suficiente sem overhead de configuração |
+| Acessibilidade | Axe DevTools | Auditoria automatizada; relatório de score para apresentação à banca |
+| Controle de versão | GitHub + GitHub Actions | CI automático: lint + testes a cada PR; bloqueia merge se o CI falhar |
 
-> 💡 **Framer Motion e PWA são enhancements de Fase 3**, não de Fase 1. Estão na stack para não serem esquecidos, mas não devem ser implementados antes do core loop estar sólido.
+> **Framer Motion e PWA são da Fase 3**, não da Fase 1. Estão documentados aqui pra não serem esquecidos, mas não entram antes do core loop estar funcionando.
 
 ---
 
-## 👥 Papéis da Equipe
+## Papéis da equipe
 
-> Os papéis abaixo são sugestões baseadas nas áreas do projeto. A distribuição final deve ser feita pelo time considerando as habilidades e preferências de cada pessoa.
+> Abaixo estão sugestões de divisão. A distribuição final é do time — levem em conta habilidades e preferências de cada um.
 
-| Papel | Responsabilidades principais |
-|-------|------------------------------|
-| **PM / Arquitetura** | Gestão do projeto, decisões de escopo, revisão de PRs, ADRs, alinhamento com orientadora, UX do painel do professor |
+| Papel | O que faz |
+|-------|-----------|
+| **PM / Arquitetura** | Gestão do projeto, decisões de escopo, revisão de PRs, ADRs, alinhamento com a orientadora, UX do painel do professor |
 | **Frontend — Game Engine** | Engine de questões, fluxo de jogo, feedback visual, pontuação, Framer Motion (Fase 3) |
 | **Frontend — UI/UX** | shadcn/ui, sistema de design, acessibilidade (WCAG + Axe), responsividade, PWA (Fase 3) |
 | **Backend — API** | Rotas REST, lógica de negócio, autenticação JWT, integração Cloudinary, Swagger/OpenAPI |
-| **Banco de Dados + Conteúdo** | Schema Prisma, migrations, **seed.ts com questões e imagens reais**, banco de questões, organização do Cloudinary |
+| **Banco de Dados + Conteúdo** | Schema Prisma, migrations, **seed.ts com questões e imagens reais**, banco de questões, organização no Cloudinary |
 | **QA / DevOps** | Vitest, Playwright, GitHub Actions CI, relatório de auditoria Axe, documentação técnica, slides de apresentação |
 
-> ⚠️ **O papel de Banco de Dados + Conteúdo é crítico e frequentemente subestimado.** Quem ocupa essa função é responsável pelo conteúdo pedagógico real do produto — sem questões e imagens de qualidade, não existe game. Deve ser alguém com interesse no tema ou disposição para fotografar/organizar os materiais de laboratório.
+> ⚠️ **Banco de Dados + Conteúdo é o papel mais subestimado do projeto.** Quem pega essa função é responsável pelo conteúdo pedagógico de verdade — sem questões e imagens de qualidade, o game não existe. Precisa ser alguém com interesse no tema ou disposição pra fotografar e organizar os materiais lá na ETEC.
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do projeto
 
 ```
 labquiz/
@@ -114,72 +112,72 @@ labquiz/
 ├── frontend/                          # React + TypeScript (Vite)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── game/                  # Engine do jogo
-│   │   │   │   ├── QuestionCard.tsx   # Renderiza questão (imagem + alternativas)
-│   │   │   │   ├── AnswerOption.tsx   # Alternativa individual com animação (Framer Motion)
-│   │   │   │   ├── ScoreBoard.tsx     # Placar em tempo real com contador animado
-│   │   │   │   ├── HelpPanel.tsx      # Sistema de ajudas
-│   │   │   │   └── ResultScreen.tsx   # Tela de resultado final
-│   │   │   ├── teacher/               # Painel do professor
-│   │   │   │   ├── QuestionForm.tsx   # Cadastro / edição de questão
-│   │   │   │   ├── QuestionList.tsx   # Listagem com filtros
-│   │   │   │   └── StudentReport.tsx  # Relatório de desempenho
-│   │   │   └── shared/                # Componentes reutilizáveis (shadcn/ui + custom)
+│   │   │   ├── game/
+│   │   │   │   ├── QuestionCard.tsx
+│   │   │   │   ├── AnswerOption.tsx
+│   │   │   │   ├── ScoreBoard.tsx
+│   │   │   │   ├── HelpPanel.tsx
+│   │   │   │   └── ResultScreen.tsx
+│   │   │   ├── teacher/
+│   │   │   │   ├── QuestionForm.tsx
+│   │   │   │   ├── QuestionList.tsx
+│   │   │   │   └── StudentReport.tsx
+│   │   │   └── shared/
 │   │   │       ├── Button.tsx
-│   │   │       ├── ImageWithAlt.tsx   # Imagem com alt text (acessibilidade)
+│   │   │       ├── ImageWithAlt.tsx
 │   │   │       └── LoadingSpinner.tsx
 │   │   ├── pages/
 │   │   │   ├── LoginPage.tsx
 │   │   │   ├── GamePage.tsx
 │   │   │   ├── ModuleSelectPage.tsx
 │   │   │   └── TeacherDashboard.tsx
-│   │   ├── hooks/                     # Custom hooks (useGame, useAuth, useSound, etc.)
-│   │   ├── services/                  # Chamadas à API (axios)
-│   │   ├── types/                     # Interfaces TypeScript compartilhadas
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── types/
 │   │   └── utils/
 │   ├── tests/
-│   │   ├── unit/                      # Vitest
-│   │   └── e2e/                       # Playwright
+│   │   ├── unit/
+│   │   └── e2e/
 │   ├── public/
-│   │   └── sounds/                    # Áudio: acerto.mp3, erro.mp3 (Fase 3)
-│   ├── vite.config.ts                 # Inclui vite-plugin-pwa (Fase 3)
+│   │   └── sounds/                    # acerto.mp3, erro.mp3 (Fase 3)
+│   ├── vite.config.ts
 │   └── manifest.webmanifest           # Config PWA (Fase 3)
 │
 ├── backend/                           # Node.js + Express + TypeScript
 │   ├── src/
 │   │   ├── routes/
-│   │   │   ├── auth.routes.ts         # POST /login, POST /register
-│   │   │   ├── question.routes.ts     # CRUD de questões (professor)
-│   │   │   ├── game.routes.ts         # GET /session, POST /answer
-│   │   │   └── report.routes.ts       # GET /reports/:studentId
-│   │   ├── controllers/               # Lógica de cada rota
+│   │   │   ├── auth.routes.ts
+│   │   │   ├── question.routes.ts
+│   │   │   ├── game.routes.ts
+│   │   │   └── report.routes.ts
+│   │   ├── controllers/
 │   │   ├── middlewares/
-│   │   │   ├── auth.middleware.ts     # Valida JWT
-│   │   │   └── role.middleware.ts     # Verifica perfil (aluno/professor)
-│   │   ├── services/                  # Regras de negócio
-│   │   │   ├── game.service.ts        # Seleção de questões, cálculo de score
-│   │   │   └── cloudinary.service.ts  # Upload de imagens
+│   │   │   ├── auth.middleware.ts
+│   │   │   └── role.middleware.ts
+│   │   ├── services/
+│   │   │   ├── game.service.ts
+│   │   │   └── cloudinary.service.ts
 │   │   ├── swagger/
-│   │   │   └── swagger.config.ts      # Setup Swagger / OpenAPI — docs em /api-docs
-│   │   └── app.ts                     # Setup do Express
+│   │   │   └── swagger.config.ts
+│   │   └── app.ts
 │   ├── prisma/
-│   │   ├── schema.prisma              # Modelo de dados
+│   │   ├── schema.prisma
 │   │   ├── migrations/
-│   │   └── seed.ts                    # Questões + imagens reais (owner: BD + Conteúdo)
+│   │   └── seed.ts
 │   └── tests/
 │
-├── docs/                              # Documentação do projeto
-│   ├── ADR/                           # Architecture Decision Records
+├── docs/
+│   ├── ADR/
 │   │   └── 001-stack-selection.md
-│   ├── api/                           # Exportação do Swagger (gerada automaticamente)
-│   ├── accessibility/                 # Relatório de auditoria Axe DevTools
-│   └── reunioes/                      # Atas de reunião
+│   ├── api/
+│   ├── accessibility/
+│   └── reunioes/
 │
-├── apresentacoes/                     # Slides para banca e orientadora
+├── apresentacoes/
 │
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                     # Lint + testes automáticos; bloqueia merge se falhar
+│       └── ci.yml
 │
 ├── .env.example
 ├── .gitignore
@@ -188,7 +186,7 @@ labquiz/
 
 ---
 
-## 🗃️ Modelo de Dados (Prisma — visão resumida)
+## Modelo de dados (Prisma)
 
 ```prisma
 model User {
@@ -205,8 +203,8 @@ model Question {
   type         QuestionType   // MULTIPLE_CHOICE | ASSOCIATION
   difficulty   Int            // 1 | 2 | 3
   category     Category       // VIDRARIA | METALICO | PLASTICO | PORCELANA | SISTEMA
-  prompt       String         // Enunciado
-  imageUrl     String?        // URL Cloudinary
+  prompt       String
+  imageUrl     String?
   options      Option[]
   createdBy    User           @relation(fields: [createdById], references: [id])
   createdById  String
@@ -236,14 +234,14 @@ model GameSession {
 
 ---
 
-## 🚀 Como Começar
+## Como rodar o projeto
 
 ### Pré-requisitos
 
 - Node.js 20+
 - Git
-- Conta gratuita no [Cloudinary](https://cloudinary.com) — para upload de imagens
-- Conta gratuita no [Railway](https://railway.app) — para banco de dados local de dev (ou PostgreSQL instalado localmente)
+- Conta gratuita no [Cloudinary](https://cloudinary.com)
+- Conta gratuita no [Railway](https://railway.app) ou PostgreSQL instalado localmente
 
 ### Instalação
 
@@ -252,26 +250,26 @@ model GameSession {
 git clone https://github.com/SEU_ORG/labquiz.git
 cd labquiz
 
-# 2. Instalar dependências do backend
+# 2. Backend
 cd backend
 npm install
 cp ../.env.example .env
 # Preencha as variáveis no .env
 
-# 3. Subir o banco e rodar migrations
+# 3. Banco de dados
 npx prisma migrate dev
 npx prisma db seed  # carrega questões de exemplo
 
-# 4. Iniciar o backend
+# 4. Rodar o backend
 npm run dev
 
-# 5. Em outro terminal — instalar e iniciar o frontend
+# 5. Frontend (em outro terminal)
 cd ../frontend
 npm install
 npm run dev
 ```
 
-### Variáveis de Ambiente (.env.example)
+### Variáveis de ambiente (.env.example)
 
 ```env
 # Backend
@@ -288,65 +286,63 @@ CLOUDINARY_API_SECRET=
 VITE_API_URL=http://localhost:3000
 ```
 
-> ⚠️ **Nunca commitar o `.env` com credenciais reais.** O `.gitignore` já o exclui por padrão.
+> ⚠️ **Nunca commitar o `.env` com credenciais reais.** O `.gitignore` já cuida disso, mas fiquem atentos.
 
 ---
 
-## 📊 Status Atual
+## Status atual
 
-**Fase: 0 — Fundações (Semanas 1-2)**
+**Fase 0 — Fundações (Semanas 1-2)**
 
-- [x] Definição do tema e escopo
-- [x] Escolha da stack tecnológica
-- [ ] Distribuição de papéis no time
-- [ ] Setup dos repositórios e ambientes locais
+- [x] Tema e escopo definidos
+- [x] Stack escolhida
+- [ ] Papéis distribuídos no time
+- [ ] Ambientes locais configurados
 - [ ] Definition of Done alinhada com a orientadora
-- [ ] Primeiras questões de conteúdo definidas (mínimo 10 para Fase 1)
+- [ ] Primeiras 10 questões de conteúdo definidas (mínimo para sair da Fase 1)
 
 ---
 
-## 📅 Fases de Desenvolvimento
+## Fases de desenvolvimento
 
 | Fase | Período | Foco | Entregável |
 |------|---------|------|-----------|
-| **0 — Fundações** | Sem. 1-2 | Stack, papéis, setup, Definition of Done | Repositório configurado, ambientes rodando |
+| **0 — Fundações** | Sem. 1-2 | Stack, papéis, setup, Definition of Done | Repo configurado, ambientes rodando |
 | **1 — Core Loop** | Sem. 3-6 | Auth básico + múltipla escolha + score | Jogo jogável com 10 questões reais |
-| **2 — Feature Complete** | Sem. 7-10 | Associações, dificuldade, ajudas, painel professor | Todos os requisitos funcionais implementados |
-| **3 — Polish & QA** | Sem. 11-13 | Mobile, acessibilidade, LGPD, edge cases, testes | Produto pronto para avaliação |
+| **2 — Feature Complete** | Sem. 7-10 | Associações, dificuldade, ajudas, painel do professor | Todos os requisitos funcionais implementados |
+| **3 — Polish & QA** | Sem. 11-13 | Mobile, acessibilidade, LGPD, edge cases, testes | Produto pronto pra avaliação |
 | **4 — Entrega** | Sem. 14 | Deploy final, documentação, apresentação | Produto em produção + slides |
 
-> **Fase 1 intencionalmente pequena.** O objetivo é ter algo funcionando com conteúdo real antes de expandir. Builds com dados fictícios revelam problemas de layout e modelo de dados tarde demais.
+> A Fase 1 é intencionalmente pequena. O objetivo é ter algo funcionando com conteúdo real antes de expandir. Builds com dados fictícios escondem problemas de layout e modelo de dados que aparecem tarde demais.
 
 ---
 
-## 🚨 Riscos e Mitigações
+## Riscos
 
-| Risco | Probabilidade | Mitigação |
-|-------|--------------|-----------|
-| Imagens dos equipamentos não disponíveis a tempo | **Alta** | Designar responsável pelo conteúdo na Semana 1; mapear equipamentos disponíveis na ETEC; ter bancos de imagens livres como fallback |
-| Interface do professor subestimada em complexidade | Média | Tratar o painel do professor como produto separado com seus próprios casos de uso e validações; PM assume UX desse módulo |
-| Mobile quebrado descoberto tarde | Média | Testar em dispositivo real a partir da Fase 1, não só no fim |
-| Escopo cresce fora do controle | **Alta** | Qualquer nova feature passa pelo PM antes de entrar no backlog; Framer Motion e PWA só entram na Fase 3 |
-| LGPD não considerada no schema | Baixa | Não armazenar dados desnecessários; revisar schema na Fase 0; alunos menores — coletar apenas nome, e-mail e scores |
-| seed.ts nunca populado com conteúdo real | Média | Definir mínimo de 10 questões reais como critério de saída da Fase 1 |
+| Risco | Probabilidade | Como mitigar |
+|-------|--------------|--------------|
+| Imagens dos equipamentos não ficam prontas a tempo | **Alta** | Designar o responsável pelo conteúdo na Semana 1; mapear o que está disponível na ETEC; ter bancos de imagens livres como plano B |
+| Painel do professor subestimado em complexidade | Média | Tratar como produto separado com seus próprios casos de uso; PM assume o UX desse módulo |
+| Mobile quebrado descoberto tarde demais | Média | Testar em dispositivo real desde a Fase 1, não só no final |
+| Escopo crescendo fora de controle | **Alta** | Qualquer feature nova passa pelo PM antes de entrar no backlog; Framer Motion e PWA só na Fase 3 |
+| LGPD ignorada no schema | Baixa | Não guardar dados desnecessários; revisar schema na Fase 0; alunos menores — só nome, e-mail e scores |
+| seed.ts nunca populado com conteúdo real | Média | 10 questões reais é critério de saída da Fase 1 — sem isso, não passa |
 
 ---
 
-## 🤝 Fluxo de Contribuição
+## Fluxo de contribuição
 
 ```bash
-# Criar branch para sua funcionalidade
 git checkout -b feat/nome-da-funcionalidade
 
-# Após suas alterações
 git add .
 git commit -m "feat: descrição clara da mudança"
 git push origin feat/nome-da-funcionalidade
 
-# Abrir Pull Request — obrigatório revisão de ao menos 1 pessoa antes de mergear na main
+# Abrir PR — pelo menos 1 pessoa precisa revisar antes do merge na main
 ```
 
-### Convenções de Commit
+### Convenções de commit
 
 ```
 feat:     nova funcionalidade
@@ -360,48 +356,48 @@ chore:    configuração, dependências, CI
 
 ### Regras de PR
 
-- Nenhum PR vai direto para `main` sem revisão
-- CI deve passar (lint + testes) antes do merge
-- Descrição do PR deve explicar **o que** foi feito e **por quê**
-- Screenshots obrigatórios em PRs que alteram UI
+- Nenhum PR vai direto pra `main` sem revisão
+- CI precisa passar (lint + testes) antes do merge
+- Descreva **o que** foi feito e **por quê** — não só "ajustes"
+- PRs que alteram UI precisam de screenshot ou Preview URL no corpo
 
 ---
 
-## ✅ Definition of Done
+## Definition of Done
 
-Uma funcionalidade está **pronta** quando:
+Uma funcionalidade está pronta quando:
 
 - [ ] Funciona no Chrome, Firefox e Safari (desktop)
-- [ ] Funciona em tela de celular (375px de largura mínima)
-- [ ] Tem alt text em todas as imagens
+- [ ] Funciona em tela de celular (mínimo 375px)
+- [ ] Todas as imagens têm alt text
 - [ ] Passou no lint sem erros
-- [ ] Tem ao menos um teste unitário para a lógica principal
+- [ ] Tem pelo menos um teste unitário pra lógica principal
 - [ ] Foi revisada por outro membro do time via PR
 - [ ] Não quebra nenhum teste existente
 - [ ] Rotas novas no backend estão documentadas no Swagger
-- [ ] PRs com alteração de UI incluem screenshot ou Preview URL no corpo do PR
+- [ ] PRs com mudança de UI têm screenshot ou Preview URL
 
 ---
 
-## 📚 Recursos
+## Recursos úteis
 
 - [Documentação React](https://react.dev)
-- [shadcn/ui — Componentes acessíveis](https://ui.shadcn.com)
-- [Framer Motion — Animações](https://www.framer.com/motion/)
-- [Documentação Prisma](https://www.prisma.io/docs)
-- [Documentação Tailwind CSS](https://tailwindcss.com/docs)
-- [swagger-jsdoc — Documentação de API](https://github.com/Surnet/swagger-jsdoc)
+- [shadcn/ui](https://ui.shadcn.com)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Prisma](https://www.prisma.io/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc)
 - [Vite PWA Plugin](https://vite-pwa-org.netlify.app/)
-- [Axe DevTools — Acessibilidade](https://www.deque.com/axe/devtools/)
-- [Cloudinary — Upload de imagens](https://cloudinary.com/documentation)
-- [Railway — Deploy](https://docs.railway.app)
-- [Vercel — Deploy frontend + Preview URLs](https://vercel.com/docs)
+- [Axe DevTools](https://www.deque.com/axe/devtools/)
+- [Cloudinary](https://cloudinary.com/documentation)
+- [Railway](https://docs.railway.app)
+- [Vercel](https://vercel.com/docs)
 - [LGPD — Lei nº 13.709/2018](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm)
-- [WCAG 2.1 — Acessibilidade](https://www.w3.org/TR/WCAG21/)
+- [WCAG 2.1](https://www.w3.org/TR/WCAG21/)
 
 ---
 
-## 👥 Equipe
+## Equipe
 
 | Nome | Papel |
 |------|-------|
