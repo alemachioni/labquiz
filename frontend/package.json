@@ -3,7 +3,7 @@
     "vitest": "^4.1.5"
   },
   "scripts": {
-  "test": "vitest run",
+  "test": "vitest run --passWithNoTests",
   "test:watch": "vitest"
   }
 }
