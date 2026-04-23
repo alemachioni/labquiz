@@ -4,7 +4,8 @@
   "scripts": {
     "lint": "echo 'lint ok'",
     "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev": "vite"
   },
   "devDependencies": {
     "vitest": "^4.1.5"
