@@ -17,4 +17,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'LabQuiz API rodando' })
 })
 
+typescript
+import authRoutes from './routes/auth.routes'
+app.use('/auth', authRoutes)
+
 export default app
