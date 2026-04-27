@@ -25,4 +25,8 @@ typescript
 import gameRoutes from './routes/game.routes'
 app.use('/game', gameRoutes)
 
+typescript
+import questionRoutes from './routes/question.routes'
+app.use('/questions', questionRoutes)
+
 export default app
