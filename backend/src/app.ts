@@ -29,4 +29,8 @@ typescript
 import questionRoutes from './routes/question.routes'
 app.use('/questions', questionRoutes)
 
+typescript
+import reportRoutes from './routes/report.routes'
+app.use('/reports', reportRoutes)
+
 export default app
