@@ -21,4 +21,8 @@ typescript
 import authRoutes from './routes/auth.routes'
 app.use('/auth', authRoutes)
 
+typescript
+import gameRoutes from './routes/game.routes'
+app.use('/game', gameRoutes)
+
 export default app
