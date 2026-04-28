@@ -2,136 +2,136 @@
  * mockData.ts
  *
  * Questões fictícias para desenvolvimento local.
- * Quando a API do Otavio estiver pronta, NÃO mexa aqui —
+ * Quando a API estiver pronta, NÃO mexer —
  * apenas troque a função fetchQuestions() no GamePage.tsx.
  */
 
 import { Question } from "../pages/GamePage";
 
 export const MOCK_QUESTIONS: Question[] = [
-  // ── Matemática ─────────────────────────────────────────────────────────────
+  // ── Identificação de vidrarias ─────────────────────────────────────────────
   {
-    id: "mat-01",
-    statement: "Qual é o valor de 2³ + √16?",
-    hint: "Calcule cada parte separadamente: 2³ = 2×2×2 e √16 = ?",
+    id: "vid-01",
+    statement:
+      "Qual vidraria é utilizada para medir volumes com alta precisão em experimentos volumétricos?",
+    hint: "Tem formato alongado com uma escala graduada e uma torneira na parte inferior.",
     alternatives: [
-      { id: "a", text: "10", isCorrect: false },
-      { id: "b", text: "12", isCorrect: true },
-      { id: "c", text: "14", isCorrect: false },
-      { id: "d", text: "20", isCorrect: false },
+      { id: "a", text: "Béquer", isCorrect: false },
+      { id: "b", text: "Erlenmeyer", isCorrect: false },
+      { id: "c", text: "Bureta", isCorrect: true },
+      { id: "d", text: "Proveta", isCorrect: false },
     ],
   },
   {
-    id: "mat-02",
+    id: "vid-02",
     statement:
-      "Uma função afim é definida por f(x) = 3x − 5. Qual é o valor de f(4)?",
-    hint: "Substitua x por 4 na expressão.",
+      "Qual é a principal diferença entre um béquer e um erlenmeyer?",
+    hint: "Pense na forma do corpo e no risco de respingos durante o aquecimento.",
     alternatives: [
-      { id: "a", text: "7", isCorrect: true },
-      { id: "b", text: "9", isCorrect: false },
-      { id: "c", text: "12", isCorrect: false },
-      { id: "d", text: "17", isCorrect: false },
+      { id: "a", text: "O béquer tem tampa e o erlenmeyer não.", isCorrect: false },
+      { id: "b", text: "O erlenmeyer tem gargalo estreito, reduzindo evaporação e respingos.", isCorrect: true },
+      { id: "c", text: "O béquer é usado apenas para sólidos.", isCorrect: false },
+      { id: "d", text: "O erlenmeyer não pode ser aquecido.", isCorrect: false },
+    ],
+  },
+  {
+    id: "vid-03",
+    statement:
+      "Para transferir um líquido de um recipiente largo para um de gargalo estreito sem derramar, qual vidraria auxiliar é usada?",
+    hint: "Tem formato cônico e é muito usada junto com papel de filtro.",
+    alternatives: [
+      { id: "a", text: "Pipeta", isCorrect: false },
+      { id: "b", text: "Funil", isCorrect: true },
+      { id: "c", text: "Bastão de vidro", isCorrect: false },
+      { id: "d", text: "Condensador", isCorrect: false },
+    ],
+  },
+  {
+    id: "vid-04",
+    statement:
+      "Qual vidraria é utilizada especificamente para preparar soluções de concentração exata?",
+    hint: "Tem um traço de aferição no gargalo e fundo chato.",
+    alternatives: [
+      { id: "a", text: "Proveta", isCorrect: false },
+      { id: "b", text: "Béquer", isCorrect: false },
+      { id: "c", text: "Balão volumétrico", isCorrect: true },
+      { id: "d", text: "Tubo de ensaio", isCorrect: false },
     ],
   },
 
-  // ── Ciências / Química ─────────────────────────────────────────────────────
+  // ── Uso correto ────────────────────────────────────────────────────────────
   {
-    id: "qui-01",
-    statement: "Qual é a fórmula química do dióxido de carbono?",
-    hint: "É o gás liberado na respiração celular. Carbono + dois oxigênios.",
+    id: "vid-05",
+    statement:
+      "Ao ler o volume em uma proveta, onde os olhos devem estar posicionados em relação ao menisco?",
+    hint: "O menisco é a curvatura que o líquido forma nas bordas.",
     alternatives: [
-      { id: "a", text: "CO", isCorrect: false },
-      { id: "b", text: "CO₂", isCorrect: true },
-      { id: "c", text: "H₂O", isCorrect: false },
-      { id: "d", text: "O₃", isCorrect: false },
+      { id: "a", text: "Acima do menisco, olhando de cima para baixo.", isCorrect: false },
+      { id: "b", text: "No mesmo nível do menisco, lendo na parte inferior da curva.", isCorrect: true },
+      { id: "c", text: "Abaixo do menisco, olhando de baixo para cima.", isCorrect: false },
+      { id: "d", text: "A posição dos olhos não interfere na leitura.", isCorrect: false },
     ],
   },
   {
-    id: "qui-02",
+    id: "vid-06",
     statement:
-      "Na tabela periódica, qual é o símbolo do elemento com número atômico 26?",
-    hint: "É o metal mais usado na construção civil e nas indústrias.",
+      "Qual das seguintes vidrarias NÃO deve ser aquecida diretamente na chama do bico de Bunsen?",
+    hint: "Pense em qual delas é calibrada para temperatura ambiente e pode rachar com variações bruscas.",
     alternatives: [
-      { id: "a", text: "Cu", isCorrect: false },
-      { id: "b", text: "Au", isCorrect: false },
-      { id: "c", text: "Fe", isCorrect: true },
-      { id: "d", text: "Ag", isCorrect: false },
+      { id: "a", text: "Tubo de ensaio", isCorrect: false },
+      { id: "b", text: "Béquer de borosilicato", isCorrect: false },
+      { id: "c", text: "Balão volumétrico", isCorrect: true },
+      { id: "d", text: "Erlenmeyer", isCorrect: false },
+    ],
+  },
+  {
+    id: "vid-07",
+    statement:
+      "A pipeta volumétrica é usada para transferir:",
+    hint: "Diferente da pipeta graduada, ela possui apenas uma marcação.",
+    alternatives: [
+      { id: "a", text: "Qualquer volume dentro de sua capacidade máxima.", isCorrect: false },
+      { id: "b", text: "Um único volume fixo com alta precisão.", isCorrect: true },
+      { id: "c", text: "Somente soluções ácidas.", isCorrect: false },
+      { id: "d", text: "Volumes aproximados sem precisão.", isCorrect: false },
     ],
   },
 
-  // ── Português / Literatura ─────────────────────────────────────────────────
+  // ── Segurança e boas práticas ──────────────────────────────────────────────
   {
-    id: "por-01",
+    id: "vid-08",
     statement:
-      "O movimento literário que valorizava o nacionalismo e a natureza brasileira, iniciado em 1822, é chamado de:",
-    hint: "Coincide com a Independência do Brasil e rejeita os padrões europeus clássicos.",
+      "Ao aquecer um líquido em tubo de ensaio, para qual direção a boca do tubo deve estar apontada?",
+    hint: "Pense na segurança de quem está ao redor.",
     alternatives: [
-      { id: "a", text: "Realismo", isCorrect: false },
-      { id: "b", text: "Modernismo", isCorrect: false },
-      { id: "c", text: "Romantismo", isCorrect: true },
-      { id: "d", text: "Barroco", isCorrect: false },
+      { id: "a", text: "Para cima, em direção ao teto.", isCorrect: false },
+      { id: "b", text: "Para o próprio rosto, para observar melhor.", isCorrect: false },
+      { id: "c", text: "Para uma direção onde não haja pessoas.", isCorrect: true },
+      { id: "d", text: "Para baixo, para o calor subir melhor.", isCorrect: false },
     ],
   },
   {
-    id: "por-02",
-    statement: "Assinale a alternativa que contém um exemplo de metáfora:",
-    alternatives: [
-      { id: "a", text: "Ela corre como o vento.", isCorrect: false },
-      { id: "b", text: "O céu está nublado.", isCorrect: false },
-      { id: "c", text: "Seus olhos são estrelas.", isCorrect: true },
-      { id: "d", text: "A casa tem três andares.", isCorrect: false },
-    ],
-    hint: "Metáfora identifica duas coisas diretamente, sem usar 'como' ou 'que nem'.",
-  },
-
-  // ── História ───────────────────────────────────────────────────────────────
-  {
-    id: "his-01",
-    statement: "A Proclamação da República no Brasil ocorreu em:",
-    alternatives: [
-      { id: "a", text: "7 de setembro de 1822", isCorrect: false },
-      { id: "b", text: "13 de maio de 1888", isCorrect: false },
-      { id: "c", text: "15 de novembro de 1889", isCorrect: true },
-      { id: "d", text: "22 de abril de 1500", isCorrect: false },
-    ],
-    hint: "Aconteceu no final do século XIX, liderada pelo Marechal Deodoro da Fonseca.",
-  },
-  {
-    id: "his-02",
+    id: "vid-09",
     statement:
-      "Qual foi o principal documento que aboliu a escravidão no Brasil?",
+      "Qual material é mais indicado para confeccionar vidrarias de laboratório que precisam suportar variações bruscas de temperatura?",
+    hint: "É um tipo especial de vidro com baixo coeficiente de expansão térmica, comum em marcas como Pyrex.",
     alternatives: [
-      { id: "a", text: "Lei Saraiva", isCorrect: false },
-      { id: "b", text: "Lei do Ventre Livre", isCorrect: false },
-      { id: "c", text: "Lei Áurea", isCorrect: true },
-      { id: "d", text: "Lei dos Sexagenários", isCorrect: false },
-    ],
-    hint: "Foi assinada pela Princesa Isabel em 13 de maio de 1888.",
-  },
-
-  // ── Geografia ──────────────────────────────────────────────────────────────
-  {
-    id: "geo-01",
-    statement:
-      "Qual é o maior bioma do Brasil em extensão territorial?",
-    hint: "Ocupa mais de 40% do território brasileiro e está localizado principalmente no Norte.",
-    alternatives: [
-      { id: "a", text: "Cerrado", isCorrect: false },
-      { id: "b", text: "Caatinga", isCorrect: false },
-      { id: "c", text: "Amazônia", isCorrect: true },
-      { id: "d", text: "Mata Atlântica", isCorrect: false },
+      { id: "a", text: "Vidro comum (soda-cal)", isCorrect: false },
+      { id: "b", text: "Vidro borosilicato", isCorrect: true },
+      { id: "c", text: "Vidro de chumbo", isCorrect: false },
+      { id: "d", text: "Acrílico transparente", isCorrect: false },
     ],
   },
   {
-    id: "geo-02",
+    id: "vid-10",
     statement:
-      "O Trópico de Capricórnio passa por qual estado brasileiro?",
-    hint: "Pense no estado mais populoso do Brasil.",
+      "Após o uso, como vidrarias contaminadas com reagentes químicos devem ser descartadas ou tratadas?",
+    hint: "Nunca misture resíduos sem antes verificar a compatibilidade.",
     alternatives: [
-      { id: "a", text: "Minas Gerais", isCorrect: false },
-      { id: "b", text: "Rio de Janeiro", isCorrect: false },
-      { id: "c", text: "São Paulo", isCorrect: true },
-      { id: "d", text: "Paraná", isCorrect: false },
+      { id: "a", text: "Lavadas com água corrente e descartadas no lixo comum.", isCorrect: false },
+      { id: "b", text: "Deixadas de molho em água até o próximo uso.", isCorrect: false },
+      { id: "c", text: "Descontaminadas conforme o protocolo do laboratório e resíduos descartados adequadamente.", isCorrect: true },
+      { id: "d", text: "Descartadas inteiras no lixo, independente do reagente.", isCorrect: false },
     ],
   },
 ];
