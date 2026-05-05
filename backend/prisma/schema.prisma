@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  sessions  GameSession[]
+  questions Question[]  
+}
+
+model Question {
+  id           String         @id @default(uuid())
+  type         QuestionType
+  difficulty   Int
+  category     Category
+  prompt       String
+  imageUrl     String?
+  options      Option[]
+  createdBy    User           @relation(fields: [createdById], references: [id])
+  createdById  String
+}
+
+model Option {
+  id         String    @id @default(uuid())
+  text       String?
+  imageUrl   String?
+  isCorrect  Boolean
+  question   Question  @relation(fields: [questionId], references: [id])
+  questionId String
+}
+
+model GameSession {
+  id          String    @id @default(uuid())
+  student     User      @relation(fields: [studentId], references: [id])
+  studentId   String
+  score       Int
+  totalQ      Int
+  correctQ    Int
+  category    Category?
+  difficulty  Int?
+  playedAt    DateTime  @default(now())
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  ASSOCIATION
+}
+
+enum Category {
+  VIDRARIA
+  METALICO
+  PLASTICO
+  PORCELANA
+  SISTEMA
+}
