@@ -10,9 +10,9 @@ frontend/dist/
 backend/dist/
 
 # Variáveis de ambiente
-#.env
-#.env.local
-#.env.*.local
+.env
+.env.local
+.env.*.local
 
 # Logs
 *.log
