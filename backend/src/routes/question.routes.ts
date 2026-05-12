@@ -1,4 +1,3 @@
-typescript
 import { Router } from 'express'
 import { listarQuestoes, criarQuestao, atualizarQuestao, deletarQuestao } from '../controllers/question.controller'
 import { autenticar } from '../middlewares/auth.middleware'

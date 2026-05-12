@@ -1,4 +1,4 @@
-typescriptimport express from 'express'
+import express from 'express'
 import cors from 'cors'
 import authRoutes from './routes/auth.routes'
 import gameRoutes from './routes/game.routes'

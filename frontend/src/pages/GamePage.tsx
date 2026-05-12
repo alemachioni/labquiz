@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ScoreBoard from "../components/game/ScoreBoard";
 import QuestionCard, { Alternative } from "../components/game/QuestionCard";
 import HelpPanel from "../components/game/HelpPanel";
@@ -17,31 +18,58 @@ export type Question = {
 
 // ─── Busca de questões ────────────────────────────────────────────────────────
 //
-// 
-//
-// Quando a API estiver pronta, substitua o corpo desta função por:
-//
-//   const res = await fetch("/api/questions");
-//   if (!res.ok) throw new Error("Erro ao buscar questões");
-//   return res.json();
-//
-// Não é necessário mexer em nenhum outro arquivo.
+// Tenta buscar da API. Se falhar (ex: sem deploy ainda), usa o mock local.
+// Para trocar definitivamente para a API, basta garantir que VITE_API_URL
+// esteja configurado no Vercel e que o backend esteja no ar.
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function fetchQuestions(): Promise<Question[]> {
-  // Simulação de delay de rede (remova ao conectar na API real)
-  await new Promise((r) => setTimeout(r, 400));
-  return MOCK_QUESTIONS;
+async function fetchQuestions(category?: string): Promise<Question[]> {
+  try {
+    const base = import.meta.env.VITE_API_URL ?? "";
+    const url = category
+      ? `${base}/game/session?category=${category}`
+      : `${base}/game/session`;
 
-  // Quando a API estiver pronta, substitua tudo acima por:
-  // const res = await fetch("/api/questions");
-  // if (!res.ok) throw new Error("Erro ao buscar questões");
-  // return res.json();
+    const token = localStorage.getItem("token");
+    const res = await fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+
+    if (!res.ok) throw new Error("API indisponível");
+
+    const data = await res.json();
+
+    // Mapeia o formato da API para o formato do componente
+    return data.map((q: {
+      id: string;
+      prompt: string;
+      imageUrl?: string;
+      options: { id: string; text: string; isCorrect: boolean }[];
+    }) => ({
+      id: q.id,
+      statement: q.prompt,
+      imageUrl: q.imageUrl,
+      alternatives: q.options.map((o) => ({
+        id: o.id,
+        text: o.text,
+        isCorrect: o.isCorrect,
+      })),
+    }));
+  } catch {
+    // Fallback: usa mock local enquanto a API não está disponível
+    console.warn("API indisponível — usando dados locais");
+    await new Promise((r) => setTimeout(r, 300));
+    return MOCK_QUESTIONS;
+  }
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function GamePage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category") ?? undefined;
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +83,7 @@ export default function GamePage() {
 
   // Busca as questões ao montar
   useEffect(() => {
-    fetchQuestions()
+    fetchQuestions(category)
       .then((data) => {
         setQuestions(data);
         setLoading(false);
@@ -93,6 +121,10 @@ export default function GamePage() {
     setAnswered(false);
     setHintUsed(false);
     setGameOver(false);
+  }
+
+  function handleBackToModules() {
+    navigate("/modulos");
   }
 
   // ── Estados de tela ───────────────────────────────────────────────────────
@@ -133,17 +165,23 @@ export default function GamePage() {
 
   return (
     <div style={pageStyle}>
-      <h1
-        style={{
-          textAlign: "center",
-          fontSize: "22px",
-          fontWeight: "700",
-          color: "#111",
-          marginBottom: "20px",
-        }}
-      >
-        Quiz — Ensino Médio
-      </h1>
+      <div style={{ display: "flex", alignItems: "center", maxWidth: "680px", margin: "0 auto 20px auto" }}>
+        <button onClick={handleBackToModules} style={backBtnStyle}>
+          ← Módulos
+        </button>
+        <h1
+          style={{
+            flex: 1,
+            textAlign: "center",
+            fontSize: "22px",
+            fontWeight: "700",
+            color: "#111",
+            margin: 0,
+          }}
+        >
+          🧪 LabQuiz {category ? `— ${category.charAt(0) + category.slice(1).toLowerCase()}` : ""}
+        </h1>
+      </div>
 
       <ScoreBoard
         score={score}
@@ -206,4 +244,14 @@ const btnStyle: React.CSSProperties = {
   fontSize: "15px",
   fontWeight: "600",
   cursor: "pointer",
+};
+
+const backBtnStyle: React.CSSProperties = {
+  padding: "6px 14px",
+  backgroundColor: "transparent",
+  border: "1.5px solid #ccc",
+  borderRadius: "8px",
+  fontSize: "13px",
+  cursor: "pointer",
+  color: "#555",
 };

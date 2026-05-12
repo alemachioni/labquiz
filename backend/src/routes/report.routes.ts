@@ -1,4 +1,3 @@
-typescript
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { autenticar } from '../middlewares/auth.middleware'
