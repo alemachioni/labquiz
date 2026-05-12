@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Category } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -8,7 +8,7 @@ export const buscarQuestoes = async (req: Request, res: Response) => {
 
   const questoes = await prisma.question.findMany({
     where: {
-      ...(category ? { category: category as string } : {}),
+      ...(category ? { category: category as Category } : {}),
       ...(difficulty ? { difficulty: Number(difficulty) } : {})
     },
     include: { options: true },

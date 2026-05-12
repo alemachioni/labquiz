@@ -7,7 +7,7 @@ const router = Router()
 const prisma = new PrismaClient()
 
 router.get('/:studentId', autenticar, apenasProfessor, async (req, res) => {
-  const { studentId } = req.params
+  const studentId = req.params.studentId as string
 
   const sessoes = await prisma.gameSession.findMany({
     where: { studentId },

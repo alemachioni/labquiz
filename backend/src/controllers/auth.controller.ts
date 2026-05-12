@@ -53,10 +53,11 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).json({ erro: 'E-mail ou senha incorretos' })
   }
 
+  const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn']
   const token = jwt.sign(
     { userId: usuario.id, role: usuario.role },
     process.env.JWT_SECRET!,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    { expiresIn }
   )
 
   return res.json({
