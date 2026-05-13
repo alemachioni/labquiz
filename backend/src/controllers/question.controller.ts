@@ -1,4 +1,3 @@
-typescript
 import { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
 
@@ -38,7 +37,7 @@ export const criarQuestao = async (req: Request, res: Response) => {
 }
 
 export const atualizarQuestao = async (req: Request, res: Response) => {
-  const { id } = req.params
+  const id = req.params.id as string
   const { prompt, imageUrl, difficulty } = req.body
 
   const questao = await prisma.question.update({
@@ -50,7 +49,7 @@ export const atualizarQuestao = async (req: Request, res: Response) => {
 }
 
 export const deletarQuestao = async (req: Request, res: Response) => {
-  const { id } = req.params
+  const id = req.params.id as string
 
   await prisma.option.deleteMany({ where: { questionId: id } })
   await prisma.question.delete({ where: { id } })

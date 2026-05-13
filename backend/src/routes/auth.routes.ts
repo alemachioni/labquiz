@@ -1,4 +1,3 @@
-typescript
 import { Router } from 'express'
 import { registrar, login } from '../controllers/auth.controller'
 
