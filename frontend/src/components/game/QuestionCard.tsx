@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import AnswerOption from "./AnswerOption";
+import MatchingCard, { MatchingPair } from "./MatchingCard";
+
+// ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export type Alternative = {
   id: string;
@@ -8,21 +11,63 @@ export type Alternative = {
   isCorrect: boolean;
 };
 
+export type QuestionType = "MULTIPLE_CHOICE" | "MATCHING";
+
 export type QuestionCardProps = {
   statement: string;
   imageUrl?: string;
-  alternatives: Alternative[];
+  type?: QuestionType;           // padrão: MULTIPLE_CHOICE
+  alternatives?: Alternative[];  // usado em MULTIPLE_CHOICE
+  pairs?: MatchingPair[];        // usado em MATCHING
   onAnswer: (selectedId: string, isCorrect: boolean) => void;
 };
+
+// ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function QuestionCard({
   statement,
   imageUrl,
-  alternatives,
+  type = "MULTIPLE_CHOICE",
+  alternatives = [],
+  pairs = [],
   onAnswer,
 }: QuestionCardProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  // ── MATCHING ───────────────────────────────────────────────────────────────
+  if (type === "MATCHING") {
+    return (
+      <MatchingCard
+        statement={statement}
+        imageUrl={imageUrl}
+        pairs={pairs}
+        onAnswer={(correct) => onAnswer("matching", correct)}
+      />
+    );
+  }
+
+  // ── MULTIPLE_CHOICE ────────────────────────────────────────────────────────
+  return <MultipleChoiceCard
+    statement={statement}
+    imageUrl={imageUrl}
+    alternatives={alternatives}
+    onAnswer={onAnswer}
+  />;
+}
+
+// ─── Multiple choice interno ──────────────────────────────────────────────────
+
+function MultipleChoiceCard({
+  statement,
+  imageUrl,
+  alternatives,
+  onAnswer,
+}: {
+  statement: string;
+  imageUrl?: string;
+  alternatives: Alternative[];
+  onAnswer: (selectedId: string, isCorrect: boolean) => void;
+}) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const isRevealed = selectedId !== null;
 
   function handleClick(alt: Alternative) {
