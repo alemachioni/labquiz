@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint src",
+    "type": "module",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "dev": "vite",

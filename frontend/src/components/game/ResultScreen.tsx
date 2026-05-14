@@ -15,7 +15,7 @@ export default function ResultScreen({
 }: ResultScreenProps) {
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
 
-  let message = "";
+  let message: string;
   if (percentage >= 80) message = "Excelente!";
   else if (percentage >= 60) message = "Bom trabalho!";
   else if (percentage >= 40) message = "Continue praticando!";
