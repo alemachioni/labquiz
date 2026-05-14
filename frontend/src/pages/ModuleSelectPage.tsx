@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type Modulo = {
@@ -47,10 +47,21 @@ const MODULOS: Modulo[] = [
   },
 ];
 
+type Dificuldade = "FACIL" | "MEDIO" | "DIFICIL";
+
+const DIFICULDADES: { id: Dificuldade; label: string; desc: string; color: string }[] = [
+  { id: "FACIL",   label: "Fácil",  desc: "Questões básicas de identificação.", color: "#28a745" },
+  { id: "MEDIO",   label: "Médio",  desc: "Questões de uso e procedimentos.",   color: "#fd7e14" },
+  { id: "DIFICIL", label: "Difícil",desc: "Questões avançadas e segurança.",    color: "#dc3545" },
+];
+
 export default function ModuleSelectPage() {
   const navigate = useNavigate();
 
   const usuario = JSON.parse(localStorage.getItem("usuario") ?? "{}");
+
+  // Módulo aguardando escolha de dificuldade (null = nenhum selecionado)
+  const [moduloPendente, setModuloPendente] = useState<Modulo | null>(null);
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -58,8 +69,17 @@ export default function ModuleSelectPage() {
     navigate("/");
   }
 
-  function handleSelectModule(category: string) {
-    navigate(`/quiz?category=${category}`);
+  function handleSelectModule(modulo: Modulo) {
+    setModuloPendente(modulo);
+  }
+
+  function handleSelectDificuldade(dificuldade: Dificuldade) {
+    if (!moduloPendente) return;
+    navigate(`/quiz?category=${moduloPendente.category}&difficulty=${dificuldade}`);
+  }
+
+  function handleFecharModal() {
+    setModuloPendente(null);
   }
 
   return (
@@ -94,7 +114,7 @@ export default function ModuleSelectPage() {
           {MODULOS.map((modulo) => (
             <button
               key={modulo.id}
-              onClick={() => handleSelectModule(modulo.category)}
+              onClick={() => handleSelectModule(modulo)}
               style={cardStyle}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.borderColor = "#1a73e8";
@@ -118,6 +138,50 @@ export default function ModuleSelectPage() {
           ))}
         </div>
       </main>
+      {/* Modal de dificuldade */}
+      {moduloPendente && (
+        <div style={overlayStyle} onClick={handleFecharModal}>
+          <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#111", marginBottom: "6px" }}>
+              {moduloPendente.icon} {moduloPendente.titulo}
+            </h3>
+            <p style={{ fontSize: "14px", color: "#666", marginBottom: "24px" }}>
+              Escolha a dificuldade:
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {DIFICULDADES.map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => handleSelectDificuldade(d.id)}
+                  style={{ ...difBtnStyle, borderColor: d.color, color: d.color }}
+                  onMouseEnter={(e) => {
+                    const btn = e.currentTarget as HTMLButtonElement;
+                    btn.style.backgroundColor = d.color;
+                    btn.style.color = "#fff";
+                    const desc = btn.querySelector("span") as HTMLElement;
+                    if (desc) desc.style.color = "rgba(255,255,255,0.85)";
+                  }}
+                  onMouseLeave={(e) => {
+                    const btn = e.currentTarget as HTMLButtonElement;
+                    btn.style.backgroundColor = "#fff";
+                    btn.style.color = d.color;
+                    const desc = btn.querySelector("span") as HTMLElement;
+                    if (desc) desc.style.color = "#888";
+                  }}
+                >
+                  <strong style={{ fontSize: "15px" }}>{d.label}</strong>
+                  <span style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{d.desc}</span>
+                </button>
+              ))}
+            </div>
+
+            <button onClick={handleFecharModal} style={cancelBtnStyle}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -170,4 +234,47 @@ const logoutBtnStyle: React.CSSProperties = {
   fontSize: "13px",
   cursor: "pointer",
   color: "#555",
+};
+
+const overlayStyle: React.CSSProperties = {
+  position: "fixed",
+  inset: 0,
+  backgroundColor: "rgba(0,0,0,0.4)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 100,
+};
+
+const modalStyle: React.CSSProperties = {
+  backgroundColor: "#fff",
+  borderRadius: "16px",
+  padding: "32px 28px",
+  width: "100%",
+  maxWidth: "360px",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.16)",
+};
+
+const difBtnStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  padding: "12px 16px",
+  backgroundColor: "#fff",
+  border: "2px solid",
+  borderRadius: "10px",
+  cursor: "pointer",
+  textAlign: "left",
+};
+
+const cancelBtnStyle: React.CSSProperties = {
+  marginTop: "16px",
+  width: "100%",
+  padding: "10px",
+  backgroundColor: "transparent",
+  border: "1.5px solid #ddd",
+  borderRadius: "8px",
+  fontSize: "14px",
+  cursor: "pointer",
+  color: "#888",
 };

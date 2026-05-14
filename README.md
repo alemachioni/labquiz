@@ -12,7 +12,7 @@ Game educacional web feito para alunos do 1º ano do técnico em Química, desen
 - [@Otavio Sousa Dias Lopes](https://github.com/)
 - [@Marco Freire Carlucci](https://github.com/henriquebarralocci)
 - [@João Pedro Cirilo Parronchi](https://github.com/iFloren)
-(COLOQUEM O NOME E O GIT HUB DE VOCÊS NESSE MODELO IGUAL O DE CIMA)
+
 
 ---
 
@@ -99,8 +99,6 @@ A escolha foi feita pensando em equilibrar qualidade de entrega com a curva de a
 | **Backend — API** | Rotas REST, lógica de negócio, autenticação JWT, integração Cloudinary, Swagger/OpenAPI |
 | **Banco de Dados + Conteúdo** | Schema Prisma, migrations, **seed.ts com questões e imagens reais**, banco de questões, organização no Cloudinary |
 | **QA / DevOps** | Vitest, Playwright, GitHub Actions CI, relatório de auditoria Axe, documentação técnica, slides de apresentação |
-
-> ⚠️ **Banco de Dados + Conteúdo é o papel mais subestimado do projeto.** Quem pega essa função é responsável pelo conteúdo pedagógico de verdade — sem questões e imagens de qualidade, o game não existe. Precisa ser alguém com interesse no tema ou disposição pra fotografar e organizar os materiais lá na ETEC.
 
 ---
 
@@ -286,34 +284,8 @@ CLOUDINARY_API_SECRET=
 VITE_API_URL=http://localhost:3000
 ```
 
-> ⚠️ **Nunca commitar o `.env` com credenciais reais.** O `.gitignore` já cuida disso, mas fiquem atentos.
-
 ---
 
-## Status atual
-
-**Fase 0 — Fundações (Semanas 1-2)**
-
-- [x] Tema e escopo definidos
-- [x] Stack escolhida
-- [ ] Papéis distribuídos no time
-- [ ] Ambientes locais configurados
-- [ ] Definition of Done alinhada com a orientadora
-- [ ] Primeiras 10 questões de conteúdo definidas (mínimo para sair da Fase 1)
-
----
-
-## Fases de desenvolvimento
-
-| Fase | Período | Foco | Entregável |
-|------|---------|------|-----------|
-| **0 — Fundações** | Sem. 1-2 | Stack, papéis, setup, Definition of Done | Repo configurado, ambientes rodando |
-| **1 — Core Loop** | Sem. 3-6 | Auth básico + múltipla escolha + score | Jogo jogável com 10 questões reais |
-| **2 — Feature Complete** | Sem. 7-10 | Associações, dificuldade, ajudas, painel do professor | Todos os requisitos funcionais implementados |
-| **3 — Polish & QA** | Sem. 11-13 | Mobile, acessibilidade, LGPD, edge cases, testes | Produto pronto pra avaliação |
-| **4 — Entrega** | Sem. 14 | Deploy final, documentação, apresentação | Produto em produção + slides |
-
-> A Fase 1 é intencionalmente pequena. O objetivo é ter algo funcionando com conteúdo real antes de expandir. Builds com dados fictícios escondem problemas de layout e modelo de dados que aparecem tarde demais.
 
 ---
 
@@ -363,21 +335,6 @@ chore:    configuração, dependências, CI
 
 ---
 
-## Definition of Done
-
-Uma funcionalidade está pronta quando:
-
-- [ ] Funciona no Chrome, Firefox e Safari (desktop)
-- [ ] Funciona em tela de celular (mínimo 375px)
-- [ ] Todas as imagens têm alt text
-- [ ] Passou no lint sem erros
-- [ ] Tem pelo menos um teste unitário pra lógica principal
-- [ ] Foi revisada por outro membro do time via PR
-- [ ] Não quebra nenhum teste existente
-- [ ] Rotas novas no backend estão documentadas no Swagger
-- [ ] PRs com mudança de UI têm screenshot ou Preview URL
-
----
 
 ## Recursos úteis
 
