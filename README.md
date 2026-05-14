@@ -286,19 +286,6 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
-## Status atual
-
-**Fase 0 — Fundações (Semanas 1-2)**
-
-- [x] Tema e escopo definidos
-- [x] Stack escolhida
-- [ ] Papéis distribuídos no time
-- [ ] Ambientes locais configurados
-- [ ] Definition of Done alinhada com a orientadora
-- [ ] Primeiras 10 questões de conteúdo definidas (mínimo para sair da Fase 1)
-
----
-
 
 ---
 
