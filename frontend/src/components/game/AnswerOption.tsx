@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
 export type AnswerOptionProps = {
+  label: string;
   text?: string;
   imageUrl?: string;
   isCorrect: boolean;
   isSelected: boolean;
-  isRevealed: boolean; // true após qualquer clique na questão
+  isRevealed: boolean;
   onClick: () => void;
 };
 
 export default function AnswerOption({
+  label,
   text,
   imageUrl,
   isCorrect,
@@ -17,62 +19,73 @@ export default function AnswerOption({
   isRevealed,
   onClick,
 }: AnswerOptionProps) {
-  let bgColor = "#f5f5f5";
-  let border = "2px solid #ccc";
-  let color = "#222";
-  let cursor = "pointer";
+  const [hovered, setHovered] = useState(false);
+
+  // ── Cores do círculo ──────────────────────────────────────────────────────
+  let circleBg = "#b1001b";
+  if (isRevealed) {
+    if (isCorrect) circleBg = "#0e9c0e";
+    else if (isSelected) circleBg = "#910101";
+  }
+
+  // ── Cores do card ─────────────────────────────────────────────────────────
+  let cardBg = "#e8e1e1";
+  let cardBorder = "2px solid transparent";
 
   if (isRevealed) {
-    cursor = "default";
-    if (isCorrect) {
-      bgColor = "#d4edda";
-      border = "2px solid #28a745";
-      color = "#155724";
-    } else if (isSelected && !isCorrect) {
-      bgColor = "#f8d7da";
-      border = "2px solid #dc3545";
-      color = "#721c24";
-    } else {
-      bgColor = "#f5f5f5";
-      border = "2px solid #ccc";
-      color = "#888";
-    }
+    if (isCorrect)       { cardBg = "#94e494"; cardBorder = "2px solid #0e9c0e"; }
+    else if (isSelected) { cardBg = "#d9374f"; cardBorder = "2px solid #910101"; }
+  } else if (hovered) {
+    cardBg = "#d6cccc";
+    cardBorder = "2px solid #b1001b";
   }
+
+  const textColor = isRevealed && isSelected && !isCorrect ? "#fff" : "#111";
 
   return (
     <button
       onClick={isRevealed ? undefined : onClick}
+      onMouseEnter={() => { if (!isRevealed) setHovered(true); }}
+      onMouseLeave={() => setHovered(false)}
       style={{
         display: "flex",
         alignItems: "center",
         gap: "10px",
-        width: "100%",
-        padding: "12px 16px",
-        marginBottom: "10px",
-        backgroundColor: bgColor,
-        border,
-        borderRadius: "8px",
-        color,
-        fontSize: "16px",
+        padding: "10px 14px",
+        backgroundColor: cardBg,
+        border: cardBorder,
+        borderRadius: "12px",
+        cursor: isRevealed ? "default" : "pointer",
         textAlign: "left",
-        cursor,
-        transition: "none",
+        width: "100%",
+        transition: "background-color 0.15s, border-color 0.15s",
       }}
     >
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt="alternativa"
-          style={{ maxHeight: "80px", borderRadius: "4px" }}
-        />
-      )}
-      {text && <span>{text}</span>}
-      {isRevealed && isCorrect && (
-        <span style={{ marginLeft: "auto", fontWeight: "bold" }}>✓ Correta</span>
-      )}
-      {isRevealed && isSelected && !isCorrect && (
-        <span style={{ marginLeft: "auto", fontWeight: "bold" }}>✗ Errada</span>
-      )}
+      {/* Círculo com letra */}
+      <span style={{
+        minWidth: "32px",
+        height: "32px",
+        borderRadius: "50%",
+        backgroundColor: circleBg,
+        color: "#fff",
+        fontWeight: "700",
+        fontSize: "14px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        transition: "background-color 0.15s",
+      }}>
+        {label}
+      </span>
+
+      {/* Texto */}
+      <span style={{ fontSize: "14px", color: textColor, lineHeight: "1.4" }}>
+        {imageUrl && (
+          <img src={imageUrl} alt="" style={{ maxHeight: "60px", borderRadius: "4px", display: "block", marginBottom: "4px" }} />
+        )}
+        {text}
+      </span>
     </button>
   );
 }

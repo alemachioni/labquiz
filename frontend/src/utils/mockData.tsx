@@ -2,7 +2,7 @@
  * mockData.ts
  *
  * Questões fictícias para desenvolvimento local.
- * Quando a API estiver pronta, NÃO mexer —
+ * Quando a API do Otavio estiver pronta, NÃO mexa aqui —
  * apenas troque a função fetchQuestions() no GamePage.tsx.
  */
 
