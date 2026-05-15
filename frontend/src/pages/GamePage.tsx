@@ -1,43 +1,74 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ScoreBoard from "../components/game/ScoreBoard";
 import QuestionCard, { Alternative } from "../components/game/QuestionCard";
-import HelpPanel from "../components/game/HelpPanel";
 import ResultScreen from "../components/game/ResultScreen";
-import { MOCK_QUESTIONS } from "../utils/mockData";
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
+// ─── Tipos da API ─────────────────────────────────────────────────────────────
 
+// Formato que a API retorna
+type ApiOption = {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+};
+
+type ApiQuestion = {
+  id: string;
+  prompt: string;
+  imageUrl?: string | null;
+  options: ApiOption[];
+};
+
+// Formato interno usado pelos componentes
 export type Question = {
   id: string;
   statement: string;
   imageUrl?: string;
-  hint?: string;
   alternatives: Alternative[];
 };
 
+// Mapa de dificuldade: string da URL → número da API
+const DIFFICULTY_MAP: Record<string, number> = {
+  FACIL: 1,
+  MEDIO: 2,
+  DIFICIL: 3,
+};
+
 // ─── Busca de questões ────────────────────────────────────────────────────────
-//
-// 🚧 MODO DESENVOLVIMENTO — usando mockData.ts
-//
-// Quando a API do Otavio estiver pronta, substitua o corpo desta função por:
-//
-//   const res = await fetch("/api/questions");
-//   if (!res.ok) throw new Error("Erro ao buscar questões");
-//   return res.json();
-//
-// Não é necessário mexer em nenhum outro arquivo.
-// ─────────────────────────────────────────────────────────────────────────────
 
-async function fetchQuestions(): Promise<Question[]> {
-  // 🚧 Simulação de delay de rede (remova ao conectar na API real)
-  await new Promise((r) => setTimeout(r, 400));
-  return MOCK_QUESTIONS;
+async function fetchQuestions(
+  category: string,
+  difficulty: number
+): Promise<Question[]> {
+  const token = localStorage.getItem("token");
+  const base = import.meta.env.VITE_API_URL ?? "";
 
-  // ✅ Quando a API do Otavio estiver pronta, substitua tudo acima por:
-  // const res = await fetch("/api/questions");
-  // if (!res.ok) throw new Error("Erro ao buscar questões");
-  // return res.json();
+  const res = await fetch(
+    `${base}/game/session?category=${category}&difficulty=${difficulty}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) throw new Error("Erro ao buscar questões");
+
+  const data: ApiQuestion[] = await res.json();
+
+  // Converte do formato da API para o formato dos componentes
+  return data.map((q) => ({
+    id: q.id,
+    statement: q.prompt,
+    imageUrl: q.imageUrl ?? undefined,
+    alternatives: q.options.map((o) => ({
+      id: o.id,
+      text: o.text,
+      isCorrect: o.isCorrect,
+    })),
+  }));
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
@@ -48,17 +79,21 @@ export default function GamePage() {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [hintUsed, setHintUsed] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [gameOver, setGameOver] = useState(false);
 
-  // Busca as questões ao montar
+  // Lê category e difficulty da URL
+  const category = searchParams.get("category") ?? "VIDRARIA";
+  const difficultyStr = searchParams.get("difficulty") ?? "FACIL";
+  const difficulty = DIFFICULTY_MAP[difficultyStr] ?? 1;
+
   useEffect(() => {
-    fetchQuestions()
+    fetchQuestions(category, difficulty)
       .then((data) => {
         setQuestions(data);
         setLoading(false);
@@ -67,7 +102,7 @@ export default function GamePage() {
         setError("Não foi possível carregar as questões. Tente novamente.");
         setLoading(false);
       });
-  }, []);
+  }, [category, difficulty]);
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -85,7 +120,6 @@ export default function GamePage() {
     } else {
       setCurrentIndex((i) => i + 1);
       setAnswered(false);
-      setHintUsed(false);
     }
   }
 
@@ -107,8 +141,8 @@ export default function GamePage() {
     return (
       <div style={centered}>
         <p style={{ color: "#dc3545", fontSize: "16px" }}>{error}</p>
-        <button onClick={() => window.location.reload()} style={btnStyle}>
-          Tentar novamente
+        <button onClick={() => navigate("/modulos")} style={btnStyle}>
+          Voltar aos módulos
         </button>
       </div>
     );
@@ -140,7 +174,7 @@ export default function GamePage() {
           marginBottom: "20px",
         }}
       >
-        Quiz — Ensino Médio
+        Quiz — Laboratório
       </h1>
 
       <ScoreBoard
@@ -157,14 +191,7 @@ export default function GamePage() {
         onAnswer={handleAnswer}
       />
 
-      {currentQuestion.hint && (
-        <HelpPanel
-          key={`hint-${currentQuestion.id}`}
-          hint={currentQuestion.hint}
-          disabled={hintUsed}
-          onUse={() => setHintUsed(true)}
-        />
-      )}
+
 
       {answered && (
         <div style={{ maxWidth: "680px", margin: "20px auto 0 auto", textAlign: "right" }}>
@@ -177,7 +204,7 @@ export default function GamePage() {
   );
 }
 
-// ─── Estilos utilitários ──────────────────────────────────────────────────────
+// ─── Estilos ──────────────────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
   minHeight: "100vh",
