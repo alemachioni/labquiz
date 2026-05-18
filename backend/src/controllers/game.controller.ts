@@ -22,7 +22,9 @@ export const buscarQuestoes = async (req: Request, res: Response) => {
 }
 
 export const salvarResposta = async (req: Request, res: Response) => {
-  const { userId, questionId, selectedOptionId, score, totalQ, correctQ, category, difficulty } = req.body
+  // TODO: salvar por questão quando o schema suportar
+  // const { questionId, selectedOptionId } = req.body
+  const { userId, score, totalQ, correctQ, category, difficulty } = req.body
 
   const sessao = await prisma.gameSession.create({
     data: {
