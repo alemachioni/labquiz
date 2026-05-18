@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import AnswerOption from "./AnswerOption";
 import MatchingCard, { MatchingPair } from "./MatchingCard";
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
-
 export type Alternative = {
   id: string;
   text?: string;
@@ -16,13 +14,11 @@ export type QuestionType = "MULTIPLE_CHOICE" | "MATCHING";
 export type QuestionCardProps = {
   statement: string;
   imageUrl?: string;
-  type?: QuestionType;           // padrão: MULTIPLE_CHOICE
-  alternatives?: Alternative[];  // usado em MULTIPLE_CHOICE
-  pairs?: MatchingPair[];        // usado em MATCHING
+  type?: QuestionType;
+  alternatives?: Alternative[];
+  pairs?: MatchingPair[];
   onAnswer: (selectedId: string, isCorrect: boolean) => void;
 };
-
-// ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function QuestionCard({
   statement,
@@ -32,8 +28,6 @@ export default function QuestionCard({
   pairs = [],
   onAnswer,
 }: QuestionCardProps) {
-
-  // ── MATCHING ───────────────────────────────────────────────────────────────
   if (type === "MATCHING") {
     return (
       <MatchingCard
@@ -45,16 +39,17 @@ export default function QuestionCard({
     );
   }
 
-  // ── MULTIPLE_CHOICE ────────────────────────────────────────────────────────
-  return <MultipleChoiceCard
-    statement={statement}
-    imageUrl={imageUrl}
-    alternatives={alternatives}
-    onAnswer={onAnswer}
-  />;
+  return (
+    <MultipleChoiceCard
+      statement={statement}
+      imageUrl={imageUrl}
+      alternatives={alternatives}
+      onAnswer={onAnswer}
+    />
+  );
 }
 
-// ─── Multiple choice interno ──────────────────────────────────────────────────
+// ─── Multiple Choice ──────────────────────────────────────────────────────────
 
 function MultipleChoiceCard({
   statement,
@@ -77,56 +72,54 @@ function MultipleChoiceCard({
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: "#fff",
-        border: "1px solid #ddd",
-        borderRadius: "12px",
-        padding: "24px",
-        maxWidth: "680px",
-        margin: "0 auto",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "18px",
-          fontWeight: "600",
-          color: "#111",
-          marginBottom: "16px",
-          lineHeight: "1.5",
-        }}
-      >
-        {statement}
-      </p>
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt="imagem da questão"
-          style={{
-            width: "100%",
-            maxHeight: "300px",
-            objectFit: "contain",
-            borderRadius: "8px",
-            marginBottom: "16px",
-          }}
-        />
-      )}
-
-      <div>
-        {alternatives.map((alt) => (
-          <AnswerOption
-            key={alt.id}
-            text={alt.text}
-            imageUrl={alt.imageUrl}
-            isCorrect={alt.isCorrect}
-            isSelected={selectedId === alt.id}
-            isRevealed={isRevealed}
-            onClick={() => handleClick(alt)}
-          />
-        ))}
+      {/* Retângulo da pergunta — separado */}
+      <div style={questionBoxStyle}>
+        {imageUrl && (
+          <img src={imageUrl} alt="imagem da questão"
+            style={{ width: "100%", maxHeight: "220px", objectFit: "contain", borderRadius: "8px", marginBottom: "12px" }} />
+        )}
+        <p style={{ fontSize: "16px", fontWeight: "600", color: "#111", margin: 0, lineHeight: "1.6" }}>
+          {statement}
+        </p>
       </div>
+
+      {/* Retângulo das alternativas — separado */}
+      <div style={answersBoxStyle}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+          {alternatives.map((alt, i) => (
+            <AnswerOption
+              key={alt.id}
+              label={["A", "B", "C", "D"][i] ?? String(i + 1)}
+              text={alt.text}
+              imageUrl={alt.imageUrl}
+              isCorrect={alt.isCorrect}
+              isSelected={selectedId === alt.id}
+              isRevealed={isRevealed}
+              onClick={() => handleClick(alt)}
+            />
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 }
+
+// ─── Estilos ──────────────────────────────────────────────────────────────────
+
+const questionBoxStyle: React.CSSProperties = {
+  backgroundColor: "#e8e1e1",
+  borderRadius: "16px",
+  padding: "20px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+  minHeight: "90px",
+};
+
+const answersBoxStyle: React.CSSProperties = {
+  backgroundColor: "#e8e1e1",
+  borderRadius: "16px",
+  padding: "16px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+};
