@@ -75,13 +75,15 @@ export default function ModuleSelectPage() {
     navigate("/");
   }
 
-  const handleIniciar = (dificuldade: Dificuldade) => {
-    const resolved =
-      dificuldade === "ALEATORIO"
-        ? (["FACIL", "MEDIO", "DIFICIL"] as const)[Math.floor(Math.random() * 3)]
-        : dificuldade;
-    navigate(`/quiz?category=${ACTIVE_CATEGORY.category}&difficulty=${resolved}`);
-  };
+ const handleIniciar = (dificuldade: string) => {
+  let resolved = dificuldade;
+  if (dificuldade === "ALEATORIO") {
+    const opcoes = ["FACIL", "MEDIO", "DIFICIL"] as const;
+    const idx = Math.floor(Math.random() * opcoes.length);
+    resolved = opcoes[idx];
+  }
+  navigate(`/quiz?category=${ACTIVE_CATEGORY.category}&difficulty=${resolved}`);
+};
 
   return (
     <>
