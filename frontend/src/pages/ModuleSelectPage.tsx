@@ -79,6 +79,7 @@ export default function ModuleSelectPage() {
   let resolved = dificuldade;
   if (dificuldade === "ALEATORIO") {
     const opcoes = ["FACIL", "MEDIO", "DIFICIL"] as const;
+    // eslint-disable-next-line react-hooks/purity
     const idx = Math.floor(Math.random() * opcoes.length);
     resolved = opcoes[idx];
   }
