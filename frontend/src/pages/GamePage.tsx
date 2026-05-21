@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import QuestionCard, { Alternative } from "../components/game/QuestionCard";
 import ResultScreen from "../components/game/ResultScreen";
 import etecLogo   from "../assets/etec_logo.png";
@@ -14,6 +15,7 @@ export type Question = {
   id: string;
   statement: string;
   imageUrl?: string;
+  hint?: string;
   alternatives: Alternative[];
 };
 
@@ -139,7 +141,7 @@ export default function GamePage() {
 
         {/* ── Bolinhas vermelhas no fundo ─────────────────────────────────── */}
         {BG_CIRCLES.map((c, i) => (
-          <div key={i} style={{
+          <div key={i} aria-hidden="true" style={{
             position:        "fixed",
             width:           c.size,
             height:          c.size,
@@ -157,34 +159,63 @@ export default function GamePage() {
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <header style={headerStyle}>
 
-          {/* Linha superior: ícone voltar */}
-          <div style={{ position: "relative", zIndex: 1, padding: "14px 20px 0", display: "flex", alignItems: "center" }}>
+          {/* Top row: back button + level badge */}
+          <div style={{
+            position: "relative",
+            zIndex:   1,
+            padding:  "14px 20px 0",
+            display:  "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}>
             <button onClick={() => navigate("/modulos")} style={voltarBtnStyle} title="Voltar">
-              {/* Ícone de saída — posicionado como no CSS fornecido */}
               <img
                 src={logoutIcon}
                 alt="Voltar"
-                style={{ width: 35, height: 35, objectFit: "contain", filter: "brightness(0) invert(1)" }}
+                style={{ width: 28, height: 28, objectFit: "contain", filter: "brightness(0) invert(1)" }}
               />
-              <span style={{ fontFamily: "'Gugi', sans-serif", fontSize: "15px", color: "#fff" }}>
+              <span style={{ fontFamily: "'Gugi', sans-serif", fontSize: "14px", color: "#fff" }}>
                 Voltar
               </span>
             </button>
+
+            {/* Level badge */}
+            <span style={{
+              backgroundColor: "rgba(255,255,255,0.2)",
+              color:           "#fff",
+              fontFamily:      "'Gugi', sans-serif",
+              fontSize:        "12px",
+              padding:         "4px 12px",
+              borderRadius:    "99px",
+            }}>
+              Nível: {DIFFICULTY_LABEL[difficultyStr] ?? difficultyStr}
+            </span>
           </div>
 
-          {/* Linha inferior: questão + barra + nível */}
-          <div style={{ position: "relative", zIndex: 1, padding: "10px 20px 0", display: "flex", alignItems: "flex-end", gap: "16px" }}>
-            {/* Barra de progresso — lado esquerdo, compacta */}
-            <div style={{ flex: "0 0 40%" }}>
+          {/* Bottom row: progress bar + question counter + score */}
+          <div style={{
+            position:   "relative",
+            zIndex:     1,
+            padding:    "10px 20px 0",
+            display:    "flex",
+            alignItems: "flex-end",
+            gap:        "16px",
+          }}>
+            {/* Progress bar */}
+            <div style={{ flex: "0 0 45%" }}>
               <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px" }}>
                 Questão {currentIndex + 1}/{questions.length}
               </p>
               <div style={progressTrackStyle}>
-                <div style={{ ...progressFillStyle, width: `${progress}%` }} />
+                <motion.div
+                  style={{ ...progressFillStyle }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                />
               </div>
             </div>
 
-            {/* Pontuação */}
+            {/* Score */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingBottom: "2px" }}>
               <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px", opacity: 0.8 }}>
                 Pontos
@@ -193,27 +224,14 @@ export default function GamePage() {
                 {score}
               </span>
             </div>
-
-            {/* Nível — lado direito */}
-            <span style={{
-              fontFamily: "'Gugi', sans-serif",
-              color: "#fff",
-              fontSize: "12px",
-              opacity: 0.95,
-              marginLeft: "auto",
-              paddingBottom: "2px",
-            }}>
-              Nível: {DIFFICULTY_LABEL[difficultyStr]}
-            </span>
           </div>
 
-          {/* Onda SVG — pronunciada, igual à imagem de referência:
-              começa alta à esquerda, desce no terço inicial,
-              sobe no centro-direita, e termina mais baixa à direita */}
+          {/* Wave SVG */}
           <svg
             viewBox="0 0 900 90"
             preserveAspectRatio="none"
             style={{ display: "block", width: "100%", height: "75px", marginTop: "10px" }}
+            aria-hidden="true"
           >
             <path
               d="M0,0 C80,70 200,80 380,30 C520,-10 680,75 900,20 L900,90 L0,90 Z"
@@ -300,7 +318,6 @@ const progressFillStyle: React.CSSProperties = {
   height:          "100%",
   backgroundColor: "#ff5252",
   borderRadius:    "99px",
-  transition:      "width 0.4s ease",
 };
 
 const mainStyle: React.CSSProperties = {

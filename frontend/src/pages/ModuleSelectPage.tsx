@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DecorativeDots from "../components/shared/DecorativeDots";
+import WaveFooter from "../components/shared/WaveFooter";
 
 type Modulo = {
   id: string;
@@ -47,21 +49,25 @@ const MODULOS: Modulo[] = [
   },
 ];
 
-type Dificuldade = "FACIL" | "MEDIO" | "DIFICIL";
+type Dificuldade = "FACIL" | "MEDIO" | "DIFICIL" | "ALEATORIO";
 
-const DIFICULDADES: { id: Dificuldade; label: string; desc: string; color: string }[] = [
-  { id: "FACIL",   label: "Fácil",  desc: "Questões básicas de identificação.", color: "#28a745" },
-  { id: "MEDIO",   label: "Médio",  desc: "Questões de uso e procedimentos.",   color: "#fd7e14" },
-  { id: "DIFICIL", label: "Difícil",desc: "Questões avançadas e segurança.",    color: "#dc3545" },
+const DIFICULDADES: { id: Dificuldade; label: string }[] = [
+  { id: "FACIL",     label: "Fácil"     },
+  { id: "MEDIO",     label: "Médio"     },
+  { id: "DIFICIL",   label: "Difícil"   },
+  { id: "ALEATORIO", label: "Aleatório" },
 ];
+
+// The active category — currently only VIDRARIA is available
+const ACTIVE_CATEGORY = MODULOS[0];
+
+type Screen = "main" | "difficulty";
 
 export default function ModuleSelectPage() {
   const navigate = useNavigate();
+  const [screen, setScreen] = useState<Screen>("main");
 
   const usuario = JSON.parse(localStorage.getItem("usuario") ?? "{}");
-
-  // Módulo aguardando escolha de dificuldade (null = nenhum selecionado)
-  const [moduloPendente, setModuloPendente] = useState<Modulo | null>(null);
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -69,212 +75,185 @@ export default function ModuleSelectPage() {
     navigate("/");
   }
 
-  function handleSelectModule(modulo: Modulo) {
-    setModuloPendente(modulo);
+ const handleIniciar = (dificuldade: string) => {
+  let resolved = dificuldade;
+  if (dificuldade === "ALEATORIO") {
+    const opcoes = ["FACIL", "MEDIO", "DIFICIL"] as const;
+    // eslint-disable-next-line react-hooks/purity
+    const idx = Math.floor(Math.random() * opcoes.length);
+    resolved = opcoes[idx];
   }
-
-  function handleSelectDificuldade(dificuldade: Dificuldade) {
-    if (!moduloPendente) return;
-    navigate(`/quiz?category=${moduloPendente.category}&difficulty=${dificuldade}`);
-  }
-
-  function handleFecharModal() {
-    setModuloPendente(null);
-  }
+  navigate(`/quiz?category=${ACTIVE_CATEGORY.category}&difficulty=${resolved}`);
+};
 
   return (
-    <div style={pageStyle}>
-      {/* Header */}
-      <header style={headerStyle}>
-        <h1 style={{ fontSize: "22px", fontWeight: "800", color: "#1a73e8", margin: 0 }}>
-          🧪 LabQuiz
-        </h1>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          {usuario.name && (
-            <span style={{ fontSize: "14px", color: "#555" }}>
-              Olá, <strong>{usuario.name}</strong>
-            </span>
-          )}
-          <button onClick={handleLogout} style={logoutBtnStyle}>
-            Sair
-          </button>
-        </div>
-      </header>
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet" />
 
-      {/* Conteúdo */}
-      <main style={mainStyle}>
-        <h2 style={{ fontSize: "20px", fontWeight: "700", color: "#111", marginBottom: "8px" }}>
-          Escolha um módulo
-        </h2>
-        <p style={{ color: "#666", marginBottom: "32px", fontSize: "14px" }}>
-          Selecione o tema que deseja praticar.
-        </p>
+      <div style={pageStyle}>
+        <DecorativeDots />
 
-        <div style={gridStyle}>
-          {MODULOS.map((modulo) => (
-            <button
-              key={modulo.id}
-              onClick={() => handleSelectModule(modulo)}
-              style={cardStyle}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#1a73e8";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "0 4px 16px rgba(26,115,232,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#e8eaf0";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "0 2px 8px rgba(0,0,0,0.06)";
-              }}
-            >
-              <span style={{ fontSize: "36px" }}>{modulo.icon}</span>
-              <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#111", margin: "12px 0 4px" }}>
-                {modulo.titulo}
-              </h3>
-              <p style={{ fontSize: "13px", color: "#666", margin: 0, lineHeight: "1.4" }}>
-                {modulo.descricao}
-              </p>
-            </button>
-          ))}
-        </div>
-      </main>
-      {/* Modal de dificuldade */}
-      {moduloPendente && (
-        <div style={overlayStyle} onClick={handleFecharModal}>
-          <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#111", marginBottom: "6px" }}>
-              {moduloPendente.icon} {moduloPendente.titulo}
-            </h3>
-            <p style={{ fontSize: "14px", color: "#666", marginBottom: "24px" }}>
-              Escolha a dificuldade:
-            </p>
+        {/* Main content area */}
+        <main style={mainStyle}>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {DIFICULDADES.map((d) => (
+          {/* Header logo */}
+          <h1 style={{ fontFamily: "'Gugi', sans-serif", fontSize: "36px", color: "#c6273f", marginBottom: "8px", textAlign: "center" }}>
+            LabQuiz
+          </h1>
+
+          {screen === "main" ? (
+            <>
+              <p style={subtitleStyle}>Selecione uma opção</p>
+
+              {/* Welcome */}
+              {usuario.name && (
+                <p style={{ textAlign: "center", color: "#666", fontSize: "14px", marginBottom: "8px" }}>
+                  Olá, <strong>{usuario.name}</strong>!
+                </p>
+              )}
+
+              {/* Main buttons */}
+              <div style={btnListStyle}>
                 <button
-                  key={d.id}
-                  onClick={() => handleSelectDificuldade(d.id)}
-                  style={{ ...difBtnStyle, borderColor: d.color, color: d.color }}
-                  onMouseEnter={(e) => {
-                    const btn = e.currentTarget as HTMLButtonElement;
-                    btn.style.backgroundColor = d.color;
-                    btn.style.color = "#fff";
-                    const desc = btn.querySelector("span") as HTMLElement;
-                    if (desc) desc.style.color = "rgba(255,255,255,0.85)";
-                  }}
-                  onMouseLeave={(e) => {
-                    const btn = e.currentTarget as HTMLButtonElement;
-                    btn.style.backgroundColor = "#fff";
-                    btn.style.color = d.color;
-                    const desc = btn.querySelector("span") as HTMLElement;
-                    if (desc) desc.style.color = "#888";
-                  }}
+                  style={outlineBtnStyle}
+                  onClick={() => setScreen("difficulty")}
                 >
-                  <strong style={{ fontSize: "15px" }}>{d.label}</strong>
-                  <span style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{d.desc}</span>
+                  Iniciar jogo
                 </button>
-              ))}
-            </div>
+                <button style={outlineBtnStyle}>
+                  Estatísticas
+                </button>
+                <button style={redBtnStyle} onClick={handleLogout}>
+                  Sair
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Back button */}
+              <button
+                style={backBtnStyle}
+                onClick={() => setScreen("main")}
+              >
+                &lt; Voltar
+              </button>
 
-            <button onClick={handleFecharModal} style={cancelBtnStyle}>
-              Cancelar
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+              <h2 style={{ fontFamily: "'Gugi', sans-serif", fontSize: "26px", color: "#111", marginBottom: "8px", textAlign: "center" }}>
+                Modos
+              </h2>
+              <p style={subtitleStyle}>Selecione um modo de preferência</p>
+
+              {/* 2x2 grid of difficulties */}
+              <div style={diffGridStyle}>
+                {DIFICULDADES.map((d) => (
+                  <button
+                    key={d.id}
+                    style={diffBtnStyle}
+                    onClick={() => handleIniciar(d.id)}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </main>
+
+        <WaveFooter />
+      </div>
+    </>
   );
 }
 
 // ─── Estilos ──────────────────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
-  minHeight: "100vh",
-  backgroundColor: "#f0f4f8",
-  fontFamily: "sans-serif",
-};
-
-const headerStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  borderBottom: "1px solid #e8eaf0",
-  padding: "16px 24px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
+  minHeight:       "100vh",
+  backgroundColor: "#ffffff",
+  display:         "flex",
+  flexDirection:   "column",
+  alignItems:      "center",
+  justifyContent:  "center",
+  fontFamily:      "sans-serif",
+  position:        "relative",
+  overflowX:       "hidden",
 };
 
 const mainStyle: React.CSSProperties = {
-  maxWidth: "800px",
-  margin: "0 auto",
-  padding: "40px 16px",
+  width:    "100%",
+  maxWidth: "380px",
+  padding:  "32px 24px",
+  position: "relative",
+  zIndex:   1,
 };
 
-const gridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-  gap: "16px",
+const subtitleStyle: React.CSSProperties = {
+  textAlign:    "center",
+  color:        "#666",
+  fontSize:     "15px",
+  marginBottom: "32px",
 };
 
-const cardStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  border: "2px solid #e8eaf0",
-  borderRadius: "16px",
-  padding: "28px 20px",
-  textAlign: "center",
-  cursor: "pointer",
-  transition: "border-color 0.15s, box-shadow 0.15s",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-};
-
-const logoutBtnStyle: React.CSSProperties = {
-  padding: "6px 16px",
-  backgroundColor: "transparent",
-  border: "1.5px solid #ddd",
-  borderRadius: "8px",
-  fontSize: "13px",
-  cursor: "pointer",
-  color: "#555",
-};
-
-const overlayStyle: React.CSSProperties = {
-  position: "fixed",
-  inset: 0,
-  backgroundColor: "rgba(0,0,0,0.4)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 100,
-};
-
-const modalStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  borderRadius: "16px",
-  padding: "32px 28px",
-  width: "100%",
-  maxWidth: "360px",
-  boxShadow: "0 8px 32px rgba(0,0,0,0.16)",
-};
-
-const difBtnStyle: React.CSSProperties = {
-  display: "flex",
+const btnListStyle: React.CSSProperties = {
+  display:       "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
-  padding: "12px 16px",
-  backgroundColor: "#fff",
-  border: "2px solid",
-  borderRadius: "10px",
-  cursor: "pointer",
-  textAlign: "left",
+  gap:           "14px",
 };
 
-const cancelBtnStyle: React.CSSProperties = {
-  marginTop: "16px",
-  width: "100%",
-  padding: "10px",
-  backgroundColor: "transparent",
-  border: "1.5px solid #ddd",
-  borderRadius: "8px",
-  fontSize: "14px",
-  cursor: "pointer",
-  color: "#888",
+const outlineBtnStyle: React.CSSProperties = {
+  width:           "100%",
+  padding:         "14px",
+  backgroundColor: "#fff",
+  border:          "2px solid #333",
+  borderRadius:    "10px",
+  fontSize:        "16px",
+  fontWeight:      "600",
+  cursor:          "pointer",
+  color:           "#111",
+  textAlign:       "center",
+};
+
+const redBtnStyle: React.CSSProperties = {
+  width:           "100%",
+  padding:         "14px",
+  backgroundColor: "#c6273f",
+  border:          "none",
+  borderRadius:    "10px",
+  fontSize:        "16px",
+  fontWeight:      "600",
+  cursor:          "pointer",
+  color:           "#fff",
+  textAlign:       "center",
+  fontFamily:      "'Gugi', sans-serif",
+};
+
+const backBtnStyle: React.CSSProperties = {
+  background:   "transparent",
+  border:       "none",
+  cursor:       "pointer",
+  color:        "#c6273f",
+  fontSize:     "15px",
+  fontWeight:   "600",
+  padding:      "0 0 16px",
+  display:      "block",
+  fontFamily:   "'Gugi', sans-serif",
+};
+
+const diffGridStyle: React.CSSProperties = {
+  display:             "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap:                 "14px",
+};
+
+const diffBtnStyle: React.CSSProperties = {
+  padding:         "20px 10px",
+  backgroundColor: "#fff",
+  border:          "2px solid #333",
+  borderRadius:    "10px",
+  fontSize:        "15px",
+  fontWeight:      "600",
+  cursor:          "pointer",
+  color:           "#111",
+  textAlign:       "center",
 };

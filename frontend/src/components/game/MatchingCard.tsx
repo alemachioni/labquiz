@@ -72,27 +72,27 @@ export default function MatchingCard({
 
   function leftBorder(pairId: string): string {
     if (revealed) {
-      return matches[pairId] === pairId ? "2px solid #28a745" : "2px solid #dc3545";
+      return matches[pairId] === pairId ? "2px solid #0e9c0e" : "2px solid #c6273f";
     }
-    if (selectedLeft === pairId) return "2px solid #1a73e8";
+    if (selectedLeft === pairId) return "2px solid #c6273f";
     if (matches[pairId]) return "2px solid #aaa";
     return "2px solid #ddd";
   }
 
   function leftBg(pairId: string): string {
     if (revealed) {
-      return matches[pairId] === pairId ? "#d4edda" : "#f8d7da";
+      return matches[pairId] === pairId ? "#94e494" : "#d9374f";
     }
-    if (selectedLeft === pairId) return "#e8f0fe";
-    if (matches[pairId]) return "#f0f0f0";
+    if (selectedLeft === pairId) return "#f0ecec";
+    if (matches[pairId]) return "#e8e1e1";
     return "#fff";
   }
 
   function rightBorder(rightPairId: string): string {
     if (revealed) {
       const leftForThis = Object.entries(matches).find(([, r]) => r === rightPairId)?.[0];
-      if (!leftForThis) return "2px solid #dc3545";
-      return leftForThis === rightPairId ? "2px solid #28a745" : "2px solid #dc3545";
+      if (!leftForThis) return "2px solid #c6273f";
+      return leftForThis === rightPairId ? "2px solid #0e9c0e" : "2px solid #c6273f";
     }
     const isUsed = Object.values(matches).includes(rightPairId);
     return isUsed ? "2px solid #aaa" : "2px solid #ddd";
@@ -101,11 +101,11 @@ export default function MatchingCard({
   function rightBg(rightPairId: string): string {
     if (revealed) {
       const leftForThis = Object.entries(matches).find(([, r]) => r === rightPairId)?.[0];
-      if (!leftForThis) return "#f8d7da";
-      return leftForThis === rightPairId ? "#d4edda" : "#f8d7da";
+      if (!leftForThis) return "#d9374f";
+      return leftForThis === rightPairId ? "#94e494" : "#d9374f";
     }
     const isUsed = Object.values(matches).includes(rightPairId);
-    return isUsed ? "#f0f0f0" : "#fff";
+    return isUsed ? "#e8e1e1" : "#fff";
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -137,14 +137,14 @@ export default function MatchingCard({
               key={p.id}
               onClick={() => handleLeftClick(p.id)}
               style={{
-                padding: "10px 14px",
-                border: leftBorder(p.id),
-                borderRadius: "8px",
+                padding:         "10px 14px",
+                border:          leftBorder(p.id),
+                borderRadius:    "8px",
                 backgroundColor: leftBg(p.id),
-                fontSize: "14px",
-                cursor: revealed ? "default" : "pointer",
-                textAlign: "left",
-                color: "#111",
+                fontSize:        "14px",
+                cursor:          revealed ? "default" : "pointer",
+                textAlign:       "left",
+                color:           "#111",
               }}
             >
               {p.left}
@@ -164,15 +164,15 @@ export default function MatchingCard({
                 key={p.id}
                 onClick={() => handleRightClick(p.id)}
                 style={{
-                  padding: "10px 14px",
-                  border: rightBorder(p.id),
-                  borderRadius: "8px",
+                  padding:         "10px 14px",
+                  border:          rightBorder(p.id),
+                  borderRadius:    "8px",
                   backgroundColor: rightBg(p.id),
-                  fontSize: "14px",
-                  cursor: revealed || isUsed ? "default" : selectedLeft ? "pointer" : "default",
-                  textAlign: "left",
-                  color: "#111",
-                  opacity: !revealed && isUsed ? 0.5 : 1,
+                  fontSize:        "14px",
+                  cursor:          revealed || isUsed ? "default" : selectedLeft ? "pointer" : "default",
+                  textAlign:       "left",
+                  color:           "#111",
+                  opacity:         !revealed && isUsed ? 0.5 : 1,
                 }}
               >
                 {p.right}
@@ -217,31 +217,32 @@ export default function MatchingCard({
 // ─── Estilos ──────────────────────────────────────────────────────────────────
 
 const cardStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  border: "1px solid #ddd",
-  borderRadius: "12px",
-  padding: "24px",
-  maxWidth: "680px",
-  margin: "0 auto",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+  backgroundColor: "#f0ecec",
+  border:          "1px solid #e0d8d8",
+  borderRadius:    "16px",
+  padding:         "24px",
+  maxWidth:        "680px",
+  margin:          "0 auto",
+  boxShadow:       "0 2px 8px rgba(0,0,0,0.08)",
 };
 
 const confirmBtnStyle: React.CSSProperties = {
-  padding: "10px 20px",
-  backgroundColor: "#1a73e8",
-  color: "#fff",
-  border: "none",
-  borderRadius: "8px",
-  fontSize: "14px",
-  fontWeight: "600",
+  padding:         "10px 20px",
+  backgroundColor: "#c6273f",
+  color:           "#fff",
+  border:          "none",
+  borderRadius:    "8px",
+  fontSize:        "14px",
+  fontWeight:      "600",
+  fontFamily:      "'Gugi', sans-serif",
 };
 
 const resetBtnStyle: React.CSSProperties = {
-  padding: "10px 20px",
+  padding:         "10px 20px",
   backgroundColor: "transparent",
-  color: "#888",
-  border: "1.5px solid #ddd",
-  borderRadius: "8px",
-  fontSize: "14px",
-  cursor: "pointer",
+  color:           "#888",
+  border:          "1.5px solid #ddd",
+  borderRadius:    "8px",
+  fontSize:        "14px",
+  cursor:          "pointer",
 };
