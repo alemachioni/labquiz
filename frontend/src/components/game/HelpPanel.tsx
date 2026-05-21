@@ -18,30 +18,32 @@ export default function HelpPanel({ hint, disabled = false, onUse }: HelpPanelPr
   return (
     <div
       style={{
-        maxWidth: "680px",
-        margin: "16px auto 0 auto",
-        padding: "12px 16px",
+        maxWidth:        "680px",
+        margin:          "16px auto 0 auto",
+        padding:         "12px 16px",
         backgroundColor: "#fff8e1",
-        border: "1px solid #ffc107",
-        borderRadius: "8px",
+        border:          "1.5px solid #ffc107",
+        borderRadius:    "12px",
+        boxShadow:       "0 2px 8px rgba(0,0,0,0.06)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <span style={{ fontSize: "20px" }}>💡</span>
-        <strong style={{ color: "#795548" }}>Dica</strong>
+        <span style={{ fontSize: "20px" }} aria-hidden="true">💡</span>
+        <strong style={{ color: "#795548", fontFamily: "'Gugi', sans-serif", fontSize: "14px" }}>Dica</strong>
         {!revealed && (
           <button
             onClick={handleClick}
             disabled={disabled}
             style={{
-              marginLeft: "auto",
-              padding: "6px 14px",
+              marginLeft:      "auto",
+              padding:         "6px 14px",
               backgroundColor: disabled ? "#ccc" : "#ffc107",
-              border: "none",
-              borderRadius: "6px",
-              cursor: disabled ? "not-allowed" : "pointer",
-              fontWeight: "600",
-              color: "#333",
+              border:          "none",
+              borderRadius:    "6px",
+              cursor:          disabled ? "not-allowed" : "pointer",
+              fontWeight:      "600",
+              color:           "#333",
+              fontSize:        "13px",
             }}
           >
             {disabled ? "Usada" : "Ver dica"}

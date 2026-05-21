@@ -1,0 +1,11 @@
+export { default as Bequer } from "./Bequer";
+export { default as Erlenmeyer } from "./Erlenmeyer";
+export { default as Proveta } from "./Proveta";
+export { default as Bureta } from "./Bureta";
+export { default as PipetaVolumetrica } from "./PipetaVolumetrica";
+export { default as TuboEnsaio } from "./TuboEnsaio";
+export { default as BalaoParedeFina } from "./BalaoParedeFina";
+export { default as FunilSimples } from "./FunilSimples";
+export { default as BicoBunsen } from "./BicoBunsen";
+export { default as Pisseta } from "./Pisseta";
+export { default as LabIcon } from "./LabIcon";
