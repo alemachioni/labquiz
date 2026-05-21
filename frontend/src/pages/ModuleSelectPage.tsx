@@ -75,14 +75,13 @@ export default function ModuleSelectPage() {
     navigate("/");
   }
 
-  function handleSelectDificuldade(dificuldade: Dificuldade) {
-    // ALEATORIO maps to a random difficulty on the backend or we pick one
+  const handleIniciar = (dificuldade: Dificuldade) => {
     const resolved =
       dificuldade === "ALEATORIO"
         ? (["FACIL", "MEDIO", "DIFICIL"] as const)[Math.floor(Math.random() * 3)]
         : dificuldade;
     navigate(`/quiz?category=${ACTIVE_CATEGORY.category}&difficulty=${resolved}`);
-  }
+  };
 
   return (
     <>
@@ -148,7 +147,7 @@ export default function ModuleSelectPage() {
                   <button
                     key={d.id}
                     style={diffBtnStyle}
-                    onClick={() => handleSelectDificuldade(d.id)}
+                    onClick={() => handleIniciar(d.id)}
                   >
                     {d.label}
                   </button>

@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import QuestionCard, { Alternative } from "../components/game/QuestionCard";
 import ResultScreen from "../components/game/ResultScreen";
-import WaveFooter from "../components/shared/WaveFooter";
 import etecLogo   from "../assets/etec_logo.png";
 import logoutIcon from "../assets/logout_icon.png";
 
