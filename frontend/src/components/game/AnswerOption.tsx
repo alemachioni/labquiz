@@ -22,17 +22,16 @@ export default function AnswerOption({
 }: AnswerOptionProps) {
   const [hovered, setHovered] = useState(false);
 
-  // ── Circle color ──────────────────────────────────────────────────────────
+  // Dynamic colors — kept inline since they depend on runtime state
   let circleBg = "#c6273f";
   if (isRevealed) {
-    if (isCorrect) circleBg = "#0e9c0e";
-    else if (isSelected) circleBg = "#910101";
+    if (isCorrect)        circleBg = "#0e9c0e";
+    else if (isSelected)  circleBg = "#910101";
   }
 
-  // ── Card color ────────────────────────────────────────────────────────────
-  let cardBg = "#e8e1e1";
+  let cardBg     = "#e8e1e1";
   let cardBorder = "2px solid transparent";
-  let textColor = "#111";
+  let textColor  = "#111";
 
   if (isRevealed) {
     if (isCorrect) {
@@ -50,7 +49,6 @@ export default function AnswerOption({
     cardBorder = "2px solid #c6273f";
   }
 
-  // ── Animation variants ────────────────────────────────────────────────────
   const animate =
     isRevealed && isCorrect
       ? { scale: [1, 1.04, 1], transition: { duration: 0.4 } }
@@ -64,48 +62,26 @@ export default function AnswerOption({
       onClick={isRevealed ? undefined : onClick}
       onMouseEnter={() => { if (!isRevealed) setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        display:         "flex",
-        alignItems:      "center",
-        gap:             "10px",
-        padding:         "10px 14px",
-        backgroundColor: cardBg,
-        border:          cardBorder,
-        borderRadius:    "12px",
-        cursor:          isRevealed ? "default" : "pointer",
-        textAlign:       "left",
-        width:           "100%",
-        transition:      "background-color 0.15s, border-color 0.15s",
-      }}
+      className={`flex items-center gap-2.5 p-2.5 sm:p-3.5 rounded-xl w-full text-left transition-all duration-150 ${
+        isRevealed ? "cursor-default" : "cursor-pointer"
+      }`}
+      style={{ backgroundColor: cardBg, border: cardBorder }}
     >
       {/* Letter circle */}
       <span
-        style={{
-          minWidth:        "32px",
-          height:          "32px",
-          borderRadius:    "50%",
-          backgroundColor: circleBg,
-          color:           "#fff",
-          fontWeight:      "700",
-          fontSize:        "14px",
-          display:         "flex",
-          alignItems:      "center",
-          justifyContent:  "center",
-          flexShrink:      0,
-          transition:      "background-color 0.15s",
-          fontFamily:      "'Gugi', sans-serif",
-        }}
+        className="min-w-[32px] sm:min-w-[36px] h-8 sm:h-9 rounded-full text-white font-bold text-sm sm:text-base flex items-center justify-center flex-shrink-0 font-gugi transition-colors duration-150"
+        style={{ backgroundColor: circleBg }}
       >
         {label}
       </span>
 
       {/* Text */}
-      <span style={{ fontSize: "14px", color: textColor, lineHeight: "1.4" }}>
+      <span className="text-sm sm:text-base leading-snug" style={{ color: textColor }}>
         {imageUrl && (
           <img
             src={imageUrl}
             alt=""
-            style={{ maxHeight: "60px", borderRadius: "4px", display: "block", marginBottom: "4px" }}
+            className="max-h-14 sm:max-h-16 rounded mb-1 block"
           />
         )}
         {text}

@@ -4,18 +4,13 @@ import etecLogo from "../../assets/etec_logo.png";
 export default function WaveFooter() {
   return (
     <div
-      style={{
-        marginTop: "auto",
-        position: "relative",
-        zIndex: 1,
-        width: "100vw",
-        marginLeft: "calc(-50vw + 50%)",
-      }}
+      className="mt-auto relative z-10"
+      style={{ width: "100vw", marginLeft: "calc(-50vw + 50%)" }}
     >
       <svg
         viewBox="0 0 900 80"
         preserveAspectRatio="none"
-        style={{ display: "block", width: "100%", height: "70px" }}
+        className="block w-full h-[70px]"
         aria-hidden="true"
       >
         <path
@@ -23,17 +18,11 @@ export default function WaveFooter() {
           fill="#c6273f"
         />
       </svg>
-      <div
-        style={{
-          backgroundColor: "#c6273f",
-          textAlign: "center",
-          padding: "0 0 20px",
-        }}
-      >
+      <div className="bg-red-primary text-center pb-5">
         <img
           src={etecLogo}
           alt="Etec — Escola Técnica Estadual"
-          style={{ height: "44px", objectFit: "contain" }}
+          className="h-11 object-contain"
         />
       </div>
     </div>

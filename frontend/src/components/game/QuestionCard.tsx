@@ -81,33 +81,31 @@ function MultipleChoiceCard({
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -60 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+        className="flex flex-col gap-3"
       >
         {/* Question box */}
-        <div style={questionBoxStyle}>
-          <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-            <p style={{ fontSize: "16px", fontWeight: "600", color: "#111", margin: 0, lineHeight: "1.6", flex: 1 }}>
+        <div className="bg-red-bg rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div className="flex gap-4 items-start">
+            <p className="text-sm sm:text-base font-semibold text-gray-900 leading-relaxed flex-1 m-0">
               {statement}
             </p>
-
-            {/* Image or SVG icon placeholder */}
-            <div style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div className="flex-shrink-0 flex items-center justify-center">
               {imageUrl ? (
                 <img
                   src={imageUrl}
                   alt="imagem da questão"
-                  style={{ width: "96px", height: "96px", objectFit: "contain", borderRadius: "8px" }}
+                  className="w-20 sm:w-24 h-20 sm:h-24 object-contain rounded-lg"
                 />
               ) : (
-                <LabIcon size={96} color="#c6273f" />
+                <LabIcon size={80} color="#c6273f" />
               )}
             </div>
           </div>
         </div>
 
         {/* Answers box */}
-        <div style={answersBoxStyle}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+        <div className="bg-red-bg rounded-2xl p-3 sm:p-4 shadow-sm">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {alternatives.map((alt, i) => (
               <AnswerOption
                 key={alt.id}
@@ -126,20 +124,3 @@ function MultipleChoiceCard({
     </AnimatePresence>
   );
 }
-
-// ─── Estilos ──────────────────────────────────────────────────────────────────
-
-const questionBoxStyle: React.CSSProperties = {
-  backgroundColor: "#f0ecec",
-  borderRadius:    "16px",
-  padding:         "20px",
-  boxShadow:       "0 2px 8px rgba(0,0,0,0.07)",
-  minHeight:       "90px",
-};
-
-const answersBoxStyle: React.CSSProperties = {
-  backgroundColor: "#f0ecec",
-  borderRadius:    "16px",
-  padding:         "16px",
-  boxShadow:       "0 2px 8px rgba(0,0,0,0.07)",
-};
