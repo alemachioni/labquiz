@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
 import QuestionCard, { Alternative } from "../components/game/QuestionCard";
 import ResultScreen from "../components/game/ResultScreen";
 import etecLogo   from "../assets/etec_logo.png";
 import logoutIcon from "../assets/logout_icon.png";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type ApiOption   = { id: string; text: string; isCorrect: boolean };
 type ApiQuestion = { id: string; prompt: string; imageUrl?: string | null; options: ApiOption[] };
@@ -15,14 +13,12 @@ export type Question = {
   id: string;
   statement: string;
   imageUrl?: string;
-  hint?: string;
   alternatives: Alternative[];
 };
 
 const DIFFICULTY_MAP:   Record<string, number> = { FACIL: 1, MEDIO: 2, DIFICIL: 3 };
 const DIFFICULTY_LABEL: Record<string, string> = { FACIL: "Fácil", MEDIO: "Médio", DIFICIL: "Difícil" };
 
-// ─── Fetch ────────────────────────────────────────────────────────────────────
 
 async function fetchQuestions(category: string, difficulty: number): Promise<Question[]> {
   const token = localStorage.getItem("token");
@@ -33,14 +29,13 @@ async function fetchQuestions(category: string, difficulty: number): Promise<Que
   if (!res.ok) throw new Error("Erro ao buscar questões");
   const data: ApiQuestion[] = await res.json();
   return data.map((q) => ({
-    id:           q.id,
-    statement:    q.prompt,
-    imageUrl:     q.imageUrl ?? undefined,
+    id: q.id,
+    statement: q.prompt,
+    imageUrl:  q.imageUrl ?? undefined,
     alternatives: q.options.map((o) => ({ id: o.id, text: o.text, isCorrect: o.isCorrect })),
   }));
 }
 
-// ─── Decorative circles (position:fixed, kept inline) ─────────────────────────
 
 const BG_CIRCLES: { size: number; top: string; left?: string; right?: string; opacity: number }[] = [
   { size: 64, top: "18%", left:  "3%",  opacity: 1   },
@@ -56,19 +51,18 @@ const BG_CIRCLES: { size: number; top: string; left?: string; right?: string; op
   { size: 36, top: "42%", right: "12%", opacity: 0.5 },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function GamePage() {
-  const [questions,      setQuestions]      = useState<Question[]>([]);
-  const [loading,        setLoading]        = useState(true);
-  const [error,          setError]          = useState<string | null>(null);
+  const [questions, setQuestions]           = useState<Question[]>([]);
+  const [loading,   setLoading]             = useState(true);
+  const [error,     setError]               = useState<string | null>(null);
   const navigate                            = useNavigate();
   const [searchParams]                      = useSearchParams();
-  const [currentIndex,   setCurrentIndex]   = useState(0);
-  const [score,          setScore]          = useState(0);
+  const [currentIndex, setCurrentIndex]     = useState(0);
+  const [score,        setScore]            = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [answered,       setAnswered]       = useState(false);
-  const [gameOver,       setGameOver]       = useState(false);
+  const [answered,     setAnswered]         = useState(false);
+  const [gameOver,     setGameOver]         = useState(false);
 
   const category      = searchParams.get("category")   ?? "VIDRARIA";
   const difficultyStr = searchParams.get("difficulty") ?? "FACIL";
@@ -86,11 +80,43 @@ export default function GamePage() {
   }
 
   function handleNext() {
-    if (currentIndex + 1 >= questions.length) setGameOver(true);
-    else { setCurrentIndex((i) => i + 1); setAnswered(false); }
+    if (currentIndex + 1 >= questions.length) {
+      saveResult();
+    } else {
+      setCurrentIndex((i) => i + 1);
+      setAnswered(false);
+    }
   }
 
-  function handleRestart()  { navigate("/modulos"); }
+  async function saveResult() {
+    try {
+      const token   = localStorage.getItem("token");
+      const usuario = JSON.parse(localStorage.getItem("usuario") ?? "{}");
+      const base    = import.meta.env.VITE_API_URL ?? "";
+
+      await fetch(`${base}/game/answer`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId:     usuario.id,
+          score:      score,
+          totalQ:     questions.length,
+          correctQ:   correctAnswers,
+          category:   category,
+          difficulty: difficulty,
+        }),
+      });
+    } catch {
+      
+    } finally {
+      setGameOver(true);
+    }
+  }
+
+  function handleRestart() { navigate("/modulos"); }
 
   function handlePlayAgain() {
     setCurrentIndex(0);
@@ -100,137 +126,236 @@ export default function GamePage() {
     setGameOver(false);
   }
 
-  // ── Auxiliary screens ──────────────────────────────────────────────────────
-
+ 
   if (loading) return (
-    <div className="min-h-dvh flex flex-col items-center justify-center">
-      <p className="font-gugi text-xl text-red-primary">Carregando questões…</p>
+    <div style={fullCenter}>
+      <p style={{ fontFamily: "'Gugi', sans-serif", fontSize: "20px", color: "#c6273f" }}>
+        Carregando questões…
+      </p>
     </div>
   );
 
   if (error) return (
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-4 px-4">
-      <p className="text-red-primary text-center">{error}</p>
-      <button
-        onClick={() => navigate("/modulos")}
-        className="px-6 py-2.5 bg-red-primary text-white border-none rounded-lg text-sm sm:text-base font-semibold font-gugi cursor-pointer"
-      >
-        Voltar
-      </button>
+    <div style={fullCenter}>
+      <p style={{ color: "#c6273f", marginBottom: "16px" }}>{error}</p>
+      <button onClick={() => navigate("/modulos")} style={navBtnStyle}>Voltar</button>
     </div>
   );
 
   if (gameOver) return (
-    <ResultScreen
-      score={score}
-      totalQuestions={questions.length}
-      correctAnswers={correctAnswers}
-      onRestart={handleRestart}
-      onPlayAgain={handlePlayAgain}
-    />
+    <div style={pageStyle}>
+      <ResultScreen
+        score={score}
+        totalQuestions={questions.length}
+        correctAnswers={correctAnswers}
+        onRestart={handleRestart}
+        onPlayAgain={handlePlayAgain}
+      />
+    </div>
   );
 
   const q        = questions[currentIndex];
   const progress = (currentIndex / questions.length) * 100;
 
   return (
-    <div className="min-h-dvh bg-white flex flex-col font-sans relative overflow-x-hidden">
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet" />
 
-      {/* Decorative background circles */}
-      {BG_CIRCLES.map((c, i) => (
-        <div key={i} aria-hidden="true" style={{
-          position:        "fixed",
-          width:           c.size,
-          height:          c.size,
-          top:             c.top,
-          left:            c.left,
-          right:           c.right,
-          borderRadius:    "50%",
-          backgroundColor: "#c6273f",
-          opacity:         c.opacity,
-          pointerEvents:   "none",
-          zIndex:          0,
-        }} />
-      ))}
+      <div style={pageStyle}>
 
-      {/* Header */}
-      <header className="relative bg-red-primary z-10 overflow-hidden">
+       
+        {BG_CIRCLES.map((c, i) => (
+          <div key={i} style={{
+            position:        "fixed",
+            width:           c.size,
+            height:          c.size,
+            top:             c.top,
+            left:            c.left,
+            right:           c.right,
+            borderRadius:    "50%",
+            backgroundColor: "#c6273f",
+            opacity:         c.opacity,
+            pointerEvents:   "none",
+            zIndex:          0,
+          }} />
+        ))}
 
-        {/* Top row: back button + level badge */}
-        <div className="relative z-10 px-4 sm:px-6 pt-3.5 flex items-center justify-between">
-          <button
-            onClick={() => navigate("/modulos")}
-            className="bg-transparent border-none cursor-pointer p-0 flex items-center gap-2"
-            title="Voltar"
-          >
-            <img src={logoutIcon} alt="Voltar" className="w-7 h-7 object-contain brightness-0 invert" />
-            <span className="font-gugi text-sm text-white">Voltar</span>
-          </button>
+       
+        <header style={headerStyle}>
 
-          <span className="bg-white/20 text-white font-gugi text-xs px-3 py-1 rounded-full">
-            Nível: {DIFFICULTY_LABEL[difficultyStr] ?? difficultyStr}
-          </span>
-        </div>
-
-        {/* Progress row */}
-        <div className="relative z-10 px-4 sm:px-6 pt-2.5 flex items-end gap-4">
-          <div className="flex-[0_0_45%]">
-            <p className="font-gugi text-white text-xs m-0 mb-1">
-              Questão {currentIndex + 1}/{questions.length}
-            </p>
-            <div className="w-full h-1.5 bg-white/30 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-red-500 rounded-full"
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+        
+          <div style={{ position: "relative", zIndex: 1, padding: "14px 20px 0", display: "flex", alignItems: "center" }}>
+            <button onClick={() => navigate("/modulos")} style={voltarBtnStyle} title="Voltar">
+             
+              <img
+                src={logoutIcon}
+                alt="Voltar"
+                style={{ width: 35, height: 35, objectFit: "contain", filter: "brightness(0) invert(1)" }}
               />
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center pb-0.5">
-            <p className="font-gugi text-white text-xs m-0 mb-1 opacity-80">Pontos</p>
-            <span className="font-gugi text-white text-lg font-bold leading-none">{score}</span>
-          </div>
-        </div>
-
-        {/* Wave */}
-        <svg
-          viewBox="0 0 900 90"
-          preserveAspectRatio="none"
-          className="block w-full h-[75px] mt-2.5"
-          aria-hidden="true"
-        >
-          <path d="M0,0 C80,70 200,80 380,30 C520,-10 680,75 900,20 L900,90 L0,90 Z" fill="#fff" />
-        </svg>
-      </header>
-
-      {/* Main content */}
-      <main className="flex-1 px-4 sm:px-6 py-5 max-w-2xl w-full mx-auto box-border relative z-10 flex flex-col justify-center">
-        <QuestionCard
-          key={q.id}
-          statement={q.statement}
-          imageUrl={q.imageUrl}
-          alternatives={q.alternatives}
-          onAnswer={handleAnswer}
-        />
-
-        {answered && (
-          <div className="text-right mt-4">
-            <button
-              onClick={handleNext}
-              className="px-6 py-2.5 bg-red-primary text-white border-none rounded-lg text-sm sm:text-base font-semibold font-gugi cursor-pointer"
-            >
-              {currentIndex + 1 >= questions.length ? "Ver resultado" : "Próxima →"}
+              <span style={{ fontFamily: "'Gugi', sans-serif", fontSize: "15px", color: "#fff" }}>
+                Voltar
+              </span>
             </button>
           </div>
-        )}
-      </main>
 
-      {/* Footer */}
-      <footer className="flex justify-center items-center px-4 py-3 border-t border-rose-100 relative z-10">
-        <img src={etecLogo} alt="Etec — Escola Técnica Estadual" className="h-11 object-contain" />
-      </footer>
+          
+          <div style={{ position: "relative", zIndex: 1, padding: "10px 20px 0", display: "flex", alignItems: "flex-end", gap: "16px" }}>
+           
+            <div style={{ flex: "0 0 40%" }}>
+              <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px" }}>
+                Questão {currentIndex + 1}/{questions.length}
+              </p>
+              <div style={progressTrackStyle}>
+                <div style={{ ...progressFillStyle, width: `${progress}%` }} />
+              </div>
+            </div>
 
-    </div>
+            
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingBottom: "2px" }}>
+              <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px", opacity: 0.8 }}>
+                Pontos
+              </p>
+              <span style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "18px", fontWeight: "700", lineHeight: 1 }}>
+                {score}
+              </span>
+            </div>
+
+         
+            <span style={{
+              fontFamily: "'Gugi', sans-serif",
+              color: "#fff",
+              fontSize: "12px",
+              opacity: 0.95,
+              marginLeft: "auto",
+              paddingBottom: "2px",
+            }}>
+              Nível: {DIFFICULTY_LABEL[difficultyStr]}
+            </span>
+          </div>
+
+        
+          <svg
+            viewBox="0 0 900 90"
+            preserveAspectRatio="none"
+            style={{ display: "block", width: "100%", height: "75px", marginTop: "10px" }}
+          >
+            <path
+              d="M0,0 C80,70 200,80 380,30 C520,-10 680,75 900,20 L900,90 L0,90 Z"
+              fill="#fff"
+            />
+          </svg>
+        </header>
+
+       
+        <main style={mainStyle}>
+          <QuestionCard
+            key={q.id}
+            statement={q.statement}
+            imageUrl={q.imageUrl}
+            alternatives={q.alternatives}
+            onAnswer={handleAnswer}
+          />
+
+          {answered && (
+            <div style={{ textAlign: "right", marginTop: "16px" }}>
+              <button onClick={handleNext} style={navBtnStyle}>
+                {currentIndex + 1 >= questions.length ? "Ver resultado" : "Próxima →"}
+              </button>
+            </div>
+          )}
+        </main>
+
+        
+        <footer style={footerStyle}>
+          <img src={etecLogo} alt="Etec — Escola Técnica Estadual" style={{ height: "44px", objectFit: "contain" }} />
+        </footer>
+
+      </div>
+    </>
   );
 }
+
+
+const pageStyle: React.CSSProperties = {
+  minHeight:       "100vh",
+  backgroundColor: "#fff",
+  display:         "flex",
+  flexDirection:   "column",
+  fontFamily:      "sans-serif",
+  position:        "relative",
+  overflowX:       "hidden",
+};
+
+const fullCenter: React.CSSProperties = {
+  minHeight:      "100vh",
+  display:        "flex",
+  flexDirection:  "column",
+  alignItems:     "center",
+  justifyContent: "center",
+};
+
+const headerStyle: React.CSSProperties = {
+  position:        "relative",
+  backgroundColor: "#c6273f",
+  zIndex:          1,
+  overflow:        "hidden",
+};
+
+const voltarBtnStyle: React.CSSProperties = {
+  background:  "transparent",
+  border:      "none",
+  cursor:      "pointer",
+  padding:     0,
+  display:     "flex",
+  alignItems:  "center",
+  gap:         "8px",
+};
+
+const progressTrackStyle: React.CSSProperties = {
+  width:           "100%",
+  height:          "5px",
+  backgroundColor: "rgba(255,255,255,0.3)",
+  borderRadius:    "99px",
+  overflow:        "hidden",
+};
+
+const progressFillStyle: React.CSSProperties = {
+  height:          "100%",
+  backgroundColor: "#ff5252",
+  borderRadius:    "99px",
+  transition:      "width 0.4s ease",
+};
+
+const mainStyle: React.CSSProperties = {
+  flex:      1,
+  padding:   "20px 16px",
+  maxWidth:  "720px",
+  width:     "100%",
+  margin:    "0 auto",
+  boxSizing: "border-box",
+  position:  "relative",
+  zIndex:    1,
+};
+
+const footerStyle: React.CSSProperties = {
+  display:        "flex",
+  justifyContent: "center",
+  alignItems:     "center",
+  padding:        "12px 16px",
+  borderTop:      "1px solid #e8e0e0",
+  position:       "relative",
+  zIndex:         1,
+};
+
+const navBtnStyle: React.CSSProperties = {
+  padding:         "10px 24px",
+  backgroundColor: "#c6273f",
+  color:           "#fff",
+  border:          "none",
+  borderRadius:    "8px",
+  fontSize:        "15px",
+  fontWeight:      "600",
+  cursor:          "pointer",
+  fontFamily:      "'Gugi', sans-serif",
+};
