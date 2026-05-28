@@ -11,6 +11,7 @@ vi.mock("react-router-dom", () => ({
 describe("ModuleSelectPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
 
     localStorage.setItem(
       "usuario",
@@ -18,49 +19,44 @@ describe("ModuleSelectPage", () => {
     );
   });
 
-  it("renderiza os módulos e botão sair", () => {
+  it("renderiza a página inicial corretamente", () => {
     render(<ModuleSelectPage />);
 
+    expect(screen.getByText(/labquiz/i)).toBeInTheDocument();
+    expect(screen.getByText(/escolha um módulo/i)).toBeInTheDocument();
     expect(screen.getByText(/vidrarias/i)).toBeInTheDocument();
     expect(screen.getByText(/materiais metálicos/i)).toBeInTheDocument();
-
-    expect(screen.getByRole("button", { name: /sair/i })).toBeInTheDocument();
   });
 
-  it("abre modal de dificuldade ao clicar em um módulo", () => {
+  it("abre o modal ao clicar em um módulo", () => {
     render(<ModuleSelectPage />);
 
-    const buttons = screen.getAllByRole("button");
+    const buttons = screen.getAllByRole("button", {
+      name: /vidrarias/i,
+    });
 
-    const vidrariasButton = buttons.find((btn) =>
-      btn.textContent?.toLowerCase().includes("vidrarias")
-    );
+    const vidrariasButton = buttons[0];
 
-    expect(vidrariasButton).toBeTruthy();
-
-    fireEvent.click(vidrariasButton!);
+    fireEvent.click(vidrariasButton);
 
     expect(
       screen.getByText(/escolha a dificuldade/i)
     ).toBeInTheDocument();
   });
 
-  it("limpa localStorage ao clicar em sair", () => {
+  it("limpa localStorage ao clicar em sair e navega para home", () => {
     const removeSpy = vi.spyOn(Storage.prototype, "removeItem");
 
     render(<ModuleSelectPage />);
 
-    const logoutButton = screen
-      .getAllByRole("button")
-      .find((btn) => btn.textContent?.trim() === "Sair");
+    const sairButtons = screen.getAllByRole("button", {
+      name: /sair/i,
+    });
 
-    expect(logoutButton).toBeTruthy();
-
-    fireEvent.click(logoutButton!);
+    fireEvent.click(sairButtons[0]);
 
     expect(removeSpy).toHaveBeenCalledWith("token");
     expect(removeSpy).toHaveBeenCalledWith("usuario");
-
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 });
