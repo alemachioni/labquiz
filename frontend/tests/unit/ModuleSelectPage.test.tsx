@@ -23,24 +23,22 @@ describe("ModuleSelectPage", () => {
     render(<ModuleSelectPage />);
 
     expect(screen.getByText(/labquiz/i)).toBeInTheDocument();
-    expect(screen.getByText(/escolha um módulo/i)).toBeInTheDocument();
-    expect(screen.getByText(/vidrarias/i)).toBeInTheDocument();
-    expect(screen.getByText(/materiais metálicos/i)).toBeInTheDocument();
+    expect(screen.getByText(/selecione uma opção/i)).toBeInTheDocument();
+    expect(screen.getByText(/iniciar jogo/i)).toBeInTheDocument();
+    expect(screen.getByText(/estatísticas/i)).toBeInTheDocument();
   });
 
-  it("abre o modal ao clicar em um módulo", () => {
+  it("abre a tela de dificuldade ao clicar em iniciar jogo", () => {
     render(<ModuleSelectPage />);
 
-    const buttons = screen.getAllByRole("button", {
-      name: /vidrarias/i,
-    });
-
-    const vidrariasButton = buttons[0];
-
-    fireEvent.click(vidrariasButton);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /iniciar jogo/i,
+      })
+    );
 
     expect(
-      screen.getByText(/escolha a dificuldade/i)
+      screen.getByText(/selecione um modo de preferência/i)
     ).toBeInTheDocument();
   });
 
@@ -49,11 +47,11 @@ describe("ModuleSelectPage", () => {
 
     render(<ModuleSelectPage />);
 
-    const sairButtons = screen.getAllByRole("button", {
-      name: /sair/i,
-    });
-
-    fireEvent.click(sairButtons[0]);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /sair/i,
+      })
+    );
 
     expect(removeSpy).toHaveBeenCalledWith("token");
     expect(removeSpy).toHaveBeenCalledWith("usuario");
