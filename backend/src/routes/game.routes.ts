@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { buscarQuestoes, salvarResposta } from '../controllers/game.controller'
-import { autenticar } from '../middlewares/auth.middleware'
+import { buscarQuestoes, salvarResposta } from '../controllers/game.controller.js'
+import { autenticar } from '../middlewares/auth.middleware.js'
 
 const router = Router()
 

@@ -27,7 +27,7 @@ describe("QuestionCard", () => {
     const buttons = screen.getAllByRole("button", { name: new RegExp(text, "i") });
 
     return buttons.find((btn) =>
-      btn.getAttribute("style")?.includes("cursor: pointer")
+      btn.className.includes("cursor-pointer")
     )!;
   };
 

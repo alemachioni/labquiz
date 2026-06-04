@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DecorativeDots from "../components/shared/DecorativeDots";
+import WaveFooter from "../components/shared/WaveFooter";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [error,    setError]    = useState<string | null>(null);
+  const [loading,  setLoading]  = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -15,9 +17,9 @@ export default function LoginPage() {
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL ?? ""}/auth/login`, {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body:    JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
@@ -26,9 +28,8 @@ export default function LoginPage() {
       }
 
       const { token, usuario } = await res.json();
-      localStorage.setItem("token", token);
+      localStorage.setItem("token",   token);
       localStorage.setItem("usuario", JSON.stringify(usuario));
-
       navigate("/modulos");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Erro ao fazer login");
@@ -38,115 +39,74 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={cardStyle}>
-        {/* Logo / título */}
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#1a73e8", margin: 0 }}>
-            🧪 LabQuiz
-          </h1>
-          <p style={{ color: "#666", marginTop: "6px", fontSize: "14px" }}>
-            Quiz interativo de laboratório
-          </p>
+    <div className="min-h-dvh bg-white flex flex-col items-center justify-center font-sans px-4 relative overflow-x-hidden">
+      <DecorativeDots />
+
+      <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.12)] p-8 sm:p-10 w-full max-w-sm sm:max-w-md relative z-10">
+
+        <div className="text-center mb-7">
+          <h1 className="font-gugi text-4xl sm:text-5xl text-red-primary m-0">LabQuiz</h1>
+          <p className="text-gray-500 mt-1.5 text-sm sm:text-base">Insira seus dados!</p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div style={fieldStyle}>
-            <label style={labelStyle}>E-mail</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-              style={inputStyle}
-            />
+          <div className="mb-4">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-600 mb-1.5">
+              Digite seu usuário:
+            </label>
+            <div className="relative flex items-center">
+              <span className="absolute left-3 text-base text-gray-400 pointer-events-none" aria-hidden="true">✉</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+                className="w-full py-3 pr-3 pl-10 border border-gray-300 rounded-lg text-sm sm:text-base outline-none focus:border-red-primary transition-colors box-border"
+              />
+            </div>
           </div>
 
-          <div style={fieldStyle}>
-            <label style={labelStyle}>Senha</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              style={inputStyle}
-            />
+          <div className="mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-600 mb-1.5">
+              Digite sua senha:
+            </label>
+            <div className="relative flex items-center">
+              <span className="absolute left-3 text-base text-gray-400 pointer-events-none" aria-hidden="true">🔒</span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full py-3 pr-3 pl-10 border border-gray-300 rounded-lg text-sm sm:text-base outline-none focus:border-red-primary transition-colors box-border"
+              />
+            </div>
+          </div>
+
+          <div className="text-right mb-5 -mt-2">
+            <span className="text-xs sm:text-sm text-red-primary cursor-pointer">Esqueci a senha</span>
           </div>
 
           {error && (
-            <p style={{ color: "#dc3545", fontSize: "14px", marginBottom: "12px" }}>
-              {error}
-            </p>
+            <p className="text-red-primary text-sm mb-3">{error}</p>
           )}
 
-          <button type="submit" disabled={loading} style={btnStyle}>
-            {loading ? "Entrando…" : "Entrar"}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 sm:py-3.5 bg-red-primary text-white font-bold text-base sm:text-lg rounded-lg mt-1 font-gugi disabled:opacity-60 transition-opacity cursor-pointer"
+          >
+            {loading ? "Entrando…" : "Entrar >"}
           </button>
         </form>
 
-        {/* Atalho de demonstração — remove antes da entrega final */}
-        <p style={{ textAlign: "center", marginTop: "20px", fontSize: "13px", color: "#888" }}>
+        <p className="text-center mt-5 text-xs text-gray-400">
           Demo: <strong>aluno@labquiz.com</strong> / <strong>labquiz123</strong>
         </p>
       </div>
+
+      <WaveFooter />
     </div>
   );
 }
-
-// ─── Estilos ──────────────────────────────────────────────────────────────────
-
-const pageStyle: React.CSSProperties = {
-  minHeight: "100vh",
-  backgroundColor: "#f0f4f8",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontFamily: "sans-serif",
-  padding: "16px",
-};
-
-const cardStyle: React.CSSProperties = {
-  backgroundColor: "#fff",
-  borderRadius: "16px",
-  padding: "40px 36px",
-  width: "100%",
-  maxWidth: "400px",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-};
-
-const fieldStyle: React.CSSProperties = {
-  marginBottom: "16px",
-};
-
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: "13px",
-  fontWeight: "600",
-  color: "#444",
-  marginBottom: "6px",
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "10px 14px",
-  border: "1.5px solid #ddd",
-  borderRadius: "8px",
-  fontSize: "15px",
-  boxSizing: "border-box",
-  outline: "none",
-};
-
-const btnStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "12px",
-  backgroundColor: "#1a73e8",
-  color: "#fff",
-  border: "none",
-  borderRadius: "8px",
-  fontSize: "16px",
-  fontWeight: "700",
-  cursor: "pointer",
-  marginTop: "4px",
-};
