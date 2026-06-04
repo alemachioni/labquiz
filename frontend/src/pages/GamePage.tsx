@@ -110,7 +110,7 @@ export default function GamePage() {
         }),
       });
     } catch {
-      
+      //erro silecioso, jogo termina via finally
     } finally {
       setGameOver(true);
     }
