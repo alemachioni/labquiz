@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 Iniciando seed...')
+  console.log('Iniciando seed...')
 
   // ── Usuários ────────────────────────────────────────────────────────────────
   const senhaHash = await bcrypt.hash('labquiz123', 10)
@@ -31,7 +31,7 @@ async function main() {
     },
   })
 
-  console.log('✅ Usuários criados')
+  console.log('Usuários criados')
 
   // ── Questões ────────────────────────────────────────────────────────────────
   const questoes = [
@@ -168,16 +168,16 @@ async function main() {
     })
   }
 
-  console.log(`✅ ${questoes.length} questões criadas`)
+  console.log(`${questoes.length} questões criadas`)
   console.log('')
-  console.log('📋 Credenciais para teste:')
+  console.log('Credenciais para teste:')
   console.log('   Professor → professor@labquiz.com / labquiz123')
   console.log('   Aluno     → aluno@labquiz.com    / labquiz123')
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Erro no seed:', e)
+    console.error('Erro no seed:', e)
     process.exit(1)
   })
   .finally(() => prisma.$disconnect())
