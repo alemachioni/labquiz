@@ -1,8 +1,7 @@
-typescript
 import { Router } from 'express'
-import { listarQuestoes, criarQuestao, atualizarQuestao, deletarQuestao } from '../controllers/question.controller'
-import { autenticar } from '../middlewares/auth.middleware'
-import { apenasProfessor } from '../middlewares/role.middleware'
+import { listarQuestoes, criarQuestao, atualizarQuestao, deletarQuestao } from '../controllers/question.controller.js'
+import { autenticar } from '../middlewares/auth.middleware.js'
+import { apenasProfessor } from '../middlewares/role.middleware.js'
 
 const router = Router()
 

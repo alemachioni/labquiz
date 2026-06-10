@@ -1,9 +1,9 @@
-typescriptimport express from 'express'
+import express from 'express'
 import cors from 'cors'
-import authRoutes from './routes/auth.routes'
-import gameRoutes from './routes/game.routes'
-import questionRoutes from './routes/question.routes'
-import reportRoutes from './routes/report.routes'
+import authRoutes from './routes/auth.routes.js'
+import gameRoutes from './routes/game.routes.js'
+import questionRoutes from './routes/question.routes.js'
+import reportRoutes from './routes/report.routes.js'
 
 const app = express()
 app.use(cors())

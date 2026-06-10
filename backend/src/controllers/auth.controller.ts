@@ -1,4 +1,3 @@
-typescript
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -50,10 +49,12 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ erro: 'E-mail e senha são obrigatórios' })
     }
 
-    const usuario = await prisma.user.findUnique({ where: { email } })
-    if (!usuario) {
-      return res.status(401).json({ erro: 'E-mail ou senha incorretos' })
-    }
+  const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn']
+  const token = jwt.sign(
+    { userId: usuario.id, role: usuario.role },
+    process.env.JWT_SECRET!,
+    { expiresIn }
+  )
 
     const senhaCorreta = await bcrypt.compare(password, usuario.password)
     if (!senhaCorreta) {

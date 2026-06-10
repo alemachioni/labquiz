@@ -1,8 +1,7 @@
-typescript
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
-import { autenticar } from '../middlewares/auth.middleware'
-import { apenasProfessor } from '../middlewares/role.middleware'
+import { autenticar } from '../middlewares/auth.middleware.js'
+import { apenasProfessor } from '../middlewares/role.middleware.js'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -27,8 +26,7 @@ const prisma = new PrismaClient()
  * description: Erro interno do servidor
  */
 router.get('/:studentId', autenticar, apenasProfessor, async (req, res) => {
-  try {
-    const { studentId } = req.params
+  const studentId = req.params.studentId as string
 
     const sessoes = await prisma.gameSession.findMany({
       where: { studentId },
