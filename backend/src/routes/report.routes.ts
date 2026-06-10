@@ -7,6 +7,25 @@ import { apenasProfessor } from '../middlewares/role.middleware'
 const router = Router()
 const prisma = new PrismaClient()
 
+/**
+ * @swagger
+ * /reports/{studentId}:
+ * get:
+ * summary: Busca o relatório de desempenho de um estudante específico
+ * tags: [Reports]
+ * parameters:
+ * - in: path
+ * name: studentId
+ * required: true
+ * schema:
+ * type: string
+ * description: ID do estudante
+ * responses:
+ * 200:
+ * description: Dados do relatório retornados com sucesso
+ * 500:
+ * description: Erro interno do servidor
+ */
 router.get('/:studentId', autenticar, apenasProfessor, async (req, res) => {
   try {
     const { studentId } = req.params
