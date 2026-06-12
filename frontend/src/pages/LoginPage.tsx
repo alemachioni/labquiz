@@ -30,7 +30,7 @@ export default function LoginPage() {
       const { token, usuario } = await res.json();
       localStorage.setItem("token",   token);
       localStorage.setItem("usuario", JSON.stringify(usuario));
-      navigate("/modulos");
+      navigate(usuario.role === "TEACHER" ? "/professor" : "/modulos");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Erro ao fazer login");
     } finally {
