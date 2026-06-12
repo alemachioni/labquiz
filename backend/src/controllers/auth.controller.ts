@@ -41,9 +41,9 @@ export const registrar = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ erro: 'E-mail e senha são obrigatórios' })
@@ -75,8 +75,9 @@ export const login = async (req: Request, res: Response) => {
         role: usuario.role
       }
     })
+    
   } catch (error) {
-    console.error("Erro no registro:", error);
+    console.error(error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
