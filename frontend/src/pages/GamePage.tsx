@@ -63,6 +63,8 @@ export default function GamePage() {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [answered,     setAnswered]         = useState(false);
   const [gameOver,     setGameOver]         = useState(false);
+  const [eliminated,   setEliminated]       = useState<string[]>([]);
+  const [retryKey,     setRetryKey]         = useState(0);
 
   const category      = searchParams.get("category")   ?? "VIDRARIA";
   const difficultyStr = searchParams.get("difficulty") ?? "FACIL";
@@ -71,8 +73,22 @@ export default function GamePage() {
   useEffect(() => {
     fetchQuestions(category, difficulty)
       .then((data) => { setQuestions(data); setLoading(false); })
-      .catch(()    => { setError("Não foi possível carregar as questões."); setLoading(false); });
-  }, [category, difficulty]);
+      .catch(()    => { setError("Não conseguimos conectar ao nosso laboratório (API). Parece que os reagentes acabaram ou o servidor está em manutenção."); setLoading(false); });
+  }, [category, difficulty, retryKey]);
+
+  function handleRetry() {
+    setError(null);
+    setLoading(true);
+    setRetryKey((k) => k + 1);
+  }
+
+  function handleEliminate() {
+    const q = questions[currentIndex];
+    if (!q || answered || eliminated.length > 0) return;
+    const wrong = q.alternatives.filter((a) => !a.isCorrect);
+    const shuffled = [...wrong].sort(() => Math.random() - 0.5);
+    setEliminated(shuffled.slice(0, 2).map((a) => a.id));
+  }
 
   function handleAnswer(_id: string, isCorrect: boolean) {
     setAnswered(true);
@@ -85,6 +101,7 @@ export default function GamePage() {
     } else {
       setCurrentIndex((i) => i + 1);
       setAnswered(false);
+      setEliminated([]);
     }
   }
 
@@ -123,6 +140,7 @@ export default function GamePage() {
     setScore(0);
     setCorrectAnswers(0);
     setAnswered(false);
+    setEliminated([]);
     setGameOver(false);
   }
 
@@ -136,9 +154,40 @@ export default function GamePage() {
   );
 
   if (error) return (
-    <div style={fullCenter}>
-      <p style={{ color: "#c6273f", marginBottom: "16px" }}>{error}</p>
-      <button onClick={() => navigate("/modulos")} style={navBtnStyle}>Voltar</button>
+    <div style={pageStyle}>
+      <header style={headerStyle}>
+        <div style={{ height: "60px" }} />
+        <svg
+          viewBox="0 0 900 90"
+          preserveAspectRatio="none"
+          style={{ display: "block", width: "100%", height: "75px" }}
+        >
+          <path d="M0,0 C80,70 200,80 380,30 C520,-10 680,75 900,20 L900,90 L0,90 Z" fill="#fff" />
+        </svg>
+      </header>
+
+      <main style={{ ...fullCenter, minHeight: "auto", flex: 1, padding: "24px 20px", textAlign: "center" }}>
+        <h1 style={{ fontFamily: "'Gugi', sans-serif", fontSize: "40px", color: "#111", margin: "0 0 4px" }}>
+          LabQuiz
+        </h1>
+        <h2 style={{ fontFamily: "'Gugi', sans-serif", fontSize: "22px", color: "#111", margin: "0 0 16px" }}>
+          OPS!! O experimento falhou :(
+        </h2>
+        <p style={{ color: "#555", maxWidth: "420px", margin: "0 0 24px", lineHeight: 1.5 }}>{error}</p>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button onClick={handleRetry} style={navBtnStyle}>Tente novamente</button>
+          <button
+            onClick={() => navigate("/modulos")}
+            style={{ ...navBtnStyle, backgroundColor: "#fff", color: "#c6273f", border: "2px solid #c6273f" }}
+          >
+            Voltar
+          </button>
+        </div>
+      </main>
+
+      <footer style={footerStyle}>
+        <img src={etecLogo} alt="Etec — Escola Técnica Estadual" style={{ height: "44px", objectFit: "contain" }} />
+      </footer>
     </div>
   );
 
@@ -249,11 +298,30 @@ export default function GamePage() {
 
        
         <main style={mainStyle}>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
+            <button
+              onClick={handleEliminate}
+              disabled={answered || eliminated.length > 0}
+              style={{
+                ...navBtnStyle,
+                backgroundColor: "#910101",
+                fontSize: "13px",
+                padding: "8px 16px",
+                opacity: answered || eliminated.length > 0 ? 0.5 : 1,
+                cursor:  answered || eliminated.length > 0 ? "default" : "pointer",
+              }}
+              title="Elimina duas alternativas erradas"
+            >
+              ✕ Elimina 2
+            </button>
+          </div>
+
           <QuestionCard
             key={q.id}
             statement={q.statement}
             imageUrl={q.imageUrl}
             alternatives={q.alternatives}
+            eliminatedIds={eliminated}
             onAnswer={handleAnswer}
           />
 
