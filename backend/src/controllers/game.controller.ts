@@ -15,7 +15,7 @@ export const buscarQuestoes = async (req: Request, res: Response) => {
       // Alterado para select para incluir explicitamente o campo hint conforme a instrução
       select: {
         id: true,
-        text: true,
+        prompt: true,
         category: true,
         difficulty: true,
         hint: true,        // <-- Incluído aqui
