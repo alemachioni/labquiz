@@ -28,12 +28,12 @@ const DIFICULDADES: { id: Dificuldade; label: string }[] = [
   { id: "ALEATORIO", label: "Aleatório" },
 ];
 
-const ACTIVE_CATEGORY = MODULOS[0];
-type Screen = "main" | "difficulty";
+type Screen = "main" | "module" | "difficulty";
 
 export default function ModuleSelectPage() {
   const navigate = useNavigate();
   const [screen, setScreen] = useState<Screen>("main");
+  const [selectedModule, setSelectedModule] = useState<Modulo | null>(null);
 
   const usuario = JSON.parse(localStorage.getItem("usuario") ?? "{}");
 
@@ -43,7 +43,13 @@ export default function ModuleSelectPage() {
     navigate("/");
   }
 
+  function handleSelectModule(modulo: Modulo) {
+    setSelectedModule(modulo);
+    setScreen("difficulty");
+  }
+
   function handleIniciar(dificuldade: string) {
+    if (!selectedModule) return;
     let resolved = dificuldade;
     if (dificuldade === "ALEATORIO") {
       const opcoes = ["FACIL", "MEDIO", "DIFICIL"] as const;
@@ -51,7 +57,7 @@ export default function ModuleSelectPage() {
       const idx = Math.floor(Math.random() * opcoes.length);
       resolved = opcoes[idx];
     }
-    navigate(`/quiz?category=${ACTIVE_CATEGORY.category}&difficulty=${resolved}`);
+    navigate(`/quiz?category=${selectedModule.category}&difficulty=${resolved}`);
   }
 
   return (
@@ -75,7 +81,7 @@ export default function ModuleSelectPage() {
             <div className="flex flex-col gap-3.5">
               <button
                 className="w-full py-3.5 sm:py-4 bg-white border-2 border-gray-800 rounded-xl text-sm sm:text-base font-semibold text-gray-900 cursor-pointer text-center hover:bg-gray-50 transition-colors"
-                onClick={() => setScreen("difficulty")}
+                onClick={() => setScreen("module")}
               >
                 Iniciar jogo
               </button>
@@ -95,11 +101,36 @@ export default function ModuleSelectPage() {
               </button>
             </div>
           </>
-        ) : (
+        ) : screen === "module" ? (
           <>
             <button
               className="text-red-primary text-sm sm:text-base font-semibold font-gugi pb-4 block bg-transparent border-none cursor-pointer"
               onClick={() => setScreen("main")}
+            >
+              &lt; Voltar
+            </button>
+
+            <h2 className="font-gugi text-2xl sm:text-3xl text-gray-900 mb-2 text-center">Módulos</h2>
+            <p className="text-center text-gray-500 text-sm sm:text-base mb-8">Selecione um módulo</p>
+
+            <div className="flex flex-col gap-3.5">
+              {MODULOS.map((m) => (
+                <button
+                  key={m.id}
+                  className="w-full py-3.5 sm:py-4 bg-white border-2 border-gray-800 rounded-xl text-sm sm:text-base font-semibold text-gray-900 cursor-pointer text-left flex items-center gap-3 hover:bg-gray-50 transition-colors"
+                  onClick={() => handleSelectModule(m)}
+                >
+                  <span className="text-2xl">{m.icon}</span>
+                  <span className="font-gugi">{m.titulo}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <button
+              className="text-red-primary text-sm sm:text-base font-semibold font-gugi pb-4 block bg-transparent border-none cursor-pointer"
+              onClick={() => setScreen("module")}
             >
               &lt; Voltar
             </button>

@@ -28,12 +28,30 @@ describe("ModuleSelectPage", () => {
     expect(screen.getByText(/estatísticas/i)).toBeInTheDocument();
   });
 
-  it("abre a tela de dificuldade ao clicar em iniciar jogo", () => {
+  it("abre a tela de módulos ao clicar em iniciar jogo", () => {
     render(<ModuleSelectPage />);
 
     fireEvent.click(
       screen.getByRole("button", {
         name: /iniciar jogo/i,
+      })
+    );
+
+    expect(screen.getByText(/selecione um módulo/i)).toBeInTheDocument();
+  });
+
+  it("abre a tela de dificuldade ao selecionar um módulo", () => {
+    render(<ModuleSelectPage />);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /iniciar jogo/i,
+      })
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /vidrarias/i,
       })
     );
 
