@@ -120,8 +120,7 @@ export default function ModuleSelectPage() {
                   className="w-full py-3.5 sm:py-4 bg-white border-2 border-gray-800 rounded-xl text-sm sm:text-base font-semibold text-gray-900 cursor-pointer text-left flex items-center gap-3 hover:bg-gray-50 transition-colors"
                   onClick={() => handleSelectModule(m)}
                 >
-                  <span className="text-2xl">{m.icon}</span>
-                  <span className="font-gugi">{m.titulo}</span>
+                  <span className="font-gugi">• {m.titulo}</span>
                 </button>
               ))}
             </div>

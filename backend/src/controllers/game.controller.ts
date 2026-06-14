@@ -19,6 +19,7 @@ export const buscarQuestoes = async (req: Request, res: Response) => {
         category: true,
         difficulty: true,
         hint: true,        // <-- Incluído aqui
+        imageUrl: true,
         options: true      // <-- Traz a relação com as alternativas
       },
       take: 10
