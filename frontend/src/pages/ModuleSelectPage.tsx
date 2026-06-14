@@ -80,7 +80,10 @@ export default function ModuleSelectPage() {
                 Iniciar jogo
               </button>
 
-              <button className="w-full py-3.5 sm:py-4 bg-white border-2 border-gray-800 rounded-xl text-sm sm:text-base font-semibold text-gray-900 cursor-pointer text-center hover:bg-gray-50 transition-colors">
+              <button
+                className="w-full py-3.5 sm:py-4 bg-white border-2 border-gray-800 rounded-xl text-sm sm:text-base font-semibold text-gray-900 cursor-pointer text-center hover:bg-gray-50 transition-colors"
+                onClick={() => navigate("/estatisticas")}
+              >
                 Estatísticas
               </button>
 

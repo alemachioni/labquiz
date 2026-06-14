@@ -4,6 +4,7 @@ import SplashPage from "./pages/SplashPage";
 import LoginPage from "./pages/LoginPage";
 import ModuleSelectPage from "./pages/ModuleSelectPage";
 import GamePage from "./pages/GamePage";
+import EstatisticasPage from "./pages/EstatisticasPage";
 import TeacherHomePage from "./pages/teacher/TeacherHomePage";
 import AddQuestionPage from "./pages/teacher/AddQuestionPage";
 import ManageQuestionsPage from "./pages/teacher/ManageQuestionsPage";
@@ -70,6 +71,14 @@ export default function App() {
           element={
             <RotaProtegida>
               <GamePage />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/estatisticas"
+          element={
+            <RotaProtegida>
+              <EstatisticasPage />
             </RotaProtegida>
           }
         />
