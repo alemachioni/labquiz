@@ -4,6 +4,12 @@ import DecorativeDots from "../../components/shared/DecorativeDots";
 import WaveFooter from "../../components/shared/WaveFooter";
 import { apiFetch } from "../../utils/api";
 
+type ApiOption = {
+  id: string;
+  text: string | null;
+  isCorrect: boolean;
+};
+
 type ApiQuestion = {
   id: string;
   type: string;
@@ -11,6 +17,7 @@ type ApiQuestion = {
   category: string;
   prompt: string;
   imageUrl?: string | null;
+  options: ApiOption[];
 };
 
 const NIVEL_LABEL: Record<number, string> = { 1: "Fácil", 2: "Médio", 3: "Difícil" };
@@ -33,6 +40,8 @@ export default function ManageQuestionsPage() {
   const [editingId,      setEditingId]      = useState<string | null>(null);
   const [editPrompt,     setEditPrompt]     = useState("");
   const [editDifficulty, setEditDifficulty] = useState(1);
+  const [editOptions,    setEditOptions]    = useState(["", "", "", ""]);
+  const [editCorrect,    setEditCorrect]    = useState(0);
   const [saving,         setSaving]         = useState(false);
 
   useEffect(() => {
@@ -59,14 +68,36 @@ export default function ManageQuestionsPage() {
     setEditingId(q.id);
     setEditPrompt(q.prompt);
     setEditDifficulty(q.difficulty);
+    const opts = q.options ?? [];
+    setEditOptions([0, 1, 2, 3].map((i) => opts[i]?.text ?? ""));
+    const correctIdx = opts.findIndex((o) => o.isCorrect);
+    setEditCorrect(correctIdx >= 0 ? correctIdx : 0);
+  }
+
+  function setEditOption(i: number, value: string) {
+    setEditOptions((prev) => prev.map((o, idx) => (idx === i ? value : o)));
   }
 
   async function handleSave(id: string) {
+    const filled = editOptions.map((text, i) => ({ text: text.trim(), index: i })).filter((o) => o.text);
+    if (filled.length < 2) {
+      setError("É necessário ao menos 2 alternativas preenchidas.");
+      return;
+    }
+    if (!editOptions[editCorrect]?.trim()) {
+      setError("A alternativa correta precisa estar preenchida.");
+      return;
+    }
+
     setSaving(true);
     try {
       const res = await apiFetch(`/questions/${id}`, {
         method: "PUT",
-        body: JSON.stringify({ prompt: editPrompt.trim(), difficulty: editDifficulty }),
+        body: JSON.stringify({
+          prompt: editPrompt.trim(),
+          difficulty: editDifficulty,
+          options: filled.map((o) => ({ text: o.text, isCorrect: o.index === editCorrect })),
+        }),
       });
       if (!res.ok) throw new Error();
       const updated: ApiQuestion = await res.json();
@@ -156,6 +187,30 @@ export default function ManageQuestionsPage() {
                     <option value={2}>Médio</option>
                     <option value={3}>Difícil</option>
                   </select>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {["A", "B", "C", "D"].map((letra, i) => (
+                      <div key={letra} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={editOptions[i]}
+                          onChange={(e) => setEditOption(i, e.target.value)}
+                          placeholder={`Alternativa ${letra}`}
+                          className={inputClass}
+                        />
+                        <input
+                          type="radio"
+                          name={`correta-${q.id}`}
+                          title="Marcar como correta"
+                          checked={editCorrect === i}
+                          onChange={() => setEditCorrect(i)}
+                          className="w-5 h-5 accent-green-correct cursor-pointer flex-shrink-0"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-400 -mt-1">Marque o círculo da alternativa correta.</p>
+
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleSave(q.id)}

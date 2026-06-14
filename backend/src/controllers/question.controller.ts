@@ -36,8 +36,22 @@ export const criarQuestao = async (req: Request, res: Response) => {
 export const atualizarQuestao = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string
-    const { prompt, imageUrl, difficulty } = req.body
-    const questao = await prisma.question.update({ where: { id }, data: { prompt, imageUrl, difficulty } })
+    const { prompt, imageUrl, difficulty, options } = req.body
+
+    if (options) {
+      await prisma.option.deleteMany({ where: { questionId: id } })
+    }
+
+    const questao = await prisma.question.update({
+      where: { id },
+      data: {
+        prompt,
+        imageUrl,
+        difficulty,
+        ...(options ? { options: { create: options } } : {})
+      },
+      include: { options: true }
+    })
     return res.json(questao)
   } catch (error) {
     console.error("Erro ao atualizar questão:", error)
