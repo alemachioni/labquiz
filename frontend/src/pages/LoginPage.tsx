@@ -102,7 +102,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center mt-5 text-xs text-gray-400">
-          Demo: <strong>aluno@labquiz.com</strong> / <strong>labquiz123</strong>
+          Demo: <strong>teste@aluno.cps.sp.gov.br</strong> / <strong>labquiz123</strong>
         </p>
       </div>
 
