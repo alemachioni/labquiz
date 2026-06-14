@@ -8,6 +8,37 @@ const prisma = new PrismaClient()
 
 /**
  * @swagger
+ * /reports/me:
+ * get:
+ * summary: Busca o relatório de desempenho do aluno autenticado
+ * tags: [Reports]
+ * responses:
+ * 200:
+ * description: Dados do relatório retornados com sucesso
+ * 403:
+ * description: Acesso restrito ao aluno
+ * 500:
+ * description: Erro interno do servidor
+ */
+router.get('/me', autenticar, async (req, res) => {
+  try {
+    if (req.body.userRole !== 'STUDENT') {
+      return res.status(403).json({ erro: 'Acesso restrito ao aluno' })
+    }
+    const studentId = req.body.userId as string
+    const sessoes = await prisma.gameSession.findMany({
+      where: { studentId },
+      orderBy: { playedAt: 'desc' }
+    })
+    return res.json(sessoes)
+  } catch (error) {
+    console.error("Erro ao gerar relatório:", error)
+    res.status(500).json({ error: 'Erro interno do servidor' })
+  }
+})
+
+/**
+ * @swagger
  * /reports/{studentId}:
  * get:
  * summary: Busca o relatório de desempenho de um estudante específico
