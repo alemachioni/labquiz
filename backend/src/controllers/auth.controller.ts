@@ -74,7 +74,6 @@ export const login = async (req: Request, res: Response) => {
       process.env.JWT_SECRET!,
       { expiresIn }
     )
-D
     return res.json({
       token,
       usuario: {
