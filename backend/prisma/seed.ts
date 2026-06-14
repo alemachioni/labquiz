@@ -10,22 +10,22 @@ async function main() {
   const senhaHash = await bcrypt.hash('labquiz123', 10)
 
   const professor = await prisma.user.upsert({
-    where: { email: 'professor@labquiz.com' },
+    where: { email: 'teste@cps.sp.gov.br' }, // Atualizado aqui
     update: {},
     create: {
       name: 'Professor Demo',
-      email: 'professor@labquiz.com',
+      email: 'teste@cps.sp.gov.br',          // Atualizado aqui
       password: senhaHash,
       role: Role.TEACHER,
     },
   })
 
   await prisma.user.upsert({
-    where: { email: 'aluno@labquiz.com' },
+    where: { email: 'teste@aluno.cps.sp.gov.br' }, // Atualizado aqui
     update: {},
     create: {
       name: 'Aluno Demo',
-      email: 'aluno@labquiz.com',
+      email: 'teste@aluno.cps.sp.gov.br',          // Atualizado aqui
       password: senhaHash,
       role: Role.STUDENT,
     },
@@ -170,9 +170,9 @@ async function main() {
 
   console.log(`${questoes.length} questões criadas`)
   console.log('')
-  console.log('Credenciais para teste:')
-  console.log('   Professor → professor@labquiz.com / labquiz123')
-  console.log('   Aluno     → aluno@labquiz.com    / labquiz123')
+  console.log('📋 Credenciais para teste:')
+  console.log('   Professor → teste@cps.sp.gov.br / labquiz123')       // Atualizado no console
+  console.log('   Aluno     → teste@aluno.cps.sp.gov.br / labquiz123') // Atualizado no console
 }
 
 main()

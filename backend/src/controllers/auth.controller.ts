@@ -36,8 +36,8 @@ export const registrar = async (req: Request, res: Response) => {
       role: usuario.role
     })
   } catch (error) {
-    console.error("Erro no login:", error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error("Erro no registro:", error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
 
@@ -54,6 +54,15 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ erro: 'E-mail ou senha incorretos' })
     }
 
+    // 2. Validação do padrão de e-mail institucional conforme a role
+    if (usuario.role === 'STUDENT' && !email.endsWith('@aluno.cps.sp.gov.br')) {
+      return res.status(401).json({ erro: 'Use seu e-mail institucional de aluno' })
+    }
+    if (usuario.role === 'TEACHER' && !email.endsWith('@cps.sp.gov.br')) {
+      return res.status(401).json({ erro: 'Use seu e-mail institucional de professor' })
+    }
+
+    // 3. Verifica se a senha está correta
     const senhaCorreta = await bcrypt.compare(password, usuario.password)
     if (!senhaCorreta) {
       return res.status(401).json({ erro: 'E-mail ou senha incorretos' })
@@ -65,7 +74,6 @@ export const login = async (req: Request, res: Response) => {
       process.env.JWT_SECRET!,
       { expiresIn }
     )
-
     return res.json({
       token,
       usuario: {
@@ -76,7 +84,7 @@ export const login = async (req: Request, res: Response) => {
     })
     
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error("Erro no login:", error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
