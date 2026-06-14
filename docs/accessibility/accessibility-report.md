@@ -1,31 +1,58 @@
-# Relatório de Acessibilidade
+# Detalhamento dos Problemas Identificados pelo Axe DevTools
 
-# Ferramenta utilizada
+# Problema 1 – Contraste insuficiente no texto de demonstração
 
-Axe DevTools
+O texto de demonstração exibido na tela de login apresenta contraste insuficiente entre a cor do texto (#9ca3af) e o fundo branco (#ffffff).
 
-# Ambiente avaliado
+# Impacto
 
-https://labquiz-vsp4.vercel.app
+Usuários com baixa visão ou dificuldades de percepção de contraste podem ter dificuldade para visualizar o conteúdo.
 
-# Data da auditoria
+# Resultado da auditoria
 
-14/06/2026
+Contraste encontrado: 2.53:1
+Contraste mínimo exigido pela WCAG 2.1 AA: 4.5:1
 
-# Resultados
+# Possível correção
 
-Foi realizada uma auditoria automática de acessibilidade utilizando a extensão Axe DevTools no ambiente de produção da aplicação.
+Utilizar uma tonalidade mais escura para o texto, como `text-gray-600` ou `text-gray-700`.
 
-A análise identificou:
+# Problema 2 – Contraste insuficiente no e-mail de demonstração
 
-* 3 problemas automáticos
-* 0 problemas críticos
-* 3 problemas sérios
-* 0 problemas moderados
-* 0 problemas leves
+O endereço de e-mail utilizado para acesso de demonstração herda a mesma cor com baixo contraste do texto principal.
 
-A evidência da auditoria encontra-se anexada nesta pasta.
+# Impacto
 
-## Evidências
+Pode dificultar a leitura das credenciais disponibilizadas para teste do sistema.
 
-docs/accessibility/axe-scan.png
+# Resultado da auditoria
+
+Contraste encontrado: 2.53:1
+Contraste mínimo exigido pela WCAG 2.1 AA: 4.5:1
+
+# Possível correção
+
+Aplicar uma cor mais escura ao elemento ou ao texto pai para atender aos critérios de contraste da WCAG.
+
+# Problema 3 – Contraste insuficiente na senha de demonstração
+
+A senha de demonstração apresentada na tela de login possui contraste insuficiente em relação ao fundo.
+
+# Impacto
+
+Usuários podem ter dificuldade para visualizar as credenciais de acesso disponibilizadas para teste.
+
+# Resultado da auditoria
+
+Contraste encontrado: 2.53:1
+Contraste mínimo exigido pela WCAG 2.1 AA: 4.5:1
+
+# Possível correção
+
+Utilizar uma cor mais escura para o texto ou aumentar o contraste geral da seção onde as credenciais são exibidas.
+
+# Conclusão
+
+A auditoria identificou três ocorrências classificadas como "Serious". Todas estão relacionadas ao mesmo tipo de problema: contraste insuficiente entre texto e fundo na área de credenciais de demonstração da tela de login.
+
+Nenhum problema crítico foi identificado durante a análise.
