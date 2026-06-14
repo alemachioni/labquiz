@@ -19,6 +19,7 @@ export type QuestionCardProps = {
   type?: QuestionType;
   alternatives?: Alternative[];
   pairs?: MatchingPair[];
+  eliminatedIds?: string[];
   onAnswer: (selectedId: string, isCorrect: boolean) => void;
 };
 
@@ -28,6 +29,7 @@ export default function QuestionCard({
   type = "MULTIPLE_CHOICE",
   alternatives = [],
   pairs = [],
+  eliminatedIds = [],
   onAnswer,
 }: QuestionCardProps) {
   if (type === "MATCHING") {
@@ -46,6 +48,7 @@ export default function QuestionCard({
       statement={statement}
       imageUrl={imageUrl}
       alternatives={alternatives}
+      eliminatedIds={eliminatedIds}
       onAnswer={onAnswer}
     />
   );
@@ -57,18 +60,20 @@ function MultipleChoiceCard({
   statement,
   imageUrl,
   alternatives,
+  eliminatedIds = [],
   onAnswer,
 }: {
   statement: string;
   imageUrl?: string;
   alternatives: Alternative[];
+  eliminatedIds?: string[];
   onAnswer: (selectedId: string, isCorrect: boolean) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const isRevealed = selectedId !== null;
 
   function handleClick(alt: Alternative) {
-    if (isRevealed) return;
+    if (isRevealed || eliminatedIds.includes(alt.id)) return;
     setSelectedId(alt.id);
     onAnswer(alt.id, alt.isCorrect);
   }
@@ -115,6 +120,7 @@ function MultipleChoiceCard({
                 isCorrect={alt.isCorrect}
                 isSelected={selectedId === alt.id}
                 isRevealed={isRevealed}
+                isEliminated={eliminatedIds.includes(alt.id)}
                 onClick={() => handleClick(alt)}
               />
             ))}

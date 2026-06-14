@@ -21,3 +21,9 @@ npm-debug.log*
 # Editor
 .vscode/
 .idea/
+/generated/prisma
+
+# JS compilado do TypeScript (gerado por tsc, nao versionar)
+frontend/src/**/*.js
+frontend/tests/**/*.js
+frontend/vitest.setup.js
