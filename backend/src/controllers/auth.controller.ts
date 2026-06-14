@@ -36,12 +36,12 @@ export const registrar = async (req: Request, res: Response) => {
       role: usuario.role
     })
   } catch (error) {
-    console.error("Erro no login:", error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error("Erro no registro:", error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -49,22 +49,32 @@ export const login = async (req, res) => {
       return res.status(400).json({ erro: 'E-mail e senha são obrigatórios' })
     }
 
-  const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn']
-  const token = jwt.sign(
-    { userId: usuario.id, role: usuario.role },
-    process.env.JWT_SECRET!,
-    { expiresIn }
-  )
+    // 1. Busca o usuário no banco de dados primeiro
+    const usuario = await prisma.user.findUnique({ where: { email } })
+    if (!usuario) {
+      return res.status(401).json({ erro: 'E-mail ou senha incorretos' })
+    }
 
+    // 2. Validação do padrão de e-mail institucional conforme a role
+    if (usuario.role === 'STUDENT' && !email.endsWith('@aluno.cps.sp.gov.br')) {
+      return res.status(401).json({ erro: 'Use seu e-mail institucional de aluno' })
+    }
+    if (usuario.role === 'TEACHER' && !email.endsWith('@cps.sp.gov.br')) {
+      return res.status(401).json({ erro: 'Use seu e-mail institucional de professor' })
+    }
+
+    // 3. Verifica se a senha está correta
     const senhaCorreta = await bcrypt.compare(password, usuario.password)
     if (!senhaCorreta) {
       return res.status(401).json({ erro: 'E-mail ou senha incorretos' })
     }
 
+    // 4. Gera o token JWT uma única vez com os dados validados
+    const expiresIn = (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn']
     const token = jwt.sign(
       { userId: usuario.id, role: usuario.role },
       process.env.JWT_SECRET!,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      { expiresIn }
     )
 
     return res.json({
@@ -77,7 +87,7 @@ export const login = async (req, res) => {
     })
     
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error("Erro no login:", error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
