@@ -7,7 +7,7 @@ import logoutIcon from "../assets/logout_icon.png";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
-type ApiOption   = { id: string; text: string; isCorrect: boolean };
+type ApiOption   = { id: string; text?: string; imageUrl?: string | null; isCorrect: boolean };
 type ApiQuestion = { id: string; prompt: string; imageUrl?: string | null; hint?: string | null; options: ApiOption[] };
 
 export type Question = {
@@ -36,7 +36,7 @@ async function fetchQuestions(category: string, difficulty: number): Promise<Que
     statement: q.prompt,
     imageUrl:  q.imageUrl ?? undefined,
     hint:      q.hint ?? undefined,
-    alternatives: q.options.map((o) => ({ id: o.id, text: o.text, isCorrect: o.isCorrect })),
+    alternatives: q.options.map((o) => ({ id: o.id, text: o.text, imageUrl: o.imageUrl ?? undefined, isCorrect: o.isCorrect })),
   }));
 }
 
