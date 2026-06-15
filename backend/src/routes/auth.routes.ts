@@ -1,21 +1,7 @@
 import { Router } from 'express'
-import { registrar, login } from '../controllers/auth.controller.js'
+import { login } from '../controllers/auth.controller.js'
 
 const router = Router()
-
-/**
- * @swagger
- * /auth/register:
- * post:
- * summary: Registra un novo usuário
- * tags: [Auth]
- * responses:
- * 201:
- * description: Usuário criado com sucesso
- * 500:
- * description: Erro interno do servidor
- */
-router.post('/register', registrar)
 
 /**
  * @swagger

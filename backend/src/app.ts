@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.routes.js'
 import gameRoutes from './routes/game.routes.js'
 import questionRoutes from './routes/question.routes.js'
 import reportRoutes from './routes/report.routes.js'
+import studentRoutes from './routes/student.routes.js'
 
 const app = express()
 app.use(cors())
@@ -17,5 +18,6 @@ app.use('/auth', authRoutes)
 app.use('/game', gameRoutes)
 app.use('/questions', questionRoutes)
 app.use('/reports', reportRoutes)
+app.use('/students', studentRoutes)
 
 export default app

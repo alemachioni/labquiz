@@ -9,6 +9,7 @@ import TeacherHomePage from "./pages/teacher/TeacherHomePage";
 import AddQuestionPage from "./pages/teacher/AddQuestionPage";
 import ManageQuestionsPage from "./pages/teacher/ManageQuestionsPage";
 import TeacherReportPage from "./pages/teacher/TeacherReportPage";
+import ManageStudentsPage from "./pages/teacher/ManageStudentsPage";
 
 
 const originalFetch = window.fetch;
@@ -111,6 +112,14 @@ export default function App() {
           element={
             <RotaProfessor>
               <TeacherReportPage />
+            </RotaProfessor>
+          }
+        />
+        <Route
+          path="/professor/alunos"
+          element={
+            <RotaProfessor>
+              <ManageStudentsPage />
             </RotaProfessor>
           }
         />
