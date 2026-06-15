@@ -7,6 +7,7 @@ import { apiFetch } from "../../utils/api";
 type ApiOption = {
   id: string;
   text: string | null;
+  imageUrl?: string | null;
   isCorrect: boolean;
 };
 
@@ -43,6 +44,7 @@ export default function ManageQuestionsPage() {
   const [editHint,       setEditHint]       = useState("");
   const [editDifficulty, setEditDifficulty] = useState(1);
   const [editOptions,    setEditOptions]    = useState(["", "", "", ""]);
+  const [editOptionImages, setEditOptionImages] = useState(["", "", "", ""]);
   const [editCorrect,    setEditCorrect]    = useState(0);
   const [saving,         setSaving]         = useState(false);
 
@@ -73,12 +75,17 @@ export default function ManageQuestionsPage() {
     setEditDifficulty(q.difficulty);
     const opts = q.options ?? [];
     setEditOptions([0, 1, 2, 3].map((i) => opts[i]?.text ?? ""));
+    setEditOptionImages([0, 1, 2, 3].map((i) => opts[i]?.imageUrl ?? ""));
     const correctIdx = opts.findIndex((o) => o.isCorrect);
     setEditCorrect(correctIdx >= 0 ? correctIdx : 0);
   }
 
   function setEditOption(i: number, value: string) {
     setEditOptions((prev) => prev.map((o, idx) => (idx === i ? value : o)));
+  }
+
+  function setEditOptionImage(i: number, value: string) {
+    setEditOptionImages((prev) => prev.map((o, idx) => (idx === i ? value : o)));
   }
 
   async function handleSave(id: string) {
@@ -100,7 +107,11 @@ export default function ManageQuestionsPage() {
           prompt: editPrompt.trim(),
           hint: editHint.trim() || null,
           difficulty: editDifficulty,
-          options: filled.map((o) => ({ text: o.text, isCorrect: o.index === editCorrect })),
+          options: filled.map((o) => ({
+            text: o.text,
+            imageUrl: editOptionImages[o.index]?.trim() || null,
+            isCorrect: o.index === editCorrect,
+          })),
         }),
       });
       if (!res.ok) throw new Error();
@@ -194,21 +205,30 @@ export default function ManageQuestionsPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {["A", "B", "C", "D"].map((letra, i) => (
-                      <div key={letra} className="flex items-center gap-2">
+                      <div key={letra} className="flex flex-col gap-1.5">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={editOptions[i]}
+                            onChange={(e) => setEditOption(i, e.target.value)}
+                            placeholder={`Alternativa ${letra}`}
+                            className={inputClass}
+                          />
+                          <input
+                            type="radio"
+                            name={`correta-${q.id}`}
+                            title="Marcar como correta"
+                            checked={editCorrect === i}
+                            onChange={() => setEditCorrect(i)}
+                            className="w-5 h-5 accent-green-correct cursor-pointer flex-shrink-0"
+                          />
+                        </div>
                         <input
-                          type="text"
-                          value={editOptions[i]}
-                          onChange={(e) => setEditOption(i, e.target.value)}
-                          placeholder={`Alternativa ${letra}`}
+                          type="url"
+                          value={editOptionImages[i]}
+                          onChange={(e) => setEditOptionImage(i, e.target.value)}
+                          placeholder={`Imagem da alternativa ${letra} (URL, opcional)`}
                           className={inputClass}
-                        />
-                        <input
-                          type="radio"
-                          name={`correta-${q.id}`}
-                          title="Marcar como correta"
-                          checked={editCorrect === i}
-                          onChange={() => setEditCorrect(i)}
-                          className="w-5 h-5 accent-green-correct cursor-pointer flex-shrink-0"
                         />
                       </div>
                     ))}

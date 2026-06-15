@@ -31,12 +31,17 @@ export default function AddQuestionPage() {
   const [hint,       setHint]       = useState("");
   const [imageUrl,   setImageUrl]   = useState("");
   const [alts,       setAlts]       = useState(["", "", "", ""]);
+  const [altImages,  setAltImages]  = useState(["", "", "", ""]);
   const [correct,    setCorrect]    = useState(0);
   const [saving,     setSaving]     = useState(false);
   const [feedback,   setFeedback]   = useState<{ ok: boolean; msg: string } | null>(null);
 
   function setAlt(i: number, value: string) {
     setAlts((prev) => prev.map((a, idx) => (idx === i ? value : a)));
+  }
+
+  function setAltImage(i: number, value: string) {
+    setAltImages((prev) => prev.map((a, idx) => (idx === i ? value : a)));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -66,7 +71,11 @@ export default function AddQuestionPage() {
           hint: hint.trim() || null,
           imageUrl: imageUrl.trim() || null,
           userId: usuario.id,
-          options: filled.map((a) => ({ text: a.text, isCorrect: a.index === correct })),
+          options: filled.map((a) => ({
+            text: a.text,
+            imageUrl: altImages[a.index]?.trim() || null,
+            isCorrect: a.index === correct,
+          })),
         }),
       });
       if (!res.ok) {
@@ -78,6 +87,7 @@ export default function AddQuestionPage() {
       setHint("");
       setImageUrl("");
       setAlts(["", "", "", ""]);
+      setAltImages(["", "", "", ""]);
       setCorrect(0);
     } catch (err: unknown) {
       setFeedback({ ok: false, msg: err instanceof Error ? err.message : "Erro ao salvar questão" });
@@ -134,7 +144,7 @@ export default function AddQuestionPage() {
             {["A", "B", "C", "D"].map((letra, i) => (
               <div key={letra}>
                 <label className={labelClass}>Alternativa {letra}</label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-1.5">
                   <input
                     type="text"
                     value={alts[i]}
@@ -151,6 +161,13 @@ export default function AddQuestionPage() {
                     className="w-5 h-5 accent-green-correct cursor-pointer flex-shrink-0"
                   />
                 </div>
+                <input
+                  type="url"
+                  value={altImages[i]}
+                  onChange={(e) => setAltImage(i, e.target.value)}
+                  placeholder={`Imagem da alternativa ${letra} (URL, opcional)`}
+                  className={inputClass}
+                />
               </div>
             ))}
           </div>
