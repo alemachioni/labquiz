@@ -14,7 +14,7 @@ export default function SplashPage() {
 
   return (
     <div
-      className="min-h-dvh bg-white flex flex-col items-center justify-center font-sans relative overflow-x-hidden cursor-pointer"
+      className="min-h-dvh bg-white flex flex-col items-center font-sans relative overflow-x-hidden cursor-pointer"
       onClick={handleStart}
       role="button"
       tabIndex={0}
@@ -26,7 +26,7 @@ export default function SplashPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative z-10 text-center px-6"
+        className="relative z-10 text-center px-6 flex-1 flex flex-col items-center justify-center"
       >
         <h1 className="font-gugi text-6xl sm:text-7xl text-gray-900 m-0">
           Lab<span className="text-red-primary">Q</span>uiz

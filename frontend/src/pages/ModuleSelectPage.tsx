@@ -19,6 +19,14 @@ const MODULOS: Modulo[] = [
   { id: "sistema",   titulo: "Sistemas e Montagens",  descricao: "Aparatos completos: destilação, refluxo e filtragem.",                 icon: "🔬", category: "SISTEMA" },
 ];
 
+const MODULO_ALEATORIO: Modulo = {
+  id: "aleatorio",
+  titulo: "Módulo aleatório",
+  descricao: "Sorteia questões de todos os módulos.",
+  icon: "🎲",
+  category: "ALEATORIO",
+};
+
 type Dificuldade = "FACIL" | "MEDIO" | "DIFICIL" | "ALEATORIO";
 
 const DIFICULDADES: { id: Dificuldade; label: string }[] = [
@@ -57,7 +65,13 @@ export default function ModuleSelectPage() {
       const idx = Math.floor(Math.random() * opcoes.length);
       resolved = opcoes[idx];
     }
-    navigate(`/quiz?category=${selectedModule.category}&difficulty=${resolved}`);
+    let category = selectedModule.category;
+    if (category === "ALEATORIO") {
+      // eslint-disable-next-line react-hooks/purity
+      const idx = Math.floor(Math.random() * MODULOS.length);
+      category = MODULOS[idx].category;
+    }
+    navigate(`/quiz?category=${category}&difficulty=${resolved}`);
   }
 
   return (
@@ -123,6 +137,13 @@ export default function ModuleSelectPage() {
                   <span className="font-gugi">• {m.titulo}</span>
                 </button>
               ))}
+              <button
+                key={MODULO_ALEATORIO.id}
+                className="w-full py-3.5 sm:py-4 bg-red-primary border-none rounded-xl text-sm sm:text-base font-semibold text-white cursor-pointer text-left flex items-center gap-3 hover:opacity-90 transition-opacity"
+                onClick={() => handleSelectModule(MODULO_ALEATORIO)}
+              >
+                <span className="font-gugi">{MODULO_ALEATORIO.icon} {MODULO_ALEATORIO.titulo}</span>
+              </button>
             </div>
           </>
         ) : (

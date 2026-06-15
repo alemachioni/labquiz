@@ -17,6 +17,7 @@ type ApiQuestion = {
   category: string;
   prompt: string;
   imageUrl?: string | null;
+  hint?: string | null;
   options: ApiOption[];
 };
 
@@ -39,6 +40,7 @@ export default function ManageQuestionsPage() {
 
   const [editingId,      setEditingId]      = useState<string | null>(null);
   const [editPrompt,     setEditPrompt]     = useState("");
+  const [editHint,       setEditHint]       = useState("");
   const [editDifficulty, setEditDifficulty] = useState(1);
   const [editOptions,    setEditOptions]    = useState(["", "", "", ""]);
   const [editCorrect,    setEditCorrect]    = useState(0);
@@ -67,6 +69,7 @@ export default function ManageQuestionsPage() {
   function startEdit(q: ApiQuestion) {
     setEditingId(q.id);
     setEditPrompt(q.prompt);
+    setEditHint(q.hint ?? "");
     setEditDifficulty(q.difficulty);
     const opts = q.options ?? [];
     setEditOptions([0, 1, 2, 3].map((i) => opts[i]?.text ?? ""));
@@ -95,6 +98,7 @@ export default function ManageQuestionsPage() {
         method: "PUT",
         body: JSON.stringify({
           prompt: editPrompt.trim(),
+          hint: editHint.trim() || null,
           difficulty: editDifficulty,
           options: filled.map((o) => ({ text: o.text, isCorrect: o.index === editCorrect })),
         }),
@@ -210,6 +214,17 @@ export default function ManageQuestionsPage() {
                     ))}
                   </div>
                   <p className="text-xs text-gray-400 -mt-1">Marque o círculo da alternativa correta.</p>
+
+                  <div>
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-600 mb-1.5">Dica (opcional)</label>
+                    <input
+                      type="text"
+                      value={editHint}
+                      onChange={(e) => setEditHint(e.target.value)}
+                      placeholder="Ex.: Pense no formato do gargalo…"
+                      className={inputClass}
+                    />
+                  </div>
 
                   <div className="flex gap-2">
                     <button

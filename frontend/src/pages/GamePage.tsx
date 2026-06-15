@@ -307,26 +307,7 @@ export default function GamePage() {
         </header>
 
         {/* ── Questão ─────────────────────────────────────────────────────── */}
-        <main style={mainStyle}>
-          
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-            <button
-              onClick={handleEliminate}
-              disabled={answered || eliminated.length > 0}
-              style={{
-                ...navBtnStyle,
-                backgroundColor: "#910101",
-                fontSize: "13px",
-                padding: "8px 16px",
-                opacity: answered || eliminated.length > 0 ? 0.5 : 1,
-                cursor:  answered || eliminated.length > 0 ? "default" : "pointer",
-              }}
-              title="Elimina duas alternativas erradas"
-            >
-              ✕ Elimina 2
-            </button>
-          </div>
-
+      <main style={mainStyle}>
           <QuestionCard
             key={q.id}
             statement={q.statement}
@@ -336,21 +317,46 @@ export default function GamePage() {
             onAnswer={handleAnswer}
           />
 
-          {/* Botão de dica — só aparece se a questão tiver hint cadastrado */}
-          {q.hint && !answered && (
-            <div style={{ marginTop: "12px" }}>
-              {!showHint ? (
-                <button onClick={() => setShowHint(true)} style={hintBtnStyle}>
-                  💡 Ver dica
-                </button>
-              ) : (
-                <p style={hintTextStyle}>
-                  {q.hint}
-                </p>
-              )}
+          {/* ── Botões de Ajuda (Dica e Elimina 2) ── */}
+          {!answered && (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginTop: "16px" }}>
+              
+              {/* Lado Esquerdo: Dica */}
+              <div>
+                {q.hint && (
+                  !showHint ? (
+                    <button onClick={() => setShowHint(true)} style={hintBtnStyle}>
+                      💡 Ver dica
+                    </button>
+                  ) : (
+                    <p style={hintTextStyle}>
+                      {q.hint}
+                    </p>
+                  )
+                )}
+              </div>
+
+              {/* Lado Direito: Elimina 2 */}
+              <button
+                onClick={handleEliminate}
+                disabled={eliminated.length > 0}
+                style={{
+                  ...navBtnStyle,
+                  backgroundColor: "#910101",
+                  fontSize: "13px",
+                  padding: "8px 16px",
+                  opacity: eliminated.length > 0 ? 0.5 : 1,
+                  cursor:  eliminated.length > 0 ? "default" : "pointer",
+                }}
+                title="Elimina duas alternativas erradas"
+              >
+                ✕ Elimina 2
+              </button>
+
             </div>
           )}
 
+          {/* ── Botão Próxima ── */}
           {answered && (
             <div style={{ textAlign: "right", marginTop: "16px" }}>
               <button onClick={handleNext} style={navBtnStyle}>

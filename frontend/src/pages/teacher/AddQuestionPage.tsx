@@ -28,6 +28,7 @@ export default function AddQuestionPage() {
   const [category,   setCategory]   = useState("VIDRARIA");
   const [difficulty, setDifficulty] = useState(1);
   const [prompt,     setPrompt]     = useState("");
+  const [hint,       setHint]       = useState("");
   const [imageUrl,   setImageUrl]   = useState("");
   const [alts,       setAlts]       = useState(["", "", "", ""]);
   const [correct,    setCorrect]    = useState(0);
@@ -62,6 +63,7 @@ export default function AddQuestionPage() {
           difficulty,
           category,
           prompt: prompt.trim(),
+          hint: hint.trim() || null,
           imageUrl: imageUrl.trim() || null,
           userId: usuario.id,
           options: filled.map((a) => ({ text: a.text, isCorrect: a.index === correct })),
@@ -73,6 +75,7 @@ export default function AddQuestionPage() {
       }
       setFeedback({ ok: true, msg: "Questão salva com sucesso!" });
       setPrompt("");
+      setHint("");
       setImageUrl("");
       setAlts(["", "", "", ""]);
       setCorrect(0);
@@ -152,6 +155,17 @@ export default function AddQuestionPage() {
             ))}
           </div>
           <p className="text-xs text-gray-400 -mt-2">Marque o círculo da alternativa correta.</p>
+
+          <div>
+            <label className={labelClass}>Dica (opcional)</label>
+            <input
+              type="text"
+              value={hint}
+              onChange={(e) => setHint(e.target.value)}
+              placeholder="Ex.: Pense no formato do gargalo…"
+              className={inputClass}
+            />
+          </div>
 
           <div>
             <label className={labelClass}>Imagem (URL, opcional)</label>

@@ -18,12 +18,12 @@ export const listarQuestoes = async (req: Request, res: Response) => {
 
 export const criarQuestao = async (req: Request, res: Response) => {
   try {
-    const { type, difficulty, category, prompt, imageUrl, options, userId } = req.body
+    const { type, difficulty, category, prompt, hint, imageUrl, options, userId } = req.body
     if (!prompt || !options || options.length < 2) {
       return res.status(400).json({ erro: 'Enunciado e ao menos 2 alternativas são obrigatórios' })
     }
     const questao = await prisma.question.create({
-      data: { type, difficulty, category, prompt, imageUrl: imageUrl || null, createdById: userId, options: { create: options } },
+      data: { type, difficulty, category, prompt, hint: hint || null, imageUrl: imageUrl || null, createdById: userId, options: { create: options } },
       include: { options: true }
     })
     return res.status(201).json(questao)
@@ -36,7 +36,7 @@ export const criarQuestao = async (req: Request, res: Response) => {
 export const atualizarQuestao = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string
-    const { prompt, imageUrl, difficulty, options } = req.body
+    const { prompt, hint, imageUrl, difficulty, options } = req.body
 
     if (options) {
       await prisma.option.deleteMany({ where: { questionId: id } })
@@ -46,6 +46,7 @@ export const atualizarQuestao = async (req: Request, res: Response) => {
       where: { id },
       data: {
         prompt,
+        hint,
         imageUrl,
         difficulty,
         ...(options ? { options: { create: options } } : {})
