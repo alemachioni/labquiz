@@ -19,6 +19,7 @@ export type QuestionCardProps = {
   type?: QuestionType;
   alternatives?: Alternative[];
   pairs?: MatchingPair[];
+  eliminatedIds?: string[];
   onAnswer: (selectedId: string, isCorrect: boolean) => void;
 };
 
@@ -28,6 +29,7 @@ export default function QuestionCard({
   type = "MULTIPLE_CHOICE",
   alternatives = [],
   pairs = [],
+  eliminatedIds = [],
   onAnswer,
 }: QuestionCardProps) {
   if (type === "MATCHING") {
@@ -46,6 +48,7 @@ export default function QuestionCard({
       statement={statement}
       imageUrl={imageUrl}
       alternatives={alternatives}
+      eliminatedIds={eliminatedIds}
       onAnswer={onAnswer}
     />
   );
@@ -57,18 +60,20 @@ function MultipleChoiceCard({
   statement,
   imageUrl,
   alternatives,
+  eliminatedIds = [],
   onAnswer,
 }: {
   statement: string;
   imageUrl?: string;
   alternatives: Alternative[];
+  eliminatedIds?: string[];
   onAnswer: (selectedId: string, isCorrect: boolean) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const isRevealed = selectedId !== null;
 
   function handleClick(alt: Alternative) {
-    if (isRevealed) return;
+    if (isRevealed || eliminatedIds.includes(alt.id)) return;
     setSelectedId(alt.id);
     onAnswer(alt.id, alt.isCorrect);
   }
@@ -85,22 +90,27 @@ function MultipleChoiceCard({
       >
         {/* Question box */}
         <div className="bg-red-bg rounded-2xl p-4 sm:p-5 shadow-sm">
-          <div className="flex gap-4 items-start">
-            <p className="text-sm sm:text-base font-semibold text-gray-900 leading-relaxed flex-1 m-0">
-              {statement}
-            </p>
-            <div className="flex-shrink-0 flex items-center justify-center">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt="imagem da questão"
-                  className="w-20 sm:w-24 h-20 sm:h-24 object-contain rounded-lg"
-                />
-              ) : (
-                <LabIcon size={80} color="#c6273f" />
-              )}
+          {imageUrl ? (
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-sm sm:text-base font-semibold text-gray-900 leading-relaxed m-0 text-center">
+                {statement}
+              </p>
+              <img
+                src={imageUrl}
+                alt="imagem da questão"
+                className="w-full max-w-[280px] h-auto object-contain rounded-lg"
+              />
             </div>
-          </div>
+          ) : (
+            <div className="flex gap-4 items-start">
+              <p className="text-sm sm:text-base font-semibold text-gray-900 leading-relaxed flex-1 m-0">
+                {statement}
+              </p>
+              <div className="flex-shrink-0 flex items-center justify-center">
+                <LabIcon size={80} color="#c6273f" />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Answers box */}
@@ -115,6 +125,7 @@ function MultipleChoiceCard({
                 isCorrect={alt.isCorrect}
                 isSelected={selectedId === alt.id}
                 isRevealed={isRevealed}
+                isEliminated={eliminatedIds.includes(alt.id)}
                 onClick={() => handleClick(alt)}
               />
             ))}

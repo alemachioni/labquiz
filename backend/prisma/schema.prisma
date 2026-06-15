@@ -27,6 +27,7 @@ model Question {
   options      Option[]
   createdBy    User           @relation(fields: [createdById], references: [id])
   createdById  String
+  hint         String?
 }
 
 model Option {

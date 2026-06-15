@@ -10,7 +10,6 @@ Game educacional web feito para alunos do 1º ano do técnico em Química, desen
 - [@Gustavo Itiro Nakaoka](https://github.com/gunkaokks)
 - [@Bruno Fernando dos Santos](https://github.com/brunofernn)
 - [@Otavio Sousa Dias Lopes](https://github.com/)
-- [@Marco Freire Carlucci](https://github.com/henriquebarralocci)
 - [@João Pedro Cirilo Parronchi](https://github.com/iFloren)
 
 

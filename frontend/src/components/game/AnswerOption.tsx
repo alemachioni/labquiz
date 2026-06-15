@@ -8,6 +8,7 @@ export type AnswerOptionProps = {
   isCorrect: boolean;
   isSelected: boolean;
   isRevealed: boolean;
+  isEliminated?: boolean;
   onClick: () => void;
 };
 
@@ -18,6 +19,7 @@ export default function AnswerOption({
   isCorrect,
   isSelected,
   isRevealed,
+  isEliminated = false,
   onClick,
 }: AnswerOptionProps) {
   const [hovered, setHovered] = useState(false);
@@ -44,6 +46,10 @@ export default function AnswerOption({
     } else {
       cardBg = "#ccc6c6";
     }
+  } else if (isEliminated) {
+    cardBg    = "#ccc6c6";
+    circleBg  = "#9a9292";
+    textColor = "#8a8282";
   } else if (hovered) {
     cardBg     = "#d6cccc";
     cardBorder = "2px solid #c6273f";
@@ -59,13 +65,13 @@ export default function AnswerOption({
   return (
     <motion.button
       animate={animate}
-      onClick={isRevealed ? undefined : onClick}
-      onMouseEnter={() => { if (!isRevealed) setHovered(true); }}
+      onClick={isRevealed || isEliminated ? undefined : onClick}
+      onMouseEnter={() => { if (!isRevealed && !isEliminated) setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
       className={`flex items-center gap-2.5 p-2.5 sm:p-3.5 rounded-xl w-full text-left transition-all duration-150 ${
-        isRevealed ? "cursor-default" : "cursor-pointer"
+        isRevealed || isEliminated ? "cursor-default" : "cursor-pointer"
       }`}
-      style={{ backgroundColor: cardBg, border: cardBorder }}
+      style={{ backgroundColor: cardBg, border: cardBorder, opacity: isEliminated && !isRevealed ? 0.55 : 1 }}
     >
       {/* Letter circle */}
       <span
