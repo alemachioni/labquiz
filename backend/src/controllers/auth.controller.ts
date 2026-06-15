@@ -5,42 +5,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const registrar = async (req: Request, res: Response) => {
-  try {
-    const { name, email, password, role } = req.body
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ erro: 'Nome, e-mail e senha são obrigatórios' })
-    }
-
-    const usuarioExiste = await prisma.user.findUnique({ where: { email } })
-    if (usuarioExiste) {
-      return res.status(400).json({ erro: 'E-mail já cadastrado' })
-    }
-
-    const senhaHash = await bcrypt.hash(password, 10)
-
-    const usuario = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: senhaHash,
-        role: role || 'STUDENT'
-      }
-    })
-
-    return res.status(201).json({
-      id: usuario.id,
-      name: usuario.name,
-      email: usuario.email,
-      role: usuario.role
-    })
-  } catch (error) {
-    console.error("Erro no registro:", error);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
-  }
-};
-
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

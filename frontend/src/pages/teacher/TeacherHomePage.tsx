@@ -43,6 +43,13 @@ export default function TeacherHomePage() {
           </button>
 
           <button
+            className="w-full py-3.5 sm:py-4 bg-white border-2 border-gray-800 rounded-xl text-sm sm:text-base font-semibold text-gray-900 cursor-pointer text-center hover:bg-gray-50 transition-colors"
+            onClick={() => navigate("/professor/alunos")}
+          >
+            Gerenciar alunos
+          </button>
+
+          <button
             className="w-full py-3.5 sm:py-4 bg-red-primary border-none rounded-xl text-sm sm:text-base font-semibold text-white cursor-pointer text-center font-gugi hover:opacity-90 transition-opacity"
             onClick={handleLogout}
           >
