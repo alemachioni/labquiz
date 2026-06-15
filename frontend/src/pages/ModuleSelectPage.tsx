@@ -14,9 +14,9 @@ type Modulo = {
 const MODULOS: Modulo[] = [
   { id: "vidraria",  titulo: "Vidrarias",            descricao: "Béqueres, buretas, pipetas e o uso correto de cada uma.",               icon: "🧪", category: "VIDRARIA" },
   { id: "metalico",  titulo: "Materiais Metálicos",   descricao: "Identificação e uso de equipamentos metálicos no laboratório.",          icon: "⚙️", category: "METALICO" },
-  { id: "plastico",  titulo: "Materiais Plásticos",   descricao: "Tubos, pipetas plásticas e recipientes descartáveis.",                  icon: "🧴", category: "PLASTICO" },
+  { id: "plastico",  titulo: "Materiais Plásticos",   descricao: "Tubos, pipetas plásticas e recipientes descartáveis.",                 icon: "🧴", category: "PLASTICO" },
   { id: "porcelana", titulo: "Porcelanas",             descricao: "Cadinhos, almofarizes e demais utensílios de porcelana.",               icon: "🏺", category: "PORCELANA" },
-  { id: "sistema",   titulo: "Sistemas e Montagens",  descricao: "Aparatos completos: destilação, refluxo e filtragem.",                  icon: "🔬", category: "SISTEMA" },
+  { id: "sistema",   titulo: "Sistemas e Montagens",  descricao: "Aparatos completos: destilação, refluxo e filtragem.",                 icon: "🔬", category: "SISTEMA" },
 ];
 
 type Dificuldade = "FACIL" | "MEDIO" | "DIFICIL" | "ALEATORIO";
@@ -64,7 +64,7 @@ export default function ModuleSelectPage() {
     <div className="min-h-dvh bg-white flex flex-col items-center justify-center font-sans relative overflow-x-hidden">
       <DecorativeDots />
 
-      <main className="w-full max-w-sm sm:max-w-md px-6 py-8 relative z-10">
+      <main className="w-full max-w-lg px-4 sm:px-6 py-8 relative z-10">
 
         <h1 className="font-gugi text-4xl sm:text-5xl text-red-primary mb-2 text-center">LabQuiz</h1>
 

@@ -144,7 +144,7 @@ export default function GamePage() {
     setGameOver(false);
   }
 
- 
+  
   if (loading) return (
     <div style={fullCenter}>
       <p style={{ fontFamily: "'Gugi', sans-serif", fontSize: "20px", color: "#c6273f" }}>
@@ -213,7 +213,7 @@ export default function GamePage() {
 
       <div style={pageStyle}>
 
-       
+        
         {BG_CIRCLES.map((c, i) => (
           <div key={i} style={{
             position:        "fixed",
@@ -230,13 +230,13 @@ export default function GamePage() {
           }} />
         ))}
 
-       
+        
         <header style={headerStyle}>
 
         
           <div style={{ position: "relative", zIndex: 1, padding: "14px 20px 0", display: "flex", alignItems: "center" }}>
             <button onClick={() => navigate("/modulos")} style={voltarBtnStyle} title="Voltar">
-             
+              
               <img
                 src={logoutIcon}
                 alt="Voltar"
@@ -250,7 +250,7 @@ export default function GamePage() {
 
           
           <div style={{ position: "relative", zIndex: 1, padding: "10px 20px 0", display: "flex", alignItems: "flex-end", gap: "16px" }}>
-           
+            
             <div style={{ flex: "0 0 40%" }}>
               <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px" }}>
                 Questão {currentIndex + 1}/{questions.length}
@@ -296,7 +296,7 @@ export default function GamePage() {
           </svg>
         </header>
 
-       
+        
         <main style={mainStyle}>
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
             <button
@@ -346,7 +346,7 @@ export default function GamePage() {
 
 
 const pageStyle: React.CSSProperties = {
-  minHeight:       "100vh",
+  minHeight:       "100dvh",
   backgroundColor: "#fff",
   display:         "flex",
   flexDirection:   "column",
@@ -356,7 +356,7 @@ const pageStyle: React.CSSProperties = {
 };
 
 const fullCenter: React.CSSProperties = {
-  minHeight:      "100vh",
+  minHeight:      "100dvh",
   display:        "flex",
   flexDirection:  "column",
   alignItems:     "center",
@@ -396,7 +396,10 @@ const progressFillStyle: React.CSSProperties = {
 };
 
 const mainStyle: React.CSSProperties = {
-  flex:      1,
+  flex:           1,
+  display:        "flex",
+  flexDirection:  "column",
+  justifyContent: "flex-start",
   padding:   "20px 16px",
   maxWidth:  "720px",
   width:     "100%",
