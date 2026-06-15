@@ -306,7 +306,7 @@ export default function GamePage() {
 // ─── Estilos ──────────────────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
-  minHeight:       "100vh",
+  minHeight:       "100dvh",
   backgroundColor: "#fff",
   display:         "flex",
   flexDirection:   "column",
@@ -316,7 +316,7 @@ const pageStyle: React.CSSProperties = {
 };
 
 const fullCenter: React.CSSProperties = {
-  minHeight:      "100vh",
+  minHeight:      "100dvh",
   display:        "flex",
   flexDirection:  "column",
   alignItems:     "center",
@@ -356,7 +356,10 @@ const progressFillStyle: React.CSSProperties = {
 };
 
 const mainStyle: React.CSSProperties = {
-  flex:      1,
+  flex:           1,
+  display:        "flex",
+  flexDirection:  "column",
+  justifyContent: "flex-start",
   padding:   "20px 16px",
   maxWidth:  "720px",
   width:     "100%",
