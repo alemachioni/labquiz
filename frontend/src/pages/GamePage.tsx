@@ -5,20 +5,23 @@ import ResultScreen from "../components/game/ResultScreen";
 import etecLogo   from "../assets/etec_logo.png";
 import logoutIcon from "../assets/logout_icon.png";
 
+// ─── Tipos ────────────────────────────────────────────────────────────────────
 
 type ApiOption   = { id: string; text: string; isCorrect: boolean };
-type ApiQuestion = { id: string; prompt: string; imageUrl?: string | null; options: ApiOption[] };
+type ApiQuestion = { id: string; prompt: string; imageUrl?: string | null; hint?: string | null; options: ApiOption[] };
 
 export type Question = {
   id: string;
   statement: string;
   imageUrl?: string;
+  hint?: string;
   alternatives: Alternative[];
 };
 
 const DIFFICULTY_MAP:   Record<string, number> = { FACIL: 1, MEDIO: 2, DIFICIL: 3 };
 const DIFFICULTY_LABEL: Record<string, string> = { FACIL: "Fácil", MEDIO: "Médio", DIFICIL: "Difícil" };
 
+// ─── Fetch ────────────────────────────────────────────────────────────────────
 
 async function fetchQuestions(category: string, difficulty: number): Promise<Question[]> {
   const token = localStorage.getItem("token");
@@ -32,10 +35,12 @@ async function fetchQuestions(category: string, difficulty: number): Promise<Que
     id: q.id,
     statement: q.prompt,
     imageUrl:  q.imageUrl ?? undefined,
+    hint:      q.hint ?? undefined,
     alternatives: q.options.map((o) => ({ id: o.id, text: o.text, isCorrect: o.isCorrect })),
   }));
 }
 
+// ─── Bolinhas fixas no fundo ──────────────────────────────────────────────────
 
 const BG_CIRCLES: { size: number; top: string; left?: string; right?: string; opacity: number }[] = [
   { size: 64, top: "18%", left:  "3%",  opacity: 1   },
@@ -51,6 +56,7 @@ const BG_CIRCLES: { size: number; top: string; left?: string; right?: string; op
   { size: 36, top: "42%", right: "12%", opacity: 0.5 },
 ];
 
+// ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function GamePage() {
   const [questions, setQuestions]           = useState<Question[]>([]);
@@ -63,8 +69,7 @@ export default function GamePage() {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [answered,     setAnswered]         = useState(false);
   const [gameOver,     setGameOver]         = useState(false);
-  const [eliminated,   setEliminated]       = useState<string[]>([]);
-  const [retryKey,     setRetryKey]         = useState(0);
+  const [showHint,     setShowHint]         = useState(false);
 
   const category      = searchParams.get("category")   ?? "VIDRARIA";
   const difficultyStr = searchParams.get("difficulty") ?? "FACIL";
@@ -73,22 +78,8 @@ export default function GamePage() {
   useEffect(() => {
     fetchQuestions(category, difficulty)
       .then((data) => { setQuestions(data); setLoading(false); })
-      .catch(()    => { setError("Não conseguimos conectar ao nosso laboratório (API). Parece que os reagentes acabaram ou o servidor está em manutenção."); setLoading(false); });
-  }, [category, difficulty, retryKey]);
-
-  function handleRetry() {
-    setError(null);
-    setLoading(true);
-    setRetryKey((k) => k + 1);
-  }
-
-  function handleEliminate() {
-    const q = questions[currentIndex];
-    if (!q || answered || eliminated.length > 0) return;
-    const wrong = q.alternatives.filter((a) => !a.isCorrect);
-    const shuffled = [...wrong].sort(() => Math.random() - 0.5);
-    setEliminated(shuffled.slice(0, 2).map((a) => a.id));
-  }
+      .catch(()    => { setError("Não foi possível carregar as questões."); setLoading(false); });
+  }, [category, difficulty]);
 
   function handleAnswer(_id: string, isCorrect: boolean) {
     setAnswered(true);
@@ -101,7 +92,7 @@ export default function GamePage() {
     } else {
       setCurrentIndex((i) => i + 1);
       setAnswered(false);
-      setEliminated([]);
+      setShowHint(false);
     }
   }
 
@@ -127,7 +118,7 @@ export default function GamePage() {
         }),
       });
     } catch {
-      //erro silecioso, jogo termina via finally
+      // Falha silenciosa — não impede o aluno de ver o resultado
     } finally {
       setGameOver(true);
     }
@@ -140,11 +131,12 @@ export default function GamePage() {
     setScore(0);
     setCorrectAnswers(0);
     setAnswered(false);
-    setEliminated([]);
+    setShowHint(false);
     setGameOver(false);
   }
 
-  
+  // ── Telas auxiliares ───────────────────────────────────────────────────────
+
   if (loading) return (
     <div style={fullCenter}>
       <p style={{ fontFamily: "'Gugi', sans-serif", fontSize: "20px", color: "#c6273f" }}>
@@ -154,40 +146,9 @@ export default function GamePage() {
   );
 
   if (error) return (
-    <div style={pageStyle}>
-      <header style={headerStyle}>
-        <div style={{ height: "60px" }} />
-        <svg
-          viewBox="0 0 900 90"
-          preserveAspectRatio="none"
-          style={{ display: "block", width: "100%", height: "75px" }}
-        >
-          <path d="M0,0 C80,70 200,80 380,30 C520,-10 680,75 900,20 L900,90 L0,90 Z" fill="#fff" />
-        </svg>
-      </header>
-
-      <main style={{ ...fullCenter, minHeight: "auto", flex: 1, padding: "24px 20px", textAlign: "center" }}>
-        <h1 style={{ fontFamily: "'Gugi', sans-serif", fontSize: "40px", color: "#111", margin: "0 0 4px" }}>
-          LabQuiz
-        </h1>
-        <h2 style={{ fontFamily: "'Gugi', sans-serif", fontSize: "22px", color: "#111", margin: "0 0 16px" }}>
-          OPS!! O experimento falhou :(
-        </h2>
-        <p style={{ color: "#555", maxWidth: "420px", margin: "0 0 24px", lineHeight: 1.5 }}>{error}</p>
-        <div style={{ display: "flex", gap: "12px" }}>
-          <button onClick={handleRetry} style={navBtnStyle}>Tente novamente</button>
-          <button
-            onClick={() => navigate("/modulos")}
-            style={{ ...navBtnStyle, backgroundColor: "#fff", color: "#c6273f", border: "2px solid #c6273f" }}
-          >
-            Voltar
-          </button>
-        </div>
-      </main>
-
-      <footer style={footerStyle}>
-        <img src={etecLogo} alt="Etec — Escola Técnica Estadual" style={{ height: "44px", objectFit: "contain" }} />
-      </footer>
+    <div style={fullCenter}>
+      <p style={{ color: "#c6273f", marginBottom: "16px" }}>{error}</p>
+      <button onClick={() => navigate("/modulos")} style={navBtnStyle}>Voltar</button>
     </div>
   );
 
@@ -213,7 +174,7 @@ export default function GamePage() {
 
       <div style={pageStyle}>
 
-        
+        {/* ── Bolinhas vermelhas no fundo ─────────────────────────────────── */}
         {BG_CIRCLES.map((c, i) => (
           <div key={i} style={{
             position:        "fixed",
@@ -230,13 +191,13 @@ export default function GamePage() {
           }} />
         ))}
 
-        
+        {/* ── Header ─────────────────────────────────────────────────────── */}
         <header style={headerStyle}>
 
-        
+          {/* Linha superior: ícone voltar */}
           <div style={{ position: "relative", zIndex: 1, padding: "14px 20px 0", display: "flex", alignItems: "center" }}>
             <button onClick={() => navigate("/modulos")} style={voltarBtnStyle} title="Voltar">
-              
+              {/* Ícone de saída — posicionado como no CSS fornecido */}
               <img
                 src={logoutIcon}
                 alt="Voltar"
@@ -248,9 +209,9 @@ export default function GamePage() {
             </button>
           </div>
 
-          
+          {/* Linha inferior: questão + barra + nível */}
           <div style={{ position: "relative", zIndex: 1, padding: "10px 20px 0", display: "flex", alignItems: "flex-end", gap: "16px" }}>
-            
+            {/* Barra de progresso — lado esquerdo, compacta */}
             <div style={{ flex: "0 0 40%" }}>
               <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px" }}>
                 Questão {currentIndex + 1}/{questions.length}
@@ -260,7 +221,7 @@ export default function GamePage() {
               </div>
             </div>
 
-            
+            {/* Pontuação */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingBottom: "2px" }}>
               <p style={{ fontFamily: "'Gugi', sans-serif", color: "#fff", fontSize: "12px", margin: "0 0 4px", opacity: 0.8 }}>
                 Pontos
@@ -270,7 +231,7 @@ export default function GamePage() {
               </span>
             </div>
 
-         
+            {/* Nível — lado direito */}
             <span style={{
               fontFamily: "'Gugi', sans-serif",
               color: "#fff",
@@ -283,7 +244,9 @@ export default function GamePage() {
             </span>
           </div>
 
-        
+          {/* Onda SVG — pronunciada, igual à imagem de referência:
+              começa alta à esquerda, desce no terço inicial,
+              sobe no centro-direita, e termina mais baixa à direita */}
           <svg
             viewBox="0 0 900 90"
             preserveAspectRatio="none"
@@ -296,34 +259,30 @@ export default function GamePage() {
           </svg>
         </header>
 
-        
+        {/* ── Questão ─────────────────────────────────────────────────────── */}
         <main style={mainStyle}>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-            <button
-              onClick={handleEliminate}
-              disabled={answered || eliminated.length > 0}
-              style={{
-                ...navBtnStyle,
-                backgroundColor: "#910101",
-                fontSize: "13px",
-                padding: "8px 16px",
-                opacity: answered || eliminated.length > 0 ? 0.5 : 1,
-                cursor:  answered || eliminated.length > 0 ? "default" : "pointer",
-              }}
-              title="Elimina duas alternativas erradas"
-            >
-              ✕ Elimina 2
-            </button>
-          </div>
-
           <QuestionCard
             key={q.id}
             statement={q.statement}
             imageUrl={q.imageUrl}
             alternatives={q.alternatives}
-            eliminatedIds={eliminated}
             onAnswer={handleAnswer}
           />
+
+          {/* Botão de dica — só aparece se a questão tiver hint cadastrado */}
+          {q.hint && !answered && (
+            <div style={{ marginTop: "12px" }}>
+              {!showHint ? (
+                <button onClick={() => setShowHint(true)} style={hintBtnStyle}>
+                  💡 Ver dica
+                </button>
+              ) : (
+                <p style={hintTextStyle}>
+                  {q.hint}
+                </p>
+              )}
+            </div>
+          )}
 
           {answered && (
             <div style={{ textAlign: "right", marginTop: "16px" }}>
@@ -334,7 +293,7 @@ export default function GamePage() {
           )}
         </main>
 
-        
+        {/* ── Rodapé ──────────────────────────────────────────────────────── */}
         <footer style={footerStyle}>
           <img src={etecLogo} alt="Etec — Escola Técnica Estadual" style={{ height: "44px", objectFit: "contain" }} />
         </footer>
@@ -344,6 +303,7 @@ export default function GamePage() {
   );
 }
 
+// ─── Estilos ──────────────────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
   minHeight:       "100dvh",
@@ -429,4 +389,26 @@ const navBtnStyle: React.CSSProperties = {
   fontWeight:      "600",
   cursor:          "pointer",
   fontFamily:      "'Gugi', sans-serif",
+};
+
+const hintBtnStyle: React.CSSProperties = {
+  padding:         "8px 18px",
+  backgroundColor: "#fff3cd",
+  color:           "#856404",
+  border:          "1.5px solid #ffe69c",
+  borderRadius:    "8px",
+  fontSize:        "14px",
+  fontWeight:      "600",
+  cursor:          "pointer",
+};
+
+const hintTextStyle: React.CSSProperties = {
+  backgroundColor: "#fff3cd",
+  color:           "#664d03",
+  border:          "1.5px solid #ffe69c",
+  borderRadius:    "8px",
+  padding:         "10px 14px",
+  fontSize:        "14px",
+  lineHeight:      "1.5",
+  margin:          0,
 };
