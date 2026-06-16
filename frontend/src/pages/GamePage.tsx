@@ -79,7 +79,14 @@ export default function GamePage() {
 
   useEffect(() => {
     fetchQuestions(category, difficulty)
-      .then((data) => { setQuestions(data); setLoading(false); })
+      .then((data) => {
+        if (data.length === 0) {
+          setError("Não encontramos questões para esse módulo e dificuldade. Tente outra combinação.");
+        } else {
+          setQuestions(data);
+        }
+        setLoading(false);
+      })
       .catch(()    => { setError("Não foi possível carregar as questões."); setLoading(false); });
   }, [category, difficulty, retryKey]);
 
