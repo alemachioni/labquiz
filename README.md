@@ -9,7 +9,7 @@ Game educacional web feito para alunos do 1º ano do técnico em Química, desen
 - [@Alexandre Andrade Machioni Pereira Dos Santos](https://github.com/alemachioni)
 - [@Gustavo Itiro Nakaoka](https://github.com/gunkaokks)
 - [@Bruno Fernando dos Santos](https://github.com/brunofernn)
-- [@Otavio Sousa Dias Lopes](https://github.com/)
+- [@Otavio Sousa Dias Lopes](https://github.com/Otavio7opes)
 - [@João Pedro Cirilo Parronchi](https://github.com/iFloren)
 
 
@@ -101,136 +101,6 @@ A escolha foi feita pensando em equilibrar qualidade de entrega com a curva de a
 
 ---
 
-## Estrutura do projeto
-
-```
-labquiz/
-│
-├── frontend/                          # React + TypeScript (Vite)
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── game/
-│   │   │   │   ├── QuestionCard.tsx
-│   │   │   │   ├── AnswerOption.tsx
-│   │   │   │   ├── ScoreBoard.tsx
-│   │   │   │   ├── HelpPanel.tsx
-│   │   │   │   └── ResultScreen.tsx
-│   │   │   ├── teacher/
-│   │   │   │   ├── QuestionForm.tsx
-│   │   │   │   ├── QuestionList.tsx
-│   │   │   │   └── StudentReport.tsx
-│   │   │   └── shared/
-│   │   │       ├── Button.tsx
-│   │   │       ├── ImageWithAlt.tsx
-│   │   │       └── LoadingSpinner.tsx
-│   │   ├── pages/
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── GamePage.tsx
-│   │   │   ├── ModuleSelectPage.tsx
-│   │   │   └── TeacherDashboard.tsx
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── types/
-│   │   └── utils/
-│   ├── tests/
-│   │   ├── unit/
-│   │   └── e2e/
-│   ├── public/
-│   │   └── sounds/                    # acerto.mp3, erro.mp3 (Fase 3)
-│   ├── vite.config.ts
-│   └── manifest.webmanifest           # Config PWA (Fase 3)
-│
-├── backend/                           # Node.js + Express + TypeScript
-│   ├── src/
-│   │   ├── routes/
-│   │   │   ├── auth.routes.ts
-│   │   │   ├── question.routes.ts
-│   │   │   ├── game.routes.ts
-│   │   │   └── report.routes.ts
-│   │   ├── controllers/
-│   │   ├── middlewares/
-│   │   │   ├── auth.middleware.ts
-│   │   │   └── role.middleware.ts
-│   │   ├── services/
-│   │   │   ├── game.service.ts
-│   │   │   └── cloudinary.service.ts
-│   │   ├── swagger/
-│   │   │   └── swagger.config.ts
-│   │   └── app.ts
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   ├── migrations/
-│   │   └── seed.ts
-│   └── tests/
-│
-├── docs/
-│   ├── ADR/
-│   │   └── 001-stack-selection.md
-│   ├── api/
-│   ├── accessibility/
-│   └── reunioes/
-│
-├── apresentacoes/
-│
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-│
-├── .env.example
-├── .gitignore
-└── README.md
-```
-
----
-
-## Modelo de dados (Prisma)
-
-```prisma
-model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String   // hash bcrypt
-  role      Role     // STUDENT | TEACHER
-  sessions  GameSession[]
-}
-
-model Question {
-  id           String         @id @default(uuid())
-  type         QuestionType   // MULTIPLE_CHOICE | ASSOCIATION
-  difficulty   Int            // 1 | 2 | 3
-  category     Category       // VIDRARIA | METALICO | PLASTICO | PORCELANA | SISTEMA
-  prompt       String
-  imageUrl     String?
-  options      Option[]
-  createdBy    User           @relation(fields: [createdById], references: [id])
-  createdById  String
-}
-
-model Option {
-  id         String    @id @default(uuid())
-  text       String?
-  imageUrl   String?
-  isCorrect  Boolean
-  question   Question  @relation(fields: [questionId], references: [id])
-  questionId String
-}
-
-model GameSession {
-  id          String    @id @default(uuid())
-  student     User      @relation(fields: [studentId], references: [id])
-  studentId   String
-  score       Int
-  totalQ      Int
-  correctQ    Int
-  category    Category?
-  difficulty  Int?
-  playedAt    DateTime  @default(now())
-}
-```
-
----
-
 ## Como rodar o projeto
 
 ### Pré-requisitos
@@ -265,77 +135,9 @@ cd ../frontend
 npm install
 npm run dev
 ```
-
-### Variáveis de ambiente (.env.example)
-
-```env
-# Backend
-DATABASE_URL=postgresql://user:password@localhost:5432/labquiz
-JWT_SECRET=sua_chave_secreta_aqui
-JWT_EXPIRES_IN=7d
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-
-# Frontend (Vite)
-VITE_API_URL=http://localhost:3000
-```
-
 ---
 
-
----
-
-## Riscos
-
-| Risco | Probabilidade | Como mitigar |
-|-------|--------------|--------------|
-| Imagens dos equipamentos não ficam prontas a tempo | **Alta** | Designar o responsável pelo conteúdo na Semana 1; mapear o que está disponível na ETEC; ter bancos de imagens livres como plano B |
-| Painel do professor subestimado em complexidade | Média | Tratar como produto separado com seus próprios casos de uso; PM assume o UX desse módulo |
-| Mobile quebrado descoberto tarde demais | Média | Testar em dispositivo real desde a Fase 1, não só no final |
-| Escopo crescendo fora de controle | **Alta** | Qualquer feature nova passa pelo PM antes de entrar no backlog; Framer Motion e PWA só na Fase 3 |
-| LGPD ignorada no schema | Baixa | Não guardar dados desnecessários; revisar schema na Fase 0; alunos menores — só nome, e-mail e scores |
-| seed.ts nunca populado com conteúdo real | Média | 10 questões reais é critério de saída da Fase 1 — sem isso, não passa |
-
----
-
-## Fluxo de contribuição
-
-```bash
-git checkout -b feat/nome-da-funcionalidade
-
-git add .
-git commit -m "feat: descrição clara da mudança"
-git push origin feat/nome-da-funcionalidade
-
-# Abrir PR — pelo menos 1 pessoa precisa revisar antes do merge na main
-```
-
-### Convenções de commit
-
-```
-feat:     nova funcionalidade
-fix:      correção de bug
-style:    ajuste visual sem mudança de lógica
-refactor: refatoração sem mudança de comportamento
-test:     adição ou correção de testes
-docs:     documentação
-chore:    configuração, dependências, CI
-```
-
-### Regras de PR
-
-- Nenhum PR vai direto pra `main` sem revisão
-- CI precisa passar (lint + testes) antes do merge
-- Descreva **o que** foi feito e **por quê** — não só "ajustes"
-- PRs que alteram UI precisam de screenshot ou Preview URL no corpo
-
----
-
-
-## Recursos úteis
+## Recursos utilizados
 
 - [Documentação React](https://react.dev)
 - [shadcn/ui](https://ui.shadcn.com)
@@ -359,11 +161,10 @@ chore:    configuração, dependências, CI
 |------|-------|
 | Alexandre | PM / Arquitetura |
 | João | Frontend — Game Engine |
-| Marco | Frontend — UI/UX |
 | Otavio | Backend — API |
-| Gustavo | Banco de Dados + Conteúdo |
+| Gustavo | Banco de Dados + Conteúdo e  Frontend — UI/UX|
 | Bruno | QA / DevOps |
 
 ---
 
-*Última atualização: Março 2026*
+*Última atualização: Junho 2026*
